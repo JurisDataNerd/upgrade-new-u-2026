@@ -1,26 +1,254 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans), "Inter", system-ui, sans-serif;
+  --font-pixel: var(--font-pixel), "Press Start 2P", monospace;
+  
+  --color-gold: #f0d060;
+  --color-gold-dark: #c4a030;
+  --color-wood: #8b6f4e;
+  --color-wood-dark: #5a3a18;
+  --color-wood-light: #c4956a;
+  --color-cream: #f0e0c0;
+  --color-bg-deep: #2d1b0e;
+  --color-bg-surface: #3d2b1e;
+  --color-bg-elevated: #4d3b2e;
+  --color-rpg-green: #7ec850;
+  --color-rpg-green-dark: #4a8030;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --color-primary: #7ec850;
+  --color-primary-dark: #4a8030;
+  --color-primary-glow: rgba(126, 200, 80, 0.3);
+  --color-gold: #f0d060;
+  --color-gold-dark: #c4a030;
+  --color-wood: #8b6f4e;
+  --color-wood-dark: #5a3a18;
+  --color-wood-light: #c4956a;
+  --color-cream: #f0e0c0;
+  --color-bg-deep: #2d1b0e;
+  --color-bg-surface: #3d2b1e;
+  --color-bg-elevated: #4d3b2e;
+  --color-text: #f0e0c0;
+  --color-text-muted: #a08060;
+  --color-danger: #d44040;
+  --color-warning: #f0a030;
+  --color-info: #60a8d8;
+  --color-success: #7ec850;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg-deep);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+.font-pixel {
+  font-family: var(--font-pixel), "Press Start 2P", monospace;
+}
+
+/* Stardew Valley / Seeds of Hope Double-Inset Wood Borders */
+.sdv-card {
+  background: #3d2b1e;
+  border: 3px solid #5a3a18;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px #c4956a, 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.sdv-card-gold {
+  background: linear-gradient(180deg, #2d1b0e 0%, #1a1008 100%);
+  border: 3.5px solid #f0d060;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 3px #6b4f2e, 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(240, 208, 96, 0.15);
+}
+
+.sdv-card-elevated {
+  background: #281c12;
+  border: 2px solid #8b6f4e;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px #4a3422, 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Seeds of Hope RPG Buttons */
+.rpg-btn-primary {
+  color: #ffffff;
+  background: linear-gradient(180deg, #3d7828 0%, #255018 100%);
+  border: 3px solid #f0d060;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px #7ec850, 0 5px #122808, 0 8px 20px rgba(61, 120, 40, 0.4);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.rpg-btn-primary:hover {
+  color: #f0d060;
+  background: linear-gradient(180deg, #4d8838 0%, #356028 100%);
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 2px #ffffff, 0 7px #122808, 0 12px 24px rgba(0, 0, 0, 0.6);
+}
+
+.rpg-btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 0 0 2px #7ec850, 0 2px #122808;
+}
+
+.rpg-btn-wood {
+  color: #f5f0e8;
+  background: linear-gradient(180deg, #5a4536 0%, #3d2b1e 100%);
+  border: 3px solid #6b4f2e;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px #d4a57a, 0 5px #2d1a08, 0 8px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.rpg-btn-wood:hover {
+  color: #f0d060;
+  background: linear-gradient(180deg, #6a5546 0%, #4d3b2e 100%);
+  border-color: #f0d060;
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 2px #f0d060, 0 7px #2d1a08, 0 12px 20px rgba(0, 0, 0, 0.6);
+}
+
+.rpg-btn-wood:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 0 0 2px #d4a57a, 0 2px #2d1a08;
+}
+
+.rpg-btn-danger {
+  color: #ffffff;
+  background: linear-gradient(180deg, #8b3a2b 0%, #5a1e14 100%);
+  border: 2px solid #d44040;
+  border-radius: 8px;
+  box-shadow: 0 4px #2d0a06;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.rpg-btn-danger:hover {
+  background: linear-gradient(180deg, #a44040 0%, #6e2418 100%);
+  border-color: #ff8080;
+  transform: translateY(-1px);
+}
+
+.rpg-btn-danger:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px #2d0a06;
+}
+
+/* RPG Dialogue Choice Item */
+.dialogue-choice-item {
+  color: #f0e6d2;
+  background: rgba(35, 22, 12, 0.9);
+  border: 2px solid #8b6f4e;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.dialogue-choice-item:hover {
+  color: #ffffff;
+  background: linear-gradient(180deg, #3d7828 0%, #255018 100%);
+  border-color: #f0d060;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Animations from Seeds of Hope */
+@keyframes heroKenBurns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.06);
+  }
+}
+
+.animate-ken-burns {
+  animation: heroKenBurns 30s ease-in-out infinite alternate;
+}
+
+@keyframes titlePulse {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-title-pulse {
+  animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 1.8s infinite ease-in-out;
+}
+
+@keyframes stampSlam {
+  0% {
+    opacity: 0;
+    transform: scale(3) rotate(-20deg);
+  }
+  60% {
+    opacity: 0.9;
+    transform: scale(0.92) rotate(3deg);
+  }
+  80% {
+    transform: scale(1.04) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.animate-stamp-slam {
+  animation: stampSlam 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* CRT Overlay */
+.crt-overlay {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Custom Scrollbars in Warm Wood Theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2d1b0e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8b6f4e;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c4956a;
 }
