@@ -149,12 +149,12 @@ export default function LinearSpotPage() {
 
             <div className="w-[1px] h-4 bg-[#5a3a18]" />
 
-            <div className="flex items-center gap-1.5 min-w-0">
+            <div className="flex items-center gap-1.5 min-w-0 flex-1">
               <div className="w-6 h-6 bg-[#170f07] border border-[#f0d060] rounded-md flex items-center justify-center shrink-0">
                 <StampIcon name={booth.stampIcon} size={14} className="text-[#f0d060]" />
               </div>
-              <div className="min-w-0">
-                <h1 className="font-pixel text-[11px] sm:text-xs font-bold text-white truncate">
+              <div className="min-w-0 flex-1">
+                <h1 className="font-sans text-xs sm:text-sm font-bold text-white leading-tight break-words">
                   {booth.name}
                 </h1>
               </div>
@@ -200,17 +200,17 @@ export default function LinearSpotPage() {
       {/* Educational Story Lore Modal */}
       {showStoryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#0a0604]/85 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="w-full max-w-md bg-gradient-to-b from-[#2d1b0e] to-[#170f07] border-[3px] border-[#f0d060] rounded-2xl p-4 sm:p-6 shadow-2xl relative">
+          <div className="w-full max-w-md bg-gradient-to-b from-[#2d1b0e] to-[#170f07] border-[3px] border-[#f0d060] rounded-2xl p-4 sm:p-6 shadow-2xl relative max-h-[90dvh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-[#5a3a18] pb-2 mb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-[#170f07] border border-[#f0d060] rounded-md flex items-center justify-center">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <div className="w-7 h-7 bg-[#170f07] border border-[#f0d060] rounded-md flex items-center justify-center shrink-0">
                   <StampIcon name={booth.stampIcon} size={16} className="text-[#f0d060]" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <span className="text-[8px] font-pixel text-[#7ec850] uppercase block">
                     Materi Spot • {booth.code}
                   </span>
-                  <h3 className="text-xs font-pixel font-bold text-white truncate">
+                  <h3 className="font-sans text-xs sm:text-sm font-bold text-white leading-tight break-words">
                     {booth.name}
                   </h3>
                 </div>

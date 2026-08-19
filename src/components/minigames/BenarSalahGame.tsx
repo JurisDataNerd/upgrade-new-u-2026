@@ -163,7 +163,7 @@ export const BenarSalahGame: React.FC<BenarSalahGameProps> = ({
                 </>
               )}
             </div>
-            <p className="font-sans text-[10px] sm:text-[11px] leading-tight line-clamp-2">
+            <p className="font-sans text-[10px] sm:text-[11px] leading-snug break-words">
               {currentStatement.explanation}
             </p>
           </div>
@@ -172,7 +172,7 @@ export const BenarSalahGame: React.FC<BenarSalahGameProps> = ({
 
       {/* Footer Navigation */}
       <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-2 shrink-0">
-        <div className="text-[10px] font-sans text-[#a08060] truncate">
+        <div className="text-[10px] font-sans text-[#a08060]">
           {isRoundSubmitted
             ? 'Pernyataan dinilai'
             : 'Pilih BENAR atau SALAH'}

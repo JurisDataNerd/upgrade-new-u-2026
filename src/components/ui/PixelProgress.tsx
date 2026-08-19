@@ -41,8 +41,8 @@ export const PixelProgress: React.FC<PixelProgressProps> = ({
   return (
     <div className={`w-full ${className}`}>
       {(label || showPercentage) && (
-        <div className="flex items-center justify-between gap-2 mb-1.5 text-xs font-pixel">
-          <span className="text-[#a08060] flex items-center gap-1.5 truncate text-[10px]">
+        <div className="flex items-center justify-between gap-2 mb-1.5 text-xs font-pixel flex-wrap">
+          <span className="text-[#a08060] flex items-center gap-1.5 text-[10px] break-words">
             {label}
             {sublabel && <span className="text-[#c4956a] font-sans text-[11px] font-normal">({sublabel})</span>}
           </span>

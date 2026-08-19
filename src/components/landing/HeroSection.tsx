@@ -221,7 +221,7 @@ export const HeroSection: React.FC = () => {
                     />
                   </div>
                   <div className="min-w-0">
-                    <div className="font-pixel text-[8px] text-white font-bold truncate flex items-center gap-1">
+                    <div className="font-pixel text-[8px] text-white font-bold flex items-center gap-1">
                       <span>{av.gender === 'pria' ? 'Cowok' : 'Cewek'}</span>
                       {av.gender === 'pria' ? (
                         <GenderMale size={10} weight="bold" className="text-[#60a8d8]" />
@@ -229,7 +229,7 @@ export const HeroSection: React.FC = () => {
                         <GenderFemale size={10} weight="bold" className="text-[#ff8080]" />
                       )}
                     </div>
-                    <div className="font-sans text-[9px] text-[#c4956a] truncate">
+                    <div className="font-sans text-[9px] text-[#c4956a]">
                       {av.gender === 'pria' ? 'Peci & Jas' : 'Hijab & Jas'}
                     </div>
                   </div>
@@ -261,7 +261,7 @@ export const HeroSection: React.FC = () => {
                 className="w-full py-2 sm:py-2.5 px-2 text-[10px] sm:text-xs font-pixel font-bold uppercase tracking-wider rpg-btn-wood flex items-center justify-center gap-1.5 shadow"
               >
                 <IdentificationBadge size={16} weight="bold" />
-                <span className="truncate">PASPOR ({totalStamps}/18)</span>
+                <span>PASPOR ({totalStamps}/18)</span>
               </button>
             </Link>
 
@@ -272,7 +272,7 @@ export const HeroSection: React.FC = () => {
                 className="w-full py-2 sm:py-2.5 px-2 text-[10px] sm:text-xs font-pixel font-bold uppercase tracking-wider bg-[#2d1b0e]/90 border-2 border-[#5a3a18] rounded-lg text-[#f0d060] hover:border-[#f0d060] flex items-center justify-center gap-1.5 shadow"
               >
                 <Trophy size={15} weight="fill" />
-                <span className="truncate">PERINGKAT</span>
+                <span>PERINGKAT</span>
               </button>
             </Link>
           </div>

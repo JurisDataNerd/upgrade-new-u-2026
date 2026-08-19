@@ -120,17 +120,17 @@ export default function PassportPage() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="min-w-0 space-y-1">
-                    <h2 className="font-pixel text-sm sm:text-base font-bold text-white truncate">
+                  <div className="min-w-0 space-y-1 flex-1">
+                    <h2 className="font-pixel text-sm sm:text-base font-bold text-white leading-snug break-words">
                       {participant.name}
                     </h2>
                     <p className="font-mono text-xs text-[#7ec850]">
                       NIM: {participant.nim}
                     </p>
-                    <p className="font-sans text-xs text-[#f0e0c0]">
+                    <p className="font-sans text-xs text-[#f0e0c0] leading-tight break-words">
                       {participant.prodi}
                     </p>
-                    <p className="font-sans text-[11px] text-[#a08060]">
+                    <p className="font-sans text-[11px] text-[#a08060] leading-tight break-words">
                       {participant.faculty}
                     </p>
                   </div>
@@ -499,17 +499,17 @@ const StampSlot: React.FC<StampSlotProps> = ({ booth, stampRecord, onClick }) =>
           )}
         </div>
 
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5 mb-0.5">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
             <span className="font-pixel text-[9px] bg-[#170f07] px-1.5 py-0.5 rounded text-[#f0d060] border border-[#5a3a18]">
               {booth.code}
             </span>
-            <span className="font-sans text-[11px] text-[#c4956a] truncate">
+            <span className="font-sans text-[11px] text-[#c4956a] leading-tight">
               {booth.badgeTag}
             </span>
           </div>
           <h4
-            className={`font-pixel text-xs truncate ${
+            className={`font-sans text-xs sm:text-sm leading-tight break-words ${
               isAcquired ? 'text-white font-bold' : 'text-[#a08060]'
             }`}
           >

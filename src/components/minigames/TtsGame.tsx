@@ -222,7 +222,7 @@ export const TtsGame: React.FC<TtsGameProps> = ({
                 {activeClue.answer.length} Huruf
               </span>
             </div>
-            <p className="font-sans text-[11px] sm:text-xs text-white font-medium leading-snug line-clamp-2">
+            <p className="font-sans text-[11px] sm:text-xs text-white font-medium leading-snug break-words">
               {activeClue.clue}
             </p>
           </div>

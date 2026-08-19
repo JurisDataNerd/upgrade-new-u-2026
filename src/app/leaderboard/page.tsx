@@ -194,10 +194,10 @@ export default function LeaderboardPage() {
                     #{currentUserRankInfo.rank}
                   </PixelBadge>
                 </div>
-                <h3 className="font-pixel text-xs sm:text-sm font-bold text-white truncate">
+                <h3 className="font-pixel text-xs sm:text-sm font-bold text-white leading-snug break-words">
                   {participant.name}
                 </h3>
-                <p className="font-sans text-[11px] text-[#c4956a] truncate">
+                <p className="font-sans text-[11px] text-[#c4956a] leading-tight break-words">
                   {participant.nim} • {participant.prodi}
                 </p>
               </div>
@@ -302,11 +302,11 @@ export default function LeaderboardPage() {
                         />
                       </div>
 
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <h4
-                            className={`font-pixel text-xs truncate ${
-                              isMe ? 'text-white font-bold' : 'text-[#f0e0c0]'
+                            className={`font-sans text-xs sm:text-sm font-bold leading-tight break-words ${
+                              isMe ? 'text-white' : 'text-[#f0e0c0]'
                             }`}
                           >
                             {user.name}
@@ -317,7 +317,7 @@ export default function LeaderboardPage() {
                             </PixelBadge>
                           )}
                         </div>
-                        <p className="font-sans text-[10px] text-[#a08060] truncate">
+                        <p className="font-sans text-[10px] text-[#a08060] leading-tight break-words">
                           {user.prodi}
                         </p>
                       </div>
@@ -368,12 +368,12 @@ export default function LeaderboardPage() {
                     }}
                     className="w-full p-3 sm:p-4 flex items-center justify-between gap-3 text-left cursor-pointer"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       {getRankBadge(group.rank)}
 
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <h3 className="font-pixel text-xs font-bold text-white truncate">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <h3 className="font-sans text-xs sm:text-sm font-bold text-white leading-tight break-words">
                             {group.name}
                           </h3>
                           {hasMe && (
@@ -382,7 +382,7 @@ export default function LeaderboardPage() {
                             </PixelBadge>
                           )}
                         </div>
-                        <p className="font-sans text-[11px] text-[#a08060] truncate">
+                        <p className="font-sans text-[11px] text-[#a08060]">
                           {group.members.length} Anggota
                         </p>
                       </div>
@@ -426,7 +426,7 @@ export default function LeaderboardPage() {
                                 : 'bg-[#23160c] border-[#3d2b1e] text-[#e0d0b0]'
                             }`}
                           >
-                            <div className="flex items-center gap-2 min-w-0">
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
                               <div className="w-7 h-7 rounded-md overflow-hidden bg-[#170f07] border border-[#8b6f4e] shrink-0 relative">
                                 <Image
                                   src={getAvatarImage(member.avatar)}
@@ -435,11 +435,11 @@ export default function LeaderboardPage() {
                                   className="object-cover"
                                 />
                               </div>
-                              <div className="min-w-0">
-                                <div className="font-pixel text-[10px] font-bold truncate">
+                              <div className="min-w-0 flex-1">
+                                <div className="font-sans text-xs font-bold leading-tight break-words">
                                   {member.name}
                                 </div>
-                                <div className="font-sans text-[9px] text-[#a08060] truncate">
+                                <div className="font-sans text-[9px] text-[#a08060] leading-tight break-words">
                                   {member.prodi}
                                 </div>
                               </div>

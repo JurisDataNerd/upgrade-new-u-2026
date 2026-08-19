@@ -121,7 +121,7 @@ export const TebakPosisiGame: React.FC<TebakPosisiGameProps> = ({
         </div>
 
         {/* Prompt */}
-        <h4 className="font-sans text-[11px] sm:text-xs font-bold text-white leading-snug line-clamp-2">
+        <h4 className="font-sans text-[11px] sm:text-xs font-bold text-white leading-snug break-words">
           {currentItem.prompt}
         </h4>
       </div>
@@ -157,7 +157,7 @@ export const TebakPosisiGame: React.FC<TebakPosisiGameProps> = ({
               <span className="font-pixel text-[9px] w-5 h-5 flex items-center justify-center rounded bg-[#281c12] text-[#f0d060] border border-[#5a3a18] shrink-0 font-bold">
                 {String.fromCharCode(65 + optIdx)}
               </span>
-              <span className="font-sans text-[11px] sm:text-xs leading-tight flex-1 line-clamp-2">
+              <span className="font-sans text-[11px] sm:text-xs leading-tight flex-1 break-words">
                 {option}
               </span>
               {isRoundSubmitted &&
@@ -202,7 +202,7 @@ export const TebakPosisiGame: React.FC<TebakPosisiGameProps> = ({
               </>
             )}
           </div>
-          <p className="font-sans text-[10px] sm:text-[11px] leading-tight line-clamp-2">
+          <p className="font-sans text-[10px] sm:text-[11px] leading-snug break-words">
             {currentItem.explanation}
           </p>
         </div>
@@ -210,7 +210,7 @@ export const TebakPosisiGame: React.FC<TebakPosisiGameProps> = ({
 
       {/* Footer Actions */}
       <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-2 shrink-0">
-        <div className="text-[10px] font-sans text-[#a08060] truncate">
+        <div className="text-[10px] font-sans text-[#a08060]">
           {selectedOptionIndex !== null ? '1 lokasi dipilih' : 'Pilih 1 lokasi'}
         </div>
 

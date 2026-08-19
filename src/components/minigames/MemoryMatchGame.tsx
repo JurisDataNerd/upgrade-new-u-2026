@@ -209,12 +209,12 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
               {isOpen ? (
                 <div className="flex flex-col items-center justify-between h-full w-full py-0.5">
                   {card.tag && (
-                    <span className="font-pixel text-[7px] text-[#f0d060] bg-[#120b06]/80 px-1 py-0.2 rounded border border-[#5a3a18] line-clamp-1">
+                    <span className="font-pixel text-[7px] text-[#f0d060] bg-[#120b06]/80 px-1 py-0.2 rounded border border-[#5a3a18] break-words">
                       {card.tag}
                     </span>
                   )}
 
-                  <p className="font-sans text-[10px] sm:text-xs font-semibold leading-tight my-auto px-0.5 line-clamp-3">
+                  <p className="font-sans text-[10px] sm:text-xs font-semibold leading-tight my-auto px-0.5 break-words">
                     {card.text}
                   </p>
 
@@ -255,7 +255,7 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
 
       {/* Action Footer */}
       <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-2 shrink-0">
-        <div className="text-[10px] font-sans text-[#a08060] truncate">
+        <div className="text-[10px] font-sans text-[#a08060]">
           Cocokkan 4 pasang kartu istilah
         </div>
 

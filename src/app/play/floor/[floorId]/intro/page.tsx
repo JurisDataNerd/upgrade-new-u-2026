@@ -108,10 +108,10 @@ export default function FloorIntroPage() {
               <Buildings size={12} weight="fill" className="text-[#f0d060]" />
               <span>ZONA EKSPLORASI KAMPUS</span>
             </div>
-            <h1 className="font-pixel text-sm sm:text-lg font-bold text-white tracking-wide mt-1">
+            <h1 className="font-pixel text-sm sm:text-lg font-bold text-white tracking-wide mt-1 leading-snug break-words">
               {floor.name}
             </h1>
-            <p className="font-sans text-[11px] sm:text-xs text-[#f0d060] font-medium truncate">
+            <p className="font-sans text-[11px] sm:text-xs text-[#f0d060] font-medium leading-snug break-words">
               {floor.theme}
             </p>
           </div>
@@ -154,7 +154,7 @@ export default function FloorIntroPage() {
 
             {/* Character Dialogue Quote */}
             <div className="min-w-0 flex-1 space-y-1">
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <div className="w-5 h-5 rounded-md overflow-hidden bg-[#281c12] border border-[#f0d060] shrink-0 relative">
                   <Image
                     src={selectedAvatar.avatarImage}
@@ -163,12 +163,12 @@ export default function FloorIntroPage() {
                     className="object-cover"
                   />
                 </div>
-                <span className="font-pixel text-[9px] text-[#f0d060] font-bold truncate">
+                <span className="font-pixel text-[9px] text-[#f0d060] font-bold">
                   {participant.name}
                 </span>
                 <span className="text-[8px] font-pixel text-[#7ec850]">• Misi Lantai</span>
               </div>
-              <p className="font-sans text-[11px] sm:text-xs text-[#d0c0a0] leading-snug line-clamp-3">
+              <p className="font-sans text-[11px] sm:text-xs text-[#d0c0a0] leading-snug break-words">
                 &ldquo;{floor.storyIntro?.narrative || floor.description}&rdquo;
               </p>
             </div>
@@ -199,7 +199,7 @@ export default function FloorIntroPage() {
                     <div className="w-6 h-6 rounded-md bg-[#281c12] border border-[#f0d060] flex items-center justify-center shrink-0">
                       <StampIcon name={boothA.stampIcon} size={14} className="text-[#f0d060]" />
                     </div>
-                    <span className="font-pixel text-[8px] text-[#7ec850] font-bold truncate">
+                    <span className="font-pixel text-[8px] text-[#7ec850] font-bold">
                       {boothA.code}
                     </span>
                   </div>
@@ -213,10 +213,10 @@ export default function FloorIntroPage() {
                   )}
                 </div>
 
-                <h4 className="font-pixel text-[10px] sm:text-[11px] text-white truncate">
+                <h4 className="font-sans text-xs font-bold text-white leading-tight break-words mt-0.5">
                   {boothA.name}
                 </h4>
-                <div className="text-[9px] font-sans text-[#c4956a] truncate mt-0.5">
+                <div className="text-[9px] font-sans text-[#c4956a] mt-0.5">
                   {getGameTypeLabel(boothA.tipe_game)}
                 </div>
               </div>
@@ -234,7 +234,7 @@ export default function FloorIntroPage() {
                     <div className="w-6 h-6 rounded-md bg-[#281c12] border border-[#f0d060] flex items-center justify-center shrink-0">
                       <StampIcon name={boothB.stampIcon} size={14} className="text-[#f0d060]" />
                     </div>
-                    <span className="font-pixel text-[8px] text-[#f0d060] font-bold truncate">
+                    <span className="font-pixel text-[8px] text-[#f0d060] font-bold">
                       {boothB.code}
                     </span>
                   </div>
@@ -248,10 +248,10 @@ export default function FloorIntroPage() {
                   )}
                 </div>
 
-                <h4 className="font-pixel text-[10px] sm:text-[11px] text-white truncate">
+                <h4 className="font-sans text-xs font-bold text-white leading-tight break-words mt-0.5">
                   {boothB.name}
                 </h4>
-                <div className="text-[9px] font-sans text-[#c4956a] truncate mt-0.5">
+                <div className="text-[9px] font-sans text-[#c4956a] mt-0.5">
                   {getGameTypeLabel(boothB.tipe_game)}
                 </div>
               </div>

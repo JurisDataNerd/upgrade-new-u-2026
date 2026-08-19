@@ -62,11 +62,11 @@ export const BuildingMap: React.FC = () => {
           <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#2d1b0e] border border-[#8b6f4e] rounded-lg flex items-center justify-center text-[#f0d060] shrink-0">
             <GameController size={18} weight="bold" />
           </div>
-          <div className="min-w-0">
-            <div className="font-pixel text-[11px] sm:text-xs font-bold text-white truncate">
+          <div className="min-w-0 flex-1">
+            <div className="font-pixel text-[11px] sm:text-xs font-bold text-white leading-tight">
               PETA 9 LANTAI KAMPUS
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-sans text-[#c4956a] truncate">
+            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-sans text-[#c4956a] flex-wrap">
               <span>{completedFloors}/9 Tuntas</span>
               <span>•</span>
               <span className="text-[#7ec850]">{participant.completedBooths.length}/18 Stempel</span>
@@ -130,11 +130,11 @@ export const BuildingMap: React.FC = () => {
       <div className="flex-1 sdv-card p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-lg">
         {/* Floor Header */}
         <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-2 shrink-0">
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#7ec850] uppercase tracking-wider block">
               ZONA LANTAI {selectedFloor.number}
             </span>
-            <h2 className="font-pixel text-xs sm:text-sm font-bold text-white truncate mt-0.5">
+            <h2 className="font-pixel text-xs sm:text-sm font-bold text-white mt-0.5 leading-snug break-words">
               {selectedFloor.name}
             </h2>
           </div>
@@ -201,13 +201,13 @@ const SpotMiniCard: React.FC<SpotMiniCardProps> = ({
           : 'bg-[#170f07] border-[#3d2b1e] hover:border-[#5a3a18]'
       }`}
     >
-      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#23160c] border border-[#5a3a18] flex items-center justify-center shrink-0">
           <StampIcon name={booth.stampIcon} size={16} className="text-[#f0d060]" />
         </div>
 
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <span className="font-pixel text-[8px] text-[#f0d060]">
               {booth.code}
             </span>
@@ -215,7 +215,7 @@ const SpotMiniCard: React.FC<SpotMiniCardProps> = ({
               {gameTypeLabel}
             </PixelBadge>
           </div>
-          <h4 className="font-pixel text-[11px] sm:text-xs text-white truncate mt-0.5">
+          <h4 className="font-sans text-xs font-bold text-white leading-tight break-words mt-0.5">
             {booth.name}
           </h4>
         </div>

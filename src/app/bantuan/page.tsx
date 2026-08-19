@@ -34,10 +34,10 @@ export default function BantuanPage() {
             <Info size={12} weight="bold" />
             <span>PANDUAN SINGKAT</span>
           </div>
-          <h1 className="font-pixel text-sm sm:text-lg font-bold text-[#f0d060] mt-0.5">
+          <h1 className="font-pixel text-sm sm:text-lg font-bold text-[#f0d060] mt-0.5 leading-snug break-words">
             CARA BERMAIN GENIUS
           </h1>
-          <p className="font-sans text-[11px] sm:text-xs text-[#c4956a] truncate">
+          <p className="font-sans text-[11px] sm:text-xs text-[#c4956a] leading-snug break-words">
             Jelajahi 9 lantai gedung kampus UNU dan kumpulkan 18 stempel digital.
           </p>
         </div>
@@ -48,10 +48,10 @@ export default function BantuanPage() {
             <div className="w-6 h-6 rounded-md bg-[#23160c] border border-[#7ec850] text-[#7ec850] font-pixel text-[10px] font-bold flex items-center justify-center mx-auto">
               1
             </div>
-            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white truncate">
+            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white leading-tight break-words">
               Prolog Lantai
             </h3>
-            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight line-clamp-2">
+            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight break-words">
               Buka tema & misi karakter.
             </p>
           </div>
@@ -60,10 +60,10 @@ export default function BantuanPage() {
             <div className="w-6 h-6 rounded-md bg-[#23160c] border border-[#f0d060] text-[#f0d060] font-pixel text-[10px] font-bold flex items-center justify-center mx-auto">
               2
             </div>
-            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white truncate">
+            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white leading-tight break-words">
               2 Spot Game
             </h3>
-            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight line-clamp-2">
+            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight break-words">
               Mainkan TTS, Kuis, Memory.
             </p>
           </div>
@@ -72,10 +72,10 @@ export default function BantuanPage() {
             <div className="w-6 h-6 rounded-md bg-[#23160c] border border-[#60a8d8] text-[#60a8d8] font-pixel text-[10px] font-bold flex items-center justify-center mx-auto">
               3
             </div>
-            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white truncate">
+            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white leading-tight break-words">
               18 Stempel
             </h3>
-            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight line-clamp-2">
+            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight break-words">
               Klaim paspor & sertifikat.
             </p>
           </div>
@@ -91,27 +91,27 @@ export default function BantuanPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-[10px] sm:text-xs font-sans py-1">
             <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
               <Sparkle size={12} weight="fill" className="text-[#7ec850] shrink-0" />
-              <span className="text-[#f0e0c0] truncate">TTS Kampus</span>
+              <span className="text-[#f0e0c0] leading-tight break-words">TTS Kampus</span>
             </div>
             <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
               <Sparkle size={12} weight="fill" className="text-[#f0d060] shrink-0" />
-              <span className="text-[#f0e0c0] truncate">Tebak Kata</span>
+              <span className="text-[#f0e0c0] leading-tight break-words">Tebak Kata</span>
             </div>
             <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
               <MapPin size={12} weight="fill" className="text-[#60a8d8] shrink-0" />
-              <span className="text-[#f0e0c0] truncate">Tebak Posisi</span>
+              <span className="text-[#f0e0c0] leading-tight break-words">Tebak Posisi</span>
             </div>
             <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
               <Cards size={12} weight="fill" className="text-[#f0a030] shrink-0" />
-              <span className="text-[#f0e0c0] truncate">Memory Match</span>
+              <span className="text-[#f0e0c0] leading-tight break-words">Memory Match</span>
             </div>
             <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
               <Lightning size={12} weight="fill" className="text-[#e0a040] shrink-0" />
-              <span className="text-[#f0e0c0] truncate">Kuis Cepat</span>
+              <span className="text-[#f0e0c0] leading-tight break-words">Kuis Cepat</span>
             </div>
             <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
               <ShieldCheck size={12} weight="fill" className="text-[#7ec850] shrink-0" />
-              <span className="text-[#f0e0c0] truncate">Benar / Salah</span>
+              <span className="text-[#f0e0c0] leading-tight break-words">Benar / Salah</span>
             </div>
           </div>
 
