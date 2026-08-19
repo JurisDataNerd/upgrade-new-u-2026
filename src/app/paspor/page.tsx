@@ -17,6 +17,7 @@ import { FLOORS_DATA, BOOTHS_DATA, LEVEL_CONFIG, AVATAR_OPTIONS } from '@/data/m
 import { useGameStore } from '@/store/useGameStore';
 import { PixelBadge } from '@/components/ui/PixelBadge';
 import { PixelProgress } from '@/components/ui/PixelProgress';
+import { StampIcon } from '@/components/ui/StampIcon';
 import { Navbar } from '@/components/layout/Navbar';
 import { CrtScanlines } from '@/components/layout/CrtScanlines';
 import { soundEngine } from '@/lib/sound';
@@ -57,22 +58,17 @@ export default function PassportPage() {
       <CrtScanlines />
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 space-y-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 space-y-6">
         {/* Header Title & Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-pixel text-[9px] text-[#7ec850] uppercase tracking-widest">
-                DOKUMEN RESMI ORIENTASI
-              </span>
-              <PixelBadge variant="gold" size="sm">
-                VERSI 2026
-              </PixelBadge>
-            </div>
-            <h1 className="font-pixel text-xl sm:text-2xl font-bold text-[#f0d060] mt-1 flex items-center gap-2.5">
+            <h1 className="font-pixel text-xl sm:text-2xl font-bold text-[#f0d060] flex items-center gap-2.5">
               <IdentificationBadge size={28} weight="fill" className="text-[#f0d060]" />
-              <span>PASPOR DIGITAL MAHASISWA</span>
+              <span>Paspor Mahasiswa</span>
             </h1>
+            <p className="font-sans text-xs sm:text-sm text-[#c4956a] mt-0.5">
+              Catatan perolehan stempel dan progres orientasi kampus.
+            </p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -81,7 +77,7 @@ export default function PassportPage() {
               className="rpg-btn-wood py-2 px-3 text-xs font-pixel font-bold flex items-center gap-2"
             >
               <Printer size={16} weight="bold" />
-              <span>Cetak / Simpan</span>
+              <span>Cetak</span>
             </button>
             <button
               onClick={handleResetConfirm}
@@ -94,16 +90,16 @@ export default function PassportPage() {
           </div>
         </div>
 
-        {/* Player ID Card & Level HUD (Seeds of Hope ledger layout) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Identity Booklet Left Page */}
+        {/* Player ID Card & Level HUD */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+          {/* Identity Card */}
           <div className="lg:col-span-5">
             <div className="h-full sdv-card-gold p-5 sm:p-6 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between border-b-2 border-[#5a3a18] pb-3 mb-4">
                   <div className="flex items-center gap-2 font-pixel text-xs text-[#f0d060]">
                     <Sparkle size={16} weight="fill" />
-                    <span>KARTU IDENTITAS MAHASISWA</span>
+                    <span>Kartu Mahasiswa</span>
                   </div>
                   <Image
                     src="/unu.png"
@@ -116,7 +112,7 @@ export default function PassportPage() {
 
                 {/* Avatar & Basic Info */}
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-18 h-18 bg-[#170f07] border-2 border-[#f0d060] rounded-xl overflow-hidden shadow-inner shrink-0 relative">
+                  <div className="w-16 h-16 bg-[#170f07] border-2 border-[#f0d060] rounded-xl overflow-hidden shadow-inner shrink-0 relative">
                     <Image
                       src={selectedAvatarObj.avatarImage}
                       alt={selectedAvatarObj.name}
@@ -141,22 +137,16 @@ export default function PassportPage() {
                 </div>
 
                 {/* Level Title & Details */}
-                <div className="bg-[#170f07] p-3.5 border-2 border-[#5a3a18] rounded-xl mb-4 space-y-2">
+                <div className="bg-[#170f07] p-3 border-2 border-[#5a3a18] rounded-xl mb-4 space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="font-pixel text-[9px] text-[#a08060] uppercase">
-                      Pangkat Karakter:
+                      Pangkat:
                     </span>
                     <PixelBadge
-                      variant={
-                        completedFloors === 9
-                          ? 'gold'
-                          : completedFloors >= 4
-                          ? 'gold'
-                          : 'emerald'
-                      }
+                      variant={completedFloors === 9 ? 'gold' : 'emerald'}
                       size="sm"
                     >
-                      {currentLevelData.badgeIcon} {currentLevel}
+                      {currentLevel}
                     </PixelBadge>
                   </div>
                   <p className="font-sans text-xs text-[#c4956a] leading-relaxed">
@@ -167,10 +157,10 @@ export default function PassportPage() {
 
               {/* Certificate Unlock Banner if completed */}
               {isAllCompleted ? (
-                <div className="bg-[#1f3a2b] border-2 border-[#7ec850] rounded-xl p-3.5 shadow-lg text-center space-y-2">
+                <div className="bg-[#1f3a2b] border-2 border-[#7ec850] rounded-xl p-3 shadow text-center space-y-2">
                   <div className="font-pixel text-xs font-bold text-[#f0d060] flex items-center justify-center gap-1.5">
                     <Trophy size={16} weight="fill" className="text-[#f0d060]" />
-                    <span>ORIENTASI 100% TUNTAS!</span>
+                    <span>Semua Lantai Selesai!</span>
                   </div>
                   <button
                     onClick={() => {
@@ -183,24 +173,23 @@ export default function PassportPage() {
                   </button>
                 </div>
               ) : (
-                <div className="bg-[#170f07] p-3 border border-[#5a3a18] rounded-lg text-xs font-sans text-[#a08060] text-center">
-                  Selesaikan {9 - completedFloors} lantai lagi untuk membuka predikat{' '}
-                  <strong className="text-[#f0d060] font-pixel text-[10px]">UPGRADED YOU</strong> & sertifikat kelulusan.
+                <div className="bg-[#170f07] p-2.5 border border-[#5a3a18] rounded-lg text-xs font-sans text-[#a08060] text-center">
+                  Selesaikan {9 - completedFloors} lantai lagi untuk membuka sertifikat kelulusan.
                 </div>
               )}
             </div>
           </div>
 
-          {/* Stats & Progress Overview Right Page */}
+          {/* Stats Overview */}
           <div className="lg:col-span-7">
             <div className="h-full sdv-card p-5 sm:p-6 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between border-b-2 border-[#5a3a18] pb-3">
                   <div className="font-pixel text-xs text-[#f0d060]">
-                    RINGKASAN KOLEKSI STEMPEL
+                    Koleksi Stempel
                   </div>
                   <div className="font-pixel text-xs text-[#7ec850]">
-                    {totalStampsCollected} / 18 Stempel Terkumpul
+                    {totalStampsCollected} / 18 Stempel
                   </div>
                 </div>
 
@@ -209,8 +198,8 @@ export default function PassportPage() {
                   <PixelProgress
                     value={totalStampsCollected}
                     max={18}
-                    label="TOTAL STEMPEL DIKOLEKSI"
-                    sublabel={`${totalStampsCollected} dari 18 booth`}
+                    label="TOTAL STEMPEL"
+                    sublabel={`${totalStampsCollected} dari 18`}
                     color="emerald"
                     height="md"
                   />
@@ -218,65 +207,24 @@ export default function PassportPage() {
                   <PixelProgress
                     value={completedFloors}
                     max={9}
-                    label="LANTAI TUNTAS (2/2 STEMPEL)"
-                    sublabel={`${completedFloors} dari 9 lantai`}
+                    label="LANTAI SELESAI"
+                    sublabel={`${completedFloors} dari 9`}
                     color="gold"
                     height="md"
                   />
-                </div>
-
-                {/* Level Tier Roadmap */}
-                <div className="space-y-2 pt-2">
-                  <span className="font-pixel text-[9px] text-[#a08060] uppercase">
-                    Tahapan Upgrade Karakter:
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {LEVEL_CONFIG.map((lvl) => {
-                      const isCurrent = lvl.level === currentLevel;
-                      const isPassed =
-                        (lvl.level === 'New You' && completedFloors >= 0) ||
-                        (lvl.level === 'Explorer' && completedFloors >= 2) ||
-                        (lvl.level === 'Achiever' && completedFloors >= 4) ||
-                        (lvl.level === 'Almost There' && completedFloors >= 6) ||
-                        (lvl.level === 'Upgraded You' && completedFloors >= 9);
-
-                      return (
-                        <div
-                          key={lvl.level}
-                          className={`p-2.5 rounded-lg border text-xs flex items-center justify-between ${
-                            isCurrent
-                              ? 'bg-[#1f3a2b] border-[#7ec850] text-[#f0d060] shadow-sm'
-                              : isPassed
-                              ? 'bg-[#170f07] border-[#5a3a18] text-[#f0e0c0]'
-                              : 'bg-[#170f07]/50 border-[#3d2b1e] text-[#a08060]'
-                          }`}
-                        >
-                          <div className="flex items-center gap-1.5 font-pixel text-[9px]">
-                            <span>{lvl.badgeIcon}</span>
-                            <span>{lvl.title}</span>
-                          </div>
-                          <span className="font-sans text-[10px] text-[#a08060]">
-                            {lvl.minFloors === lvl.maxFloors
-                              ? `${lvl.minFloors} Lt`
-                              : `${lvl.minFloors}-${lvl.maxFloors} Lt`}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
               </div>
 
               <div className="border-t border-[#5a3a18] pt-3 mt-4 flex items-center justify-between">
                 <span className="font-pixel text-xs text-[#f0d060]">
-                  Total XP: {participant.totalXp} PTS
+                  Total: {participant.totalXp} XP
                 </span>
-                <Link href="/peta">
+                <Link href="/play">
                   <button
                     onClick={() => soundEnabled && soundEngine.playClick()}
                     className="rpg-btn-primary py-2.5 px-4 text-xs font-pixel font-bold flex items-center gap-2"
                   >
-                    <span>Buka Peta Gedung</span>
+                    <span>Mulai Main</span>
                     <ArrowRight size={14} weight="bold" />
                   </button>
                 </Link>
@@ -285,20 +233,18 @@ export default function PassportPage() {
           </div>
         </div>
 
-        {/* 18-Stamp Digital Grid (9 Floors x 2 Booths) */}
-        <div className="space-y-4 pt-4">
+        {/* 18-Stamp Grid (9 Floors x 2 Booths) */}
+        <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
-            <h3 className="font-pixel text-sm sm:text-base font-bold text-[#f0d060] flex items-center gap-2">
-              <span className="w-2.5 h-2.5 bg-[#7ec850] rounded-full animate-pulse" />
-              KOLEKSI 18 STEMPEL RESMI (9 LANTAI × 2 BOOTH)
+            <h3 className="font-pixel text-xs sm:text-sm font-bold text-[#f0d060]">
+              DAFTAR 18 STEMPEL (9 LANTAI)
             </h3>
-            <span className="text-xs font-pixel text-[#a08060]">
-              KLIK STEMPEL UNTUK DETAIL
+            <span className="text-[10px] font-pixel text-[#a08060]">
+              KLIK UNTUK DETAIL
             </span>
           </div>
 
-          {/* 9 Floors Stamp Rows */}
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             {FLOORS_DATA.map((floor) => {
               const boothA = BOOTHS_DATA[floor.boothIds[0]];
               const boothB = BOOTHS_DATA[floor.boothIds[1]];
@@ -311,14 +257,14 @@ export default function PassportPage() {
               return (
                 <div
                   key={floor.number}
-                  className={`sdv-card p-4 sm:p-5 ${
+                  className={`sdv-card p-3.5 sm:p-4 ${
                     isFloorComplete ? 'border-[#7ec850] bg-[#1e3321]' : ''
                   }`}
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#5a3a18] pb-2.5 mb-3">
+                  <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-2 mb-3">
                     <div className="flex items-center gap-2">
                       <span className="font-pixel text-xs font-bold text-[#7ec850]">
-                        LANTAI {floor.number}:
+                        Lantai {floor.number}:
                       </span>
                       <span className="font-pixel text-xs text-white">
                         {floor.name.split(' - ')[1] || floor.name}
@@ -326,18 +272,17 @@ export default function PassportPage() {
                     </div>
                     {isFloorComplete ? (
                       <PixelBadge variant="emerald" size="sm">
-                        <CheckCircle size={12} weight="bold" /> 2/2 STEMPEL LENGKAP
+                        <CheckCircle size={12} weight="bold" /> 2/2 Selesai
                       </PixelBadge>
                     ) : (
                       <span className="font-sans text-xs text-[#a08060]">
-                        {stampA && !stampB ? '1/2 Stempel' : !stampA && stampB ? '1/2 Stempel' : '0/2 Stempel'}
+                        {stampA || stampB ? '1/2' : '0/2'}
                       </span>
                     )}
                   </div>
 
                   {/* 2 Stamps Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Stamp A */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <StampSlot
                       booth={boothA}
                       stampRecord={stampA}
@@ -347,7 +292,6 @@ export default function PassportPage() {
                       }}
                     />
 
-                    {/* Stamp B */}
                     <StampSlot
                       booth={boothB}
                       stampRecord={stampB}
@@ -372,22 +316,23 @@ export default function PassportPage() {
             const s = participant.stamps[selectedStampPreview];
 
             return (
-              <div className="w-full max-w-md sdv-card-gold p-6 text-center relative">
-                {/* Stamp Seal Graphic */}
-                <div className="my-4 flex justify-center">
+              <div className="w-full max-w-md sdv-card-gold p-5 sm:p-6 text-center relative">
+                {/* Stamp Graphic */}
+                <div className="my-3 flex justify-center">
                   <div
-                    className={`w-28 h-28 border-3 rounded-xl flex flex-col items-center justify-center p-2 rotate-[-2deg] ${
+                    className={`w-24 h-24 border-3 rounded-xl flex flex-col items-center justify-center p-2 rotate-[-2deg] ${
                       s
-                        ? 'border-[#f0d060] bg-gradient-to-b from-[#3d7828] to-[#255018] shadow-[0_0_15px_rgba(126,200,80,0.4)]'
-                        : 'border-[#5a3a18] bg-[#170f07] filter grayscale opacity-40'
+                        ? 'border-[#f0d060] bg-gradient-to-b from-[#3d7828] to-[#255018] shadow'
+                        : 'border-[#5a3a18] bg-[#170f07] opacity-40'
                     }`}
                   >
-                    <span className="text-3xl select-none">{b.stampIcon}</span>
+                    <StampIcon
+                      name={b.stampIcon}
+                      size={28}
+                      className={s ? 'text-[#f0d060]' : 'text-[#8b6f4e]'}
+                    />
                     <span className="font-pixel text-[8px] text-[#f0d060] font-bold uppercase mt-1">
                       {b.stampTitle}
-                    </span>
-                    <span className="font-mono text-[7px] text-[#e0f0d0] mt-0.5">
-                      LANTAI {b.floorNumber} • {b.code}
                     </span>
                   </div>
                 </div>
@@ -400,35 +345,30 @@ export default function PassportPage() {
                 </p>
 
                 {s ? (
-                  <div className="bg-[#170f07] p-3 border border-[#4a8030] rounded-lg mb-4 space-y-1 text-xs">
+                  <div className="bg-[#170f07] p-2.5 border border-[#4a8030] rounded-lg mb-4 space-y-1 text-xs">
                     <div className="text-[#7ec850] font-pixel text-[9px]">
                       STATUS: RESMI DISTEMPEL
                     </div>
-                    <div className="text-[#f0e0c0] font-sans">
-                      Tanggal Perolehan: {s.earnedAt}
-                    </div>
                     <div className="text-[#f0d060] font-sans">
-                      Skor Kuis: {s.score}/{s.totalQuestions} Benar
+                      Skor: {s.score}/{s.totalQuestions} Benar
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-[#170f07] p-3 border border-[#5a3a18] rounded-lg mb-4 space-y-1 text-xs">
-                    <div className="text-[#a08060] font-pixel text-[9px]">
-                      STATUS: BELUM DISTEMPEL
-                    </div>
-                    <p className="text-[#c4956a] font-sans text-[11px]">
-                      Kunjungi booth ini di Lantai {b.floorNumber} untuk mengerjakan kuis dan membuka stempel.
-                    </p>
+                  <div className="bg-[#170f07] p-2.5 border border-[#5a3a18] rounded-lg mb-4 text-xs font-sans text-[#a08060]">
+                    Kunjungi spot ini di Lantai {b.floorNumber} untuk menyelesaikan tantangan.
                   </div>
                 )}
 
                 <div className="flex gap-2">
-                  <Link href={`/booth/${b.id}`} className="w-full">
+                  <Link
+                    href={`/play/floor/${b.floorNumber}/spot/${b.id}`}
+                    className="w-full"
+                  >
                     <button
                       onClick={() => soundEnabled && soundEngine.playClick()}
-                      className="rpg-btn-primary py-3 px-4 text-xs font-pixel font-bold w-full"
+                      className="rpg-btn-primary py-2.5 px-4 text-xs font-pixel font-bold w-full"
                     >
-                      {s ? 'Buka Ulang Booth' : 'Kunjungi Booth Sekarang'}
+                      {s ? 'Main Ulang' : 'Mainkan'}
                     </button>
                   </Link>
                   <button
@@ -436,9 +376,9 @@ export default function PassportPage() {
                       if (soundEnabled) soundEngine.playClick();
                       setSelectedStampPreview(null);
                     }}
-                    className="rpg-btn-wood py-3 px-4 text-xs font-pixel font-bold w-full"
+                    className="rpg-btn-wood py-2.5 px-4 text-xs font-pixel font-bold w-full"
                   >
-                    Tutup
+                    Kembali
                   </button>
                 </div>
               </div>
@@ -447,7 +387,7 @@ export default function PassportPage() {
         </div>
       )}
 
-      {/* Graduation Certificate Modal with UNU Logo */}
+      {/* Graduation Certificate Modal */}
       {showCertificate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0604]/90 backdrop-blur-md animate-in fade-in duration-200">
           <div className="w-full max-w-2xl bg-gradient-to-b from-[#2d1b0e] to-[#170f07] border-[4px] border-[#f0d060] rounded-2xl p-6 sm:p-8 text-center relative shadow-2xl">
@@ -466,12 +406,12 @@ export default function PassportPage() {
                 UNIVERSITAS NAHDLATUL ULAMA YOGYAKARTA
               </div>
 
-              <h2 className="font-pixel text-lg sm:text-2xl font-extrabold text-[#f0d060]">
-                SERTIFIKAT KELULUSAN GENIUS
+              <h2 className="font-pixel text-lg sm:text-2xl font-bold text-[#f0d060]">
+                SERTIFIKAT KELULUSAN ORIENTASI
               </h2>
 
               <p className="font-sans text-xs text-[#c4956a]">
-                Dengan bangga menyatakan bahwa:
+                Menyatakan bahwa:
               </p>
 
               <div className="text-lg sm:text-xl font-pixel font-bold text-white border-b-2 border-dashed border-[#f0d060] pb-2 max-w-md mx-auto">
@@ -483,15 +423,10 @@ export default function PassportPage() {
               </div>
 
               <p className="font-sans text-xs sm:text-sm text-[#f0e6d2] max-w-lg mx-auto leading-relaxed">
-                Telah berhasil menyelesaikan eksplorasi <strong className="text-[#f0d060]">9 Lantai Gedung Kampus</strong>,
-                mengoleksi seluruh <strong className="text-[#7ec850]">18 Stempel Karakter</strong>, dan resmi dinobatkan sebagai:
+                Telah berhasil menyelesaikan eksplorasi 9 lantai dan mengumpulkan seluruh 18 stempel orientasi.
               </p>
 
-              <div className="inline-block bg-gradient-to-r from-[#3d7828] to-[#255018] text-[#f0d060] font-pixel text-sm sm:text-base font-black px-6 py-2.5 rounded-lg border-2 border-[#f0d060] shadow-lg">
-                ★ THE UPGRADED YOU ★
-              </div>
-
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button
                   onClick={handlePrint}
                   className="rpg-btn-primary py-3 px-6 text-xs font-pixel font-bold flex items-center justify-center gap-2"
@@ -506,7 +441,7 @@ export default function PassportPage() {
                   }}
                   className="rpg-btn-wood py-3 px-6 text-xs font-pixel font-bold"
                 >
-                  Tutup
+                  Kembali
                 </button>
               </div>
             </div>
@@ -543,24 +478,24 @@ const StampSlot: React.FC<StampSlotProps> = ({ booth, stampRecord, onClick }) =>
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left p-3.5 rounded-xl border-2 transition-all flex items-center justify-between gap-3 cursor-pointer ${
+      className={`w-full text-left p-3 rounded-xl border-2 transition-all flex items-center justify-between gap-3 cursor-pointer ${
         isAcquired
-          ? 'bg-[#1a2e1a] border-[#7ec850] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[#f0d060]'
+          ? 'bg-[#1a2e1a] border-[#7ec850] shadow hover:border-[#f0d060]'
           : 'bg-[#170f07]/70 border-dashed border-[#5a3a18] hover:border-[#8b6f4e] opacity-70'
       }`}
     >
       <div className="flex items-center gap-3 min-w-0">
         <div
-          className={`w-12 h-12 rounded-lg border-2 flex flex-col items-center justify-center shrink-0 ${
+          className={`w-10 h-10 rounded-lg border-2 flex flex-col items-center justify-center shrink-0 ${
             isAcquired
-              ? 'border-[#f0d060] bg-gradient-to-b from-[#3d7828] to-[#255018] text-2xl shadow-inner'
-              : 'border-[#5a3a18] bg-[#23160c] text-[#5a3a18] text-lg filter grayscale'
+              ? 'border-[#f0d060] bg-gradient-to-b from-[#3d7828] to-[#255018]'
+              : 'border-[#5a3a18] bg-[#23160c] text-[#5a3a18]'
           }`}
         >
           {isAcquired ? (
-            <span>{booth.stampIcon}</span>
+            <StampIcon name={booth.stampIcon} size={20} className="text-[#f0d060]" />
           ) : (
-            <LockKey size={20} weight="bold" />
+            <LockKey size={18} weight="bold" />
           )}
         </div>
 
@@ -580,18 +515,15 @@ const StampSlot: React.FC<StampSlotProps> = ({ booth, stampRecord, onClick }) =>
           >
             {booth.name}
           </h4>
-          <p className="font-mono text-[10px] text-[#a08060] mt-0.5 truncate">
-            {isAcquired ? `Distempel: ${stampRecord?.earnedAt}` : 'Terkunci • Kerjakan Kuis'}
-          </p>
         </div>
       </div>
 
       <div className="shrink-0">
         {isAcquired ? (
-          <CheckCircle size={20} weight="fill" className="text-[#7ec850]" />
+          <CheckCircle size={18} weight="fill" className="text-[#7ec850]" />
         ) : (
           <span className="font-pixel text-[9px] text-[#f0d060] bg-[#2d1b0e] px-2 py-1 rounded border border-[#5a3a18]">
-            BUKA
+            Buka
           </span>
         )}
       </div>

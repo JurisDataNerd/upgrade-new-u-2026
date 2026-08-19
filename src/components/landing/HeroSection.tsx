@@ -16,9 +16,11 @@ import {
   Television,
   GenderMale,
   GenderFemale,
+  Crown,
+  Trophy,
 } from '@phosphor-icons/react';
 import { useGameStore } from '@/store/useGameStore';
-import { AVATAR_OPTIONS } from '@/data/mockData';
+import { AVATAR_OPTIONS, UNU_FACULTIES } from '@/data/mockData';
 import { soundEngine } from '@/lib/sound';
 
 export const HeroSection: React.FC = () => {
@@ -35,7 +37,12 @@ export const HeroSection: React.FC = () => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [tempName, setTempName] = useState(participant.name);
   const [tempNim, setTempNim] = useState(participant.nim);
-  const [tempProdi, setTempProdi] = useState(participant.prodi);
+  const [tempFaculty, setTempFaculty] = useState(
+    participant.faculty || UNU_FACULTIES[1].name
+  );
+  const [tempProdi, setTempProdi] = useState(
+    participant.prodi || 'Informatika'
+  );
   const [tempAvatar, setTempAvatar] = useState(participant.avatar);
 
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -43,11 +50,20 @@ export const HeroSection: React.FC = () => {
     setParticipantInfo({
       name: tempName,
       nim: tempNim,
+      faculty: tempFaculty,
       prodi: tempProdi,
       avatar: tempAvatar,
     });
     if (soundEnabled) soundEngine.playCorrect();
     setIsProfileModalOpen(false);
+  };
+
+  const handleFacultyChange = (newFac: string) => {
+    setTempFaculty(newFac);
+    const facObj = UNU_FACULTIES.find((f) => f.name === newFac);
+    if (facObj && facObj.prodi.length > 0) {
+      setTempProdi(facObj.prodi[0]);
+    }
   };
 
   const handleSelectQuickAvatar = (avatarId: string) => {
@@ -74,7 +90,7 @@ export const HeroSection: React.FC = () => {
 
       {/* Top Bar: Institutional Logo & Audio Controls */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 pt-5 flex items-center justify-between gap-4">
-        {/* Partner / Institution Badge (Matching Seeds of Hope top-left logos pill) */}
+        {/* Partner / Institution Badge */}
         <div className="backdrop-blur-md bg-[#140e0a]/85 border border-[#f0d060]/50 rounded-full px-4 sm:px-6 py-2 flex items-center gap-3 sm:gap-4 shadow-xl">
           <Image
             src="/unu.png"
@@ -190,11 +206,10 @@ export const HeroSection: React.FC = () => {
                 <button
                   key={av.id}
                   onClick={() => handleSelectQuickAvatar(av.id)}
-                  className={`p-2 rounded-lg border-2 text-left transition-all flex items-center gap-2.5 cursor-pointer ${
-                    isSelected
+                  className={`p-2 rounded-lg border-2 text-left transition-all flex items-center gap-2.5 cursor-pointer ${isSelected
                       ? 'bg-gradient-to-r from-[#3d7828] to-[#255018] border-[#f0d060] shadow-[0_0_12px_rgba(126,200,80,0.4)]'
                       : 'bg-[#170f07]/80 border-[#5a3a18] hover:border-[#8b6f4e]'
-                  }`}
+                    }`}
                 >
                   <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#170f07] border border-[#f0d060] shrink-0 relative">
                     <Image
@@ -226,7 +241,7 @@ export const HeroSection: React.FC = () => {
         {/* Main Action Buttons Stack (Seeds of Hope width & 3D bevels) */}
         <div className="w-full max-w-sm flex flex-col items-center gap-3 my-1">
           {/* Primary Action Button */}
-          <Link href="/peta" className="w-full">
+          <Link href="/play" className="w-full">
             <button
               onClick={() => soundEnabled && soundEngine.playClick()}
               className="w-full py-4 px-6 text-xs sm:text-sm font-pixel font-bold uppercase tracking-wider rpg-btn-primary flex items-center justify-center gap-3"
@@ -247,14 +262,14 @@ export const HeroSection: React.FC = () => {
             </button>
           </Link>
 
-          {/* Guide Button (Mobile) */}
-          <Link href="/bantuan" className="w-full sm:hidden">
+          {/* Leaderboard Button */}
+          <Link href="/leaderboard" className="w-full">
             <button
               onClick={() => soundEnabled && soundEngine.playClick()}
-              className="w-full py-3 px-6 text-[11px] font-pixel font-bold uppercase tracking-wider bg-[#2d1b0e]/90 border-2 border-[#5a3a18] rounded-lg text-[#f0e0c0] hover:border-[#f0d060] flex items-center justify-center gap-2"
+              className="w-full py-3 px-6 text-[11px] font-pixel font-bold uppercase tracking-wider bg-[#2d1b0e]/90 border-2 border-[#5a3a18] rounded-lg text-[#f0d060] hover:border-[#f0d060] flex items-center justify-center gap-2"
             >
-              <Info size={16} weight="bold" />
-              <span>PETUNJUK & CARA BERMAIN</span>
+              <Trophy size={16} weight="fill" />
+              <span>PAPAN PERINGKAT</span>
             </button>
           </Link>
         </div>
@@ -290,7 +305,7 @@ export const HeroSection: React.FC = () => {
             </div>
 
             <div className="bg-[#281e14] border border-[#d4a57a] rounded-full px-3 py-0.5 text-white flex items-center gap-1.5 shadow-sm">
-              <span>👑</span>
+              <Crown size={14} weight="fill" className="text-[#f0d060]" />
               <span>Level: <strong className="text-[#f0d060]">{currentLevel}</strong></span>
             </div>
 
@@ -328,7 +343,7 @@ export const HeroSection: React.FC = () => {
             </div>
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
-              {/* Avatar Pickers (Cowok & Cewek from character.jpeg) */}
+              {/* Avatar Pickers */}
               <div>
                 <label className="block font-pixel text-[10px] text-[#f0d060] mb-2 uppercase">
                   Pilih Karakter Mahasiswa (Cowok / Cewek):
@@ -344,11 +359,10 @@ export const HeroSection: React.FC = () => {
                           setTempAvatar(av.id);
                           if (soundEnabled) soundEngine.playSelect();
                         }}
-                        className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col items-center gap-2 cursor-pointer ${
-                          isSelected
+                        className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col items-center gap-2 cursor-pointer ${isSelected
                             ? 'bg-gradient-to-b from-[#3d7828] to-[#255018] border-[#f0d060] shadow-[0_0_15px_rgba(126,200,80,0.45)] scale-[1.02]'
                             : 'bg-[#170f07] border-[#5a3a18] hover:border-[#8b6f4e]'
-                        }`}
+                          }`}
                       >
                         <div className="w-20 h-20 rounded-xl overflow-hidden bg-[#170f07] border-2 border-[#f0d060] shrink-0 relative shadow-inner">
                           <Image
@@ -392,30 +406,55 @@ export const HeroSection: React.FC = () => {
                   />
                 </div>
 
+                <div>
+                  <label className="block font-pixel text-[9px] text-[#c4956a] mb-1 uppercase">
+                    NIM (Format: 26111xx)
+                  </label>
+                  <input
+                    type="text"
+                    value={tempNim}
+                    onChange={(e) => setTempNim(e.target.value)}
+                    required
+                    placeholder="2611101"
+                    className="w-full bg-[#170f07] border-2 border-[#5a3a18] focus:border-[#f0d060] rounded-md px-3 py-2 text-xs text-white font-mono outline-none"
+                  />
+                </div>
+
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block font-pixel text-[9px] text-[#c4956a] mb-1 uppercase">
-                      NIM (Nomor Induk)
+                      Fakultas
                     </label>
-                    <input
-                      type="text"
-                      value={tempNim}
-                      onChange={(e) => setTempNim(e.target.value)}
-                      required
-                      className="w-full bg-[#170f07] border-2 border-[#5a3a18] focus:border-[#f0d060] rounded-md px-3 py-2 text-xs text-white font-mono outline-none"
-                    />
+                    <select
+                      value={tempFaculty}
+                      onChange={(e) => handleFacultyChange(e.target.value)}
+                      className="w-full bg-[#170f07] border-2 border-[#5a3a18] focus:border-[#f0d060] rounded-md px-2.5 py-2 text-xs text-white outline-none"
+                    >
+                      {UNU_FACULTIES.map((fac) => (
+                        <option key={fac.name} value={fac.name}>
+                          {fac.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
+
                   <div>
                     <label className="block font-pixel text-[9px] text-[#c4956a] mb-1 uppercase">
                       Program Studi
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={tempProdi}
                       onChange={(e) => setTempProdi(e.target.value)}
-                      required
-                      className="w-full bg-[#170f07] border-2 border-[#5a3a18] focus:border-[#f0d060] rounded-md px-3 py-2 text-xs text-white font-sans outline-none"
-                    />
+                      className="w-full bg-[#170f07] border-2 border-[#5a3a18] focus:border-[#f0d060] rounded-md px-2.5 py-2 text-xs text-white outline-none"
+                    >
+                      {(
+                        UNU_FACULTIES.find((f) => f.name === tempFaculty)?.prodi || []
+                      ).map((p) => (
+                        <option key={p} value={p}>
+                          {p}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>

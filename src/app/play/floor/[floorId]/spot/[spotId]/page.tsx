@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   CheckCircle,
   BookOpen,
+  CaretRight,
   ArrowRight,
   Sparkle,
 } from '@phosphor-icons/react';
@@ -22,16 +23,25 @@ import { MiniGameContainer } from '@/components/minigames/MiniGameContainer';
 import { soundEngine } from '@/lib/sound';
 import { PlayerLevel, StampRecord } from '@/types/game';
 
-export default function BoothDetailPage() {
+export default function LinearSpotPage() {
   const params = useParams();
   const router = useRouter();
-  const boothId = (params.id as string) || '';
+  const floorNumber = parseInt((params.floorId as string) || '1', 10);
+  const spotId = (params.spotId as string) || '';
 
-  const booth = BOOTHS_DATA[boothId];
+  const booth = BOOTHS_DATA[spotId];
   const participant = useGameStore((state) => state.participant);
   const soundEnabled = useGameStore((state) => state.soundEnabled);
   const completeBooth = useGameStore((state) => state.completeBooth);
-  const isAlreadyCompleted = useGameStore((state) => state.isBoothCompleted(boothId));
+  const isAlreadyCompleted = useGameStore((state) => state.isBoothCompleted(spotId));
+
+  const floor =
+    FLOORS_DATA.find((f) => f.number === floorNumber) || FLOORS_DATA[0];
+  const boothA = BOOTHS_DATA[floor.boothIds[0]];
+  const boothB = BOOTHS_DATA[floor.boothIds[1]];
+
+  const isSpot1 = booth ? booth.id === boothA.id : true;
+  const isSpot2 = booth ? booth.id === boothB.id : false;
 
   const selectedAvatarObj =
     AVATAR_OPTIONS.find((a) => a.id === participant.avatar) || AVATAR_OPTIONS[0];
@@ -46,7 +56,7 @@ export default function BoothDetailPage() {
   }>({
     stampRecord: null,
     isFloorCompleted: false,
-    floorNumber: booth ? booth.floorNumber : 1,
+    floorNumber: floor.number,
     isLevelUp: false,
     newLevel: 'New You',
   });
@@ -58,14 +68,14 @@ export default function BoothDetailPage() {
         <div className="flex-1 flex items-center justify-center p-6 text-center">
           <div className="p-8 max-w-md sdv-card-gold text-center space-y-4">
             <h2 className="font-pixel text-base font-bold text-[#ff8080]">
-              BOOTH TIDAK DITEMUKAN
+              SPOT TIDAK DITEMUKAN
             </h2>
             <p className="font-sans text-sm text-[#d0c0a0]">
-              Maaf, ID booth &quot;{boothId}&quot; tidak terdaftar dalam gedung 9 lantai ini.
+              Spot &quot;{spotId}&quot; tidak terdaftar di Lantai {floorNumber}.
             </p>
-            <Link href="/peta">
+            <Link href={`/play/floor/${floorNumber}/intro`}>
               <button className="rpg-btn-primary py-3 px-6 text-xs font-pixel font-bold">
-                Kembali ke Peta Gedung
+                Kembali ke Intro Lantai
               </button>
             </Link>
           </div>
@@ -73,8 +83,6 @@ export default function BoothDetailPage() {
       </div>
     );
   }
-
-  const floor = FLOORS_DATA.find((f) => f.number === booth.floorNumber) || FLOORS_DATA[0];
 
   const handleMiniGameComplete = (score: number, totalQuestions: number) => {
     if (soundEnabled) soundEngine.playCorrect();
@@ -108,14 +116,13 @@ export default function BoothDetailPage() {
     setShowCelebration(true);
   };
 
-  const isSpot1 = booth.id === floor.boothIds[0];
-  const nextSpotId = isSpot1 ? floor.boothIds[1] : null;
-
   const handleNextStep = () => {
     setShowCelebration(false);
-    if (nextSpotId) {
-      router.push(`/play/floor/${floor.number}/spot/${nextSpotId}`);
+    if (isSpot1) {
+      // Spot 1 done -> go to Spot 2
+      router.push(`/play/floor/${floor.number}/spot/${boothB.id}`);
     } else {
+      // Spot 2 done -> Floor is complete! Go to floor completion transition page
       router.push(`/play/floor/${floor.number}/complete`);
     }
   };
@@ -129,7 +136,7 @@ export default function BoothDetailPage() {
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between">
           <Link
-            href="/peta"
+            href={`/play/floor/${floor.number}/intro`}
             onClick={() => soundEnabled && soundEngine.playClick()}
             className="inline-flex items-center gap-2 text-xs font-pixel text-[#c4956a] hover:text-[#f0d060] transition-colors"
           >
@@ -139,15 +146,15 @@ export default function BoothDetailPage() {
 
           <div className="flex items-center gap-2">
             <PixelBadge variant="wood" size="sm">
-              Lantai {booth.floorNumber}
+              Lantai {floor.number}
             </PixelBadge>
             <PixelBadge variant="gold" size="sm">
-              {booth.code}
+              Spot {isSpot1 ? '1' : '2'} • {booth.code}
             </PixelBadge>
           </div>
         </div>
 
-        {/* Booth Header Card */}
+        {/* Spot Information Header */}
         <div className="sdv-card-gold p-5 sm:p-7 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#5a3a18] pb-4">
             <div className="flex items-center gap-3.5">
@@ -157,7 +164,7 @@ export default function BoothDetailPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-pixel text-[9px] text-[#7ec850] uppercase">
-                    {floor.name}
+                    {floor.name.split(' - ')[1] || floor.name}
                   </span>
                   <PixelBadge variant="gold" size="sm">
                     {booth.badgeTag}
@@ -169,12 +176,12 @@ export default function BoothDetailPage() {
               </div>
             </div>
 
-            {/* Status Stamp Marker */}
+            {/* Stamp Status Marker */}
             {isAlreadyCompleted && (
               <div className="flex items-center gap-2 bg-[#14230f] border border-[#7ec850] rounded-full px-3 py-1 shadow-sm">
                 <CheckCircle size={16} weight="fill" className="text-[#7ec850]" />
                 <span className="font-pixel text-[9px] text-[#7ec850] font-bold">
-                  SUDAH DISTEMPEL
+                  Selesai
                 </span>
               </div>
             )}
@@ -184,12 +191,12 @@ export default function BoothDetailPage() {
           <div className="space-y-3">
             <div className="flex items-center gap-2 font-pixel text-xs text-[#f0d060]">
               <BookOpen size={16} weight="fill" />
-              <span>MATERI CORNER</span>
+              <span>Materi Spot</span>
             </div>
 
             <div className="bg-[#170f07] p-4 sm:p-5 border-2 border-[#5a3a18] rounded-xl relative shadow-inner">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#281c12] border-2 border-[#f0d060] shrink-0 relative shadow-md">
+                <div className="w-13 h-13 rounded-xl overflow-hidden bg-[#281c12] border-2 border-[#f0d060] shrink-0 relative shadow-md">
                   <Image
                     src={selectedAvatarObj.avatarImage}
                     alt={selectedAvatarObj.name}
@@ -231,7 +238,9 @@ export default function BoothDetailPage() {
         newLevel={celebrationDetails.newLevel}
         onNextAction={handleNextStep}
         nextActionLabel={
-          nextSpotId ? 'Ke Spot Selanjutnya' : 'Evaluasi Lantai Tuntas'
+          isSpot1
+            ? `Lanjut ke Spot 2 (${boothB.code})`
+            : `Evaluasi Lantai ${floor.number} Tuntas!`
         }
       />
     </div>

@@ -4,13 +4,18 @@ import React from 'react';
 import Link from 'next/link';
 import {
   Info,
-  Trophy,
   ArrowRight,
+  Sparkle,
+  Cards,
+  Lightning,
+  ShieldCheck,
+  MapPin,
+  GameController,
+  Play,
+  IdentificationBadge,
 } from '@phosphor-icons/react';
 import { Navbar } from '@/components/layout/Navbar';
 import { CrtScanlines } from '@/components/layout/CrtScanlines';
-import { PixelBadge } from '@/components/ui/PixelBadge';
-import { LEVEL_CONFIG } from '@/data/mockData';
 import { soundEngine } from '@/lib/sound';
 import { useGameStore } from '@/store/useGameStore';
 
@@ -22,157 +27,114 @@ export default function BantuanPage() {
       <CrtScanlines />
       <Navbar />
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex-1 space-y-8">
-        {/* Header Title */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 bg-[#14230f] border border-[#7ec850] rounded-full px-4 py-1 shadow-md">
-            <Info size={16} weight="fill" className="text-[#7ec850]" />
-            <span className="font-pixel text-[10px] text-[#7ec850] font-bold uppercase tracking-wider">
-              BUKU PANDUAN PETUALANG
-            </span>
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 space-y-6">
+        {/* Simple Header */}
+        <div className="text-center space-y-1">
+          <div className="inline-flex items-center gap-1.5 bg-[#14230f] border border-[#7ec850] rounded-full px-3 py-0.5 text-[10px] font-pixel text-[#7ec850]">
+            <Info size={14} weight="bold" />
+            <span>PANDUAN SINGKAT</span>
           </div>
-          <h1 className="font-pixel text-xl sm:text-3xl font-extrabold text-[#f0d060]">
-            PETUNJUK & CARA BERMAIN GENIUS
+          <h1 className="font-pixel text-lg sm:text-2xl font-bold text-[#f0d060]">
+            CARA BERMAIN GENIUS
           </h1>
-          <p className="font-sans text-sm sm:text-base text-[#c4956a] max-w-2xl mx-auto">
-            Pelajari alur orientasi virtual gedung 9 lantai UNU Yogyakarta, cara mengumpulkan 18 stempel, dan strategi naik ke level tertinggi!
+          <p className="font-sans text-xs sm:text-sm text-[#c4956a]">
+            Jelajahi 9 lantai gedung kampus UNU Yogya dan kumpulkan 18 stempel digital.
           </p>
         </div>
 
-        {/* 4 Step Visual Workflow */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="sdv-card p-5 space-y-3">
-            <div className="w-10 h-10 bg-[#170f07] border-2 border-[#7ec850] rounded-lg flex items-center justify-center font-pixel text-sm font-bold text-[#7ec850]">
+        {/* 3 Simple Steps */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="bg-[#170f07] p-4 rounded-xl border border-[#5a3a18] space-y-2 text-center sm:text-left">
+            <div className="w-8 h-8 rounded-lg bg-[#23160c] border border-[#7ec850] text-[#7ec850] font-pixel text-xs font-bold flex items-center justify-center mx-auto sm:mx-0">
               1
             </div>
-            <h2 className="font-pixel text-xs font-bold text-white">
-              PILIH LANTAI GEDUNG
-            </h2>
-            <p className="font-sans text-xs text-[#d0c0a0] leading-relaxed">
-              Buka <strong className="text-[#7ec850]">Peta Gedung</strong> dan pilih lantai (Lantai 1 hingga Lantai 9) yang ingin kamu jelajahi.
+            <h3 className="font-pixel text-xs font-bold text-white">
+              Buka Prolog Lantai
+            </h3>
+            <p className="font-sans text-xs text-[#a08060] leading-relaxed">
+              Mulai dari Lantai 1. Pahami tema dan poin misi karakter sebelum masuk ke spot.
             </p>
           </div>
 
-          <div className="sdv-card p-5 space-y-3">
-            <div className="w-10 h-10 bg-[#170f07] border-2 border-[#f0d060] rounded-lg flex items-center justify-center font-pixel text-sm font-bold text-[#f0d060]">
+          <div className="bg-[#170f07] p-4 rounded-xl border border-[#5a3a18] space-y-2 text-center sm:text-left">
+            <div className="w-8 h-8 rounded-lg bg-[#23160c] border border-[#f0d060] text-[#f0d060] font-pixel text-xs font-bold flex items-center justify-center mx-auto sm:mx-0">
               2
             </div>
-            <h2 className="font-pixel text-xs font-bold text-white">
-              BACA CERITA BOOTH
-            </h2>
-            <p className="font-sans text-xs text-[#d0c0a0] leading-relaxed">
-              Tiap lantai memiliki <strong className="text-[#f0d060]">2 Booth Corner</strong>. Baca wawasan seputar karakter, anti-narkoba, anti-kekerasan, dll.
+            <h3 className="font-pixel text-xs font-bold text-white">
+              Mainkan 2 Spot
+            </h3>
+            <p className="font-sans text-xs text-[#a08060] leading-relaxed">
+              Tiap lantai punya 2 spot mini-game (TTS, Tebak Kata, Memory Match, dll).
             </p>
           </div>
 
-          <div className="sdv-card p-5 space-y-3">
-            <div className="w-10 h-10 bg-[#170f07] border-2 border-[#60a8d8] rounded-lg flex items-center justify-center font-pixel text-sm font-bold text-[#60a8d8]">
+          <div className="bg-[#170f07] p-4 rounded-xl border border-[#5a3a18] space-y-2 text-center sm:text-left">
+            <div className="w-8 h-8 rounded-lg bg-[#23160c] border border-[#60a8d8] text-[#60a8d8] font-pixel text-xs font-bold flex items-center justify-center mx-auto sm:mx-0">
               3
             </div>
-            <h2 className="font-pixel text-xs font-bold text-white">
-              KERJAKAN KUIS
-            </h2>
-            <p className="font-sans text-xs text-[#d0c0a0] leading-relaxed">
-              Jawab 2-4 soal pilihan ganda. Dapatkan skor minimal lulus untuk mengklaim <strong className="text-[#60a8d8]">Stempel Digital Resmi</strong>.
-            </p>
-          </div>
-
-          <div className="sdv-card p-5 space-y-3">
-            <div className="w-10 h-10 bg-[#170f07] border-2 border-[#f0d060] rounded-lg flex items-center justify-center font-pixel text-sm font-bold text-[#f0d060]">
-              4
-            </div>
-            <h2 className="font-pixel text-xs font-bold text-white">
-              UPGRADE NEW YOU!
-            </h2>
-            <p className="font-sans text-xs text-[#d0c0a0] leading-relaxed">
-              Tuntaskan seluruh 9 lantai untuk membuka <strong className="text-[#f0d060]">Level Max</strong> dan cetak Sertifikat Kelulusanmu!
+            <h3 className="font-pixel text-xs font-bold text-white">
+              Koleksi 18 Stempel
+            </h3>
+            <p className="font-sans text-xs text-[#a08060] leading-relaxed">
+              Tuntaskan seluruh 9 lantai untuk klaim paspor lengkap & sertifikat kelulusan.
             </p>
           </div>
         </div>
 
-        {/* Level Progression Table */}
-        <div className="sdv-card-gold p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b-2 border-[#5a3a18] pb-3">
-            <Trophy size={20} weight="fill" className="text-[#f0d060]" />
-            <h2 className="font-pixel text-sm font-bold text-[#f0d060]">
-              SISTEM TINGKATAN & LEVEL MAHASISWA
-            </h2>
+        {/* 6 Mini-Game Types Compact List */}
+        <div className="sdv-card p-4 sm:p-5 space-y-3">
+          <div className="flex items-center gap-2 text-xs font-pixel text-[#f0d060] border-b border-[#5a3a18] pb-2.5">
+            <GameController size={16} weight="bold" />
+            <span>6 TIPE MINI-GAME</span>
           </div>
 
-          <div className="space-y-3">
-            {LEVEL_CONFIG.map((lvl) => (
-              <div
-                key={lvl.level}
-                className="p-3.5 bg-[#170f07] border-2 border-[#5a3a18] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner"
-              >
-                <div className="flex items-center gap-3.5">
-                  <span className="text-2xl">{lvl.badgeIcon}</span>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-pixel text-xs font-bold text-white">
-                        {lvl.title}
-                      </span>
-                      <PixelBadge variant="wood" size="sm">
-                        {lvl.minFloors === lvl.maxFloors
-                          ? `Semua 9 Lantai`
-                          : `${lvl.minFloors} - ${lvl.maxFloors} Lantai Tuntas`}
-                      </PixelBadge>
-                    </div>
-                    <p className="font-sans text-xs text-[#c4956a] mt-0.5">
-                      {lvl.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="sdv-card p-6 space-y-4">
-          <h2 className="font-pixel text-sm font-bold text-[#f0d060] border-b-2 border-[#5a3a18] pb-3">
-            PERTANYAAN SERING DIAJUKAN (FAQ)
-          </h2>
-
-          <div className="space-y-4 font-sans text-xs sm:text-sm">
-            <div className="space-y-1">
-              <h3 className="font-pixel text-xs text-[#7ec850]">
-                Q: Apakah harus scan QR code sungguhan di lokasi fisik?
-              </h3>
-              <p className="text-[#d0c0a0]">
-                A: Tidak. Pada prototipe ini, semua 18 booth dapat langsung diakses lewat klik di peta gedung. Kamu juga bisa menggunakan fitur simulasi ketik kode QR (misal: B1-A, B4-A, dll).
-              </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-sans">
+            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
+              <Sparkle size={14} weight="fill" className="text-[#7ec850] shrink-0" />
+              <span className="text-[#f0e0c0]">Teka-Teki Silang (TTS)</span>
             </div>
-
-            <div className="space-y-1">
-              <h3 className="font-pixel text-xs text-[#7ec850]">
-                Q: Bagaimana jika jawaban kuis saya ada yang salah?
-              </h3>
-              <p className="text-[#d0c0a0]">
-                A: Kamu bisa menekan tombol &quot;Ulangi Kuis&quot; kapan saja untuk mencoba kembali sampai seluruh soal terjawab benar dan stempel terbuka.
-              </p>
+            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
+              <Sparkle size={14} weight="fill" className="text-[#f0d060] shrink-0" />
+              <span className="text-[#f0e0c0]">Tebak Kata</span>
             </div>
-
-            <div className="space-y-1">
-              <h3 className="font-pixel text-xs text-[#7ec850]">
-                Q: Kapan lantai dinyatakan &quot;TUNTAS&quot;?
-              </h3>
-              <p className="text-[#d0c0a0]">
-                A: Setiap lantai memiliki tepat 2 booth (Booth A & Booth B). Lantai baru berstatus TUNTAS jika KEDUA booth di lantai tersebut sudah berhasil kamu selesaikan dan distempel.
-              </p>
+            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
+              <MapPin size={14} weight="fill" className="text-[#60a8d8] shrink-0" />
+              <span className="text-[#f0e0c0]">Tebak Posisi Kampus</span>
+            </div>
+            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
+              <Cards size={14} weight="fill" className="text-[#f0a030] shrink-0" />
+              <span className="text-[#f0e0c0]">Memory Match Kartu</span>
+            </div>
+            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
+              <Lightning size={14} weight="fill" className="text-[#e0a040] shrink-0" />
+              <span className="text-[#f0e0c0]">Kuis Cepat Timer</span>
+            </div>
+            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
+              <ShieldCheck size={14} weight="fill" className="text-[#7ec850] shrink-0" />
+              <span className="text-[#f0e0c0]">Uji Benar / Salah</span>
             </div>
           </div>
         </div>
 
-        {/* Bottom CTA */}
-        <div className="text-center py-4">
-          <Link href="/peta">
+        {/* Quick Actions CTA */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <Link href="/play" className="flex-1">
             <button
               onClick={() => soundEnabled && soundEngine.playClick()}
-              className="rpg-btn-primary py-4 px-8 text-xs font-pixel font-bold inline-flex items-center gap-3"
+              className="w-full rpg-btn-primary py-3.5 px-4 text-xs font-pixel font-bold flex items-center justify-center gap-2"
             >
-              <span>Mulai Jelajahi Gedung Sekarang</span>
-              <ArrowRight size={18} weight="bold" />
+              <Play size={16} weight="fill" />
+              <span>Mulai Petualangan</span>
+            </button>
+          </Link>
+
+          <Link href="/paspor" className="flex-1">
+            <button
+              onClick={() => soundEnabled && soundEngine.playClick()}
+              className="w-full rpg-btn-wood py-3.5 px-4 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+            >
+              <IdentificationBadge size={16} weight="bold" />
+              <span>Lihat Paspor Digital</span>
             </button>
           </Link>
         </div>

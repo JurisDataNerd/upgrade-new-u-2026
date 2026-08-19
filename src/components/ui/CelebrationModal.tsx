@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti';
 import { Sparkle, Trophy, CheckCircle, ArrowRight } from '@phosphor-icons/react';
 import { PixelButton } from './PixelButton';
 import { PixelBadge } from './PixelBadge';
+import { StampIcon } from './StampIcon';
 import { soundEngine } from '@/lib/sound';
 import { useGameStore } from '@/store/useGameStore';
 import { StampRecord, PlayerLevel } from '@/types/game';
@@ -30,14 +31,13 @@ export const CelebrationModal: React.FC<CelebrationModalProps> = ({
   isLevelUp,
   newLevel,
   onNextAction,
-  nextActionLabel = 'Lanjut Eksplorasi',
+  nextActionLabel = 'Lanjut',
 }) => {
   const soundEnabled = useGameStore((state) => state.soundEnabled);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    // Trigger celebratory confetti burst
     confetti({
       particleCount: isLevelUp ? 120 : 70,
       spread: 80,
@@ -58,21 +58,13 @@ export const CelebrationModal: React.FC<CelebrationModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0604]/85 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-gradient-to-b from-[#2d1b0e] to-[#1a1008] border-[3.5px] border-[#f0d060] rounded-2xl p-6 sm:p-8 text-center relative overflow-hidden shadow-[inset_0_0_0_3px_#6b4f2e,0_16px_40px_rgba(0,0,0,0.8),0_0_30px_rgba(240,208,96,0.25)]">
-        {/* Decorative corner tags */}
-        <div className="absolute top-3 left-4 text-[9px] font-pixel text-[#7ec850] tracking-wider">
-          ★ VICTORY ★
-        </div>
-        <div className="absolute top-3 right-4 text-[9px] font-pixel text-[#f0d060] tracking-wider">
-          +XP EARNED
-        </div>
-
+      <div className="w-full max-w-md bg-gradient-to-b from-[#2d1b0e] to-[#1a1008] border-[3.5px] border-[#f0d060] rounded-2xl p-6 sm:p-8 text-center relative overflow-hidden shadow-2xl">
         {/* Level Up Banner if applicable */}
         {isLevelUp && (
           <div className="mb-4 bg-[#14230f] border-2 border-[#7ec850] p-2.5 rounded-lg shadow-md animate-bounce">
             <div className="flex items-center justify-center gap-2 font-pixel text-xs text-[#f0d060]">
               <Trophy size={16} weight="fill" className="text-[#f0d060]" />
-              <span>LEVEL UP! → {newLevel}</span>
+              <span>Naik Level! → {newLevel}</span>
             </div>
           </div>
         )}
@@ -82,37 +74,36 @@ export const CelebrationModal: React.FC<CelebrationModalProps> = ({
           <div className="mb-4 bg-[#14230f] border-2 border-[#7ec850] p-2.5 rounded-lg shadow-md">
             <div className="flex items-center justify-center gap-1.5 font-pixel text-xs text-[#7ec850]">
               <Sparkle size={16} weight="fill" className="text-[#f0d060]" />
-              <span>LANTAI {floorNumber} TUNTAS 100%!</span>
+              <span>Lantai {floorNumber} Selesai!</span>
             </div>
           </div>
         )}
 
-        {/* Stamp Graphic with Slam Animation */}
-        <div className="my-5 flex justify-center items-center">
+        {/* Stamp Graphic */}
+        <div className="my-4 flex justify-center items-center">
           <div className="relative">
-            {/* Stamp Outer Wax/Border Seal */}
-            <div className="w-32 h-32 rounded-xl border-3 border-[#f0d060] bg-gradient-to-b from-[#3d7828] to-[#255018] shadow-[inset_0_0_0_2px_#7ec850,0_8px_20px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center p-3 animate-stamp-slam rotate-[-3deg]">
-              <span className="text-4xl select-none mb-1">{stampRecord?.stampIcon || '🌟'}</span>
-              <span className="font-pixel text-[9px] text-[#f0d060] uppercase leading-tight font-bold tracking-wider">
+            <div className="w-28 h-28 rounded-xl border-3 border-[#f0d060] bg-gradient-to-b from-[#3d7828] to-[#255018] shadow-md flex flex-col items-center justify-center p-2 animate-stamp-slam rotate-[-2deg]">
+              <StampIcon
+                name={stampRecord?.stampIcon || 'Sparkle'}
+                size={34}
+                className="text-[#f0d060] mb-1"
+              />
+              <span className="font-pixel text-[8px] text-[#f0d060] uppercase font-bold tracking-wider">
                 {stampRecord?.stampTitle || 'STEMPEL RESMI'}
               </span>
-              <span className="font-mono text-[8px] text-[#e0f0d0] mt-1">
-                GENIUS • UNU YOGYA
+              <span className="font-mono text-[7px] text-[#e0f0d0] mt-0.5">
+                GENIUS UNU YOGYA
               </span>
-            </div>
-            {/* Verified Stamp Badge */}
-            <div className="absolute -bottom-2 -right-2 bg-[#f0d060] text-[#1b120a] border border-[#6b4f2e] px-2 py-0.5 text-[9px] font-pixel font-bold rounded shadow-md">
-              TERVERIFIKASI
             </div>
           </div>
         </div>
 
         {/* Text Details */}
         <h3 className="font-pixel text-sm sm:text-base font-bold text-white mb-1">
-          {stampRecord?.boothName || 'Booth Selesai!'}
+          {stampRecord?.boothName || 'Spot Selesai!'}
         </h3>
-        <p className="text-xs sm:text-sm text-[#d0c0a0] mb-4 leading-relaxed font-sans">
-          Selamat! Kamu berhasil menyelesaikan kuis dan mengoleksi stempel karakter untuk paspor digitalmu.
+        <p className="text-xs text-[#d0c0a0] mb-4 leading-relaxed font-sans">
+          Kamu berhasil menyelesaikan tantangan dan mendapatkan stempel resmi.
         </p>
 
         <div className="flex items-center justify-center gap-3 mb-6">
