@@ -122,226 +122,170 @@ export const TtsGame: React.FC<TtsGameProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header & Instructions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-[#5a3a18] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
-            <Sparkle size={18} weight="fill" />
+    <div className="h-full flex flex-col justify-between overflow-hidden gap-1.5 sm:gap-2 select-none">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-1.5 shrink-0">
+        <div className="flex items-center gap-1.5">
+          <div className="p-1 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
+            <Sparkle size={14} weight="fill" />
           </div>
           <div>
-            <h3 className="font-pixel text-xs sm:text-sm font-bold text-[#f0d060]">
-              MINI-GAME: TEKA-TEKI SILANG (TTS)
+            <h3 className="font-pixel text-[10px] sm:text-xs font-bold text-[#f0d060]">
+              TEKA-TEKI SILANG
             </h3>
-            <p className="font-sans text-xs text-[#c4956a]">
-              Pilih pertanyaan clue, lalu isi kotak huruf yang sesuai.
-            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <PixelBadge variant="emerald" size="sm">
-            {clues.length} Kata Kunci
-          </PixelBadge>
-        </div>
+        <PixelBadge variant="emerald" size="sm">
+          {clues.length} Kata Kunci
+        </PixelBadge>
       </div>
 
-      {/* Main Gameplay Layout: Grid + Clues */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left: TTS Interactive Grid (Mobile responsive) */}
-        <div className="lg:col-span-7 flex flex-col items-center">
-          <div className="bg-[#170f07] p-3 sm:p-4 border-2 border-[#5a3a18] rounded-xl shadow-inner inline-block overflow-x-auto max-w-full">
-            <div
-              className="grid gap-1 sm:gap-1.5 select-none"
-              style={{
-                gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-              }}
-            >
-              {Array.from({ length: rows }).map((_, r) =>
-                Array.from({ length: cols }).map((_, c) => {
-                  const key = `${r}-${c}`;
-                  const cellInfo = validCellsMap[key];
-                  const isValid = Boolean(cellInfo);
-                  const isCurrentActiveClueCell =
-                    isValid && activeClueId && cellInfo.clueIds.includes(activeClueId);
-                  const val = gridAnswers[key] || '';
+      {/* Main Interactive Grid */}
+      <div className="flex-1 flex flex-col items-center justify-center overflow-hidden py-0.5">
+        <div className="bg-[#170f07] p-1.5 sm:p-2.5 border border-[#5a3a18] rounded-xl shadow-inner inline-block overflow-x-auto max-w-full">
+          <div
+            className="grid gap-1 select-none"
+            style={{
+              gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+            }}
+          >
+            {Array.from({ length: rows }).map((_, r) =>
+              Array.from({ length: cols }).map((_, c) => {
+                const key = `${r}-${c}`;
+                const cellInfo = validCellsMap[key];
+                const isValid = Boolean(cellInfo);
+                const isCurrentActiveClueCell =
+                  isValid && activeClueId && cellInfo.clueIds.includes(activeClueId);
+                const val = gridAnswers[key] || '';
 
-                  if (!isValid) {
-                    return (
-                      <div
-                        key={key}
-                        className="w-8 h-8 sm:w-10 sm:h-10 bg-[#120b06] border border-[#2d1b0e]/60 rounded-md opacity-40"
-                      />
-                    );
-                  }
-
+                if (!isValid) {
                   return (
                     <div
                       key={key}
-                      onClick={() => {
-                        if (cellInfo.clueIds.length > 0) {
-                          setActiveClueId(cellInfo.clueIds[0]);
-                          if (soundEnabled) soundEngine.playSelect();
-                        }
-                      }}
-                      className={`relative w-8 h-8 sm:w-10 sm:h-10 rounded-md border-2 transition-all flex items-center justify-center cursor-pointer ${
-                        isCurrentActiveClueCell
-                          ? 'bg-[#3d2b1e] border-[#f0d060] shadow-[0_0_8px_rgba(240,208,96,0.5)]'
-                          : 'bg-[#281c12] border-[#5a3a18] hover:border-[#8b6f4e]'
-                      }`}
-                    >
-                      {/* Clue Number Top-Left Badge */}
-                      {cellInfo.clueNumber && (
-                        <span className="absolute top-0.5 left-1 text-[8px] font-pixel text-[#f0d060] leading-none pointer-events-none">
-                          {cellInfo.clueNumber}
-                        </span>
-                      )}
-
-                      {/* Letter Input */}
-                      <input
-                        type="text"
-                        maxLength={1}
-                        value={val}
-                        disabled={isSubmitted}
-                        onChange={(e) => handleCellChange(r, c, e.target.value)}
-                        onFocus={() => {
-                          if (cellInfo.clueIds.length > 0) {
-                            setActiveClueId(cellInfo.clueIds[0]);
-                          }
-                        }}
-                        className="w-full h-full text-center bg-transparent font-pixel text-xs sm:text-sm font-bold text-white uppercase outline-none"
-                      />
-                    </div>
+                      className="w-7 h-7 sm:w-8 sm:h-8 bg-[#120b06] border border-[#2d1b0e]/60 rounded opacity-30"
+                    />
                   );
-                })
-              )}
-            </div>
-          </div>
-
-          <div className="mt-3 flex items-center gap-3 text-xs text-[#a08060] font-sans">
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-3 bg-[#3d2b1e] border border-[#f0d060] rounded inline-block" />
-              Kotak Aktif
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-3 bg-[#281c12] border border-[#5a3a18] rounded inline-block" />
-              Kotak Isian
-            </span>
-          </div>
-        </div>
-
-        {/* Right: Clue List & Active Clue Card */}
-        <div className="lg:col-span-5 space-y-4 w-full">
-          {/* Active Clue Focus Card */}
-          {activeClue && (
-            <div className="sdv-card-elevated p-4 border-2 border-[#f0d060] space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-pixel text-[9px] text-[#7ec850] uppercase">
-                  SOAL AKTIF: #{activeClue.number} ({activeClue.direction === 'across' ? 'Mendatar' : 'Menurun'})
-                </span>
-                <span className="font-pixel text-[9px] text-[#f0d060]">
-                  {activeClue.answer.length} Huruf
-                </span>
-              </div>
-              <p className="font-sans text-xs sm:text-sm text-white font-medium leading-relaxed">
-                {activeClue.clue}
-              </p>
-            </div>
-          )}
-
-          {/* Clues Accordion List */}
-          <div className="space-y-2">
-            <h4 className="font-pixel text-[10px] text-[#c4956a] uppercase px-1">
-              Daftar Petunjuk:
-            </h4>
-
-            <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-              {clues.map((clue) => {
-                const isActive = clue.id === activeClueId;
-                const isCorrect = isSubmitted && correctClueIds.includes(clue.id);
+                }
 
                 return (
-                  <button
-                    key={clue.id}
-                    type="button"
+                  <div
+                    key={key}
                     onClick={() => {
-                      setActiveClueId(clue.id);
-                      if (soundEnabled) soundEngine.playSelect();
+                      if (cellInfo.clueIds.length > 0) {
+                        setActiveClueId(cellInfo.clueIds[0]);
+                        if (soundEnabled) soundEngine.playSelect();
+                      }
                     }}
-                    className={`w-full text-left p-3 rounded-lg border-2 transition-all cursor-pointer flex items-start gap-2.5 ${
-                      isActive
-                        ? 'bg-[#2a1c0d] border-[#f0d060] text-white shadow-md'
-                        : 'bg-[#170f07] border-[#5a3a18] text-[#d0c0a0] hover:border-[#8b6f4e]'
+                    className={`relative w-7 h-7 sm:w-8 sm:h-8 rounded border transition-all flex items-center justify-center cursor-pointer ${
+                      isCurrentActiveClueCell
+                        ? 'bg-[#3d2b1e] border-[#f0d060] shadow-[0_0_6px_rgba(240,208,96,0.5)]'
+                        : 'bg-[#281c12] border-[#5a3a18] hover:border-[#8b6f4e]'
                     }`}
                   >
-                    <span className="font-pixel text-[10px] bg-[#2d1b0e] text-[#f0d060] px-2 py-0.5 rounded border border-[#5a3a18] shrink-0 font-bold">
-                      {clue.number} {clue.direction === 'across' ? '→' : '↓'}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-sans text-xs line-clamp-2 leading-relaxed">
-                        {clue.clue}
-                      </p>
-                      <span className="font-mono text-[10px] text-[#7ec850] mt-0.5 block">
-                        ({clue.answer.length} Huruf)
+                    {cellInfo.clueNumber && (
+                      <span className="absolute top-0.5 left-0.5 text-[7px] font-pixel text-[#f0d060] leading-none pointer-events-none">
+                        {cellInfo.clueNumber}
                       </span>
-                    </div>
-                    {isCorrect && (
-                      <Check size={16} weight="bold" className="text-[#7ec850] shrink-0 mt-0.5" />
                     )}
-                  </button>
+
+                    <input
+                      type="text"
+                      maxLength={1}
+                      value={val}
+                      disabled={isSubmitted}
+                      onChange={(e) => handleCellChange(r, c, e.target.value)}
+                      onFocus={() => {
+                        if (cellInfo.clueIds.length > 0) {
+                          setActiveClueId(cellInfo.clueIds[0]);
+                        }
+                      }}
+                      className="w-full h-full text-center bg-transparent font-pixel text-xs sm:text-sm font-bold text-white uppercase outline-none"
+                    />
+                  </div>
                 );
-              })}
-            </div>
-          </div>
-
-          {/* Quick Helper Actions */}
-          <div className="flex items-center gap-2 pt-1">
-            <button
-              type="button"
-              onClick={handleFillSampleHint}
-              disabled={isSubmitted}
-              className="flex-1 py-2 px-3 text-[11px] font-pixel text-[#f0d060] bg-[#2d1b0e] hover:bg-[#3d2b1e] border border-[#8b6f4e] rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40"
-            >
-              <Lightbulb size={14} weight="bold" />
-              <span>Buka 1 Huruf</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleReset}
-              className="py-2 px-3 text-[11px] font-pixel text-[#c4956a] bg-[#170f07] hover:bg-[#281c12] border border-[#5a3a18] rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <ArrowCounterClockwise size={14} weight="bold" />
-              <span>Reset</span>
-            </button>
+              })
+            )}
           </div>
         </div>
       </div>
 
-      {/* Submit Button & Feedback */}
-      <div className="border-t border-[#5a3a18] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          {isSubmitted && (
-            <div className="flex items-center gap-2">
-              <PixelBadge
-                variant={correctClueIds.length === clues.length ? 'emerald' : 'red'}
-                size="md"
-              >
-                {correctClueIds.length === clues.length
-                  ? `SEMUA ${clues.length} KATA BENAR!`
-                  : `${correctClueIds.length}/${clues.length} Kata Benar • Coba Lengkapi Lagi`}
-              </PixelBadge>
+      {/* Active Clue Focus & Clue Navigation */}
+      <div className="space-y-1 shrink-0">
+        {activeClue && (
+          <div className="sdv-card-elevated p-2 border border-[#f0d060] space-y-0.5">
+            <div className="flex items-center justify-between text-[8px] font-pixel">
+              <span className="text-[#7ec850] uppercase">
+                #{activeClue.number} ({activeClue.direction === 'across' ? 'Mendatar →' : 'Menurun ↓'})
+              </span>
+              <span className="text-[#f0d060]">
+                {activeClue.answer.length} Huruf
+              </span>
             </div>
-          )}
+            <p className="font-sans text-[11px] sm:text-xs text-white font-medium leading-snug line-clamp-2">
+              {activeClue.clue}
+            </p>
+          </div>
+        )}
+
+        {/* Clue Quick Switches */}
+        <div className="flex items-center gap-1 overflow-x-auto py-0.5">
+          {clues.map((clue) => {
+            const isActive = clue.id === activeClueId;
+            const isCorrect = isSubmitted && correctClueIds.includes(clue.id);
+
+            return (
+              <button
+                key={clue.id}
+                type="button"
+                onClick={() => {
+                  setActiveClueId(clue.id);
+                  if (soundEnabled) soundEngine.playSelect();
+                }}
+                className={`py-0.5 px-2 rounded font-pixel text-[8px] border transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 shrink-0 ${
+                  isActive
+                    ? 'bg-[#f0d060] text-[#1c120a] border-[#f0d060] font-bold'
+                    : 'bg-[#170f07] text-[#c4956a] border-[#5a3a18]'
+                }`}
+              >
+                <span>{clue.number} {clue.direction === 'across' ? '→' : '↓'}</span>
+                {isCorrect && <Check size={10} weight="bold" className="text-[#7ec850]" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Footer Actions */}
+      <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={handleFillSampleHint}
+            disabled={isSubmitted}
+            className="py-1 px-2 text-[9px] font-pixel text-[#f0d060] bg-[#2d1b0e] border border-[#8b6f4e] rounded transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-40"
+          >
+            <Lightbulb size={12} weight="bold" />
+            <span>Bantuan</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleReset}
+            className="py-1 px-2 text-[9px] font-pixel text-[#c4956a] bg-[#170f07] border border-[#5a3a18] rounded transition-colors flex items-center gap-1 cursor-pointer"
+          >
+            <ArrowCounterClockwise size={12} weight="bold" />
+            <span>Reset</span>
+          </button>
         </div>
 
         <button
           type="button"
           onClick={checkSolution}
-          className="w-full sm:w-auto rpg-btn-primary py-3 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+          className="rpg-btn-primary py-1.5 px-3 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5"
         >
-          <Check size={16} weight="bold" />
-          <span>PERIKSA JAWABAN TTS</span>
+          <Check size={14} weight="bold" />
+          <span>PERIKSA TTS</span>
         </button>
       </div>
     </div>

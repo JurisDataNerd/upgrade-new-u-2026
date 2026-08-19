@@ -160,41 +160,32 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col justify-between overflow-hidden gap-1.5 sm:gap-2 select-none">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-[#5a3a18] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
-            <Cards size={18} weight="fill" />
+      <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-1.5 shrink-0">
+        <div className="flex items-center gap-1.5">
+          <div className="p-1 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
+            <Cards size={14} weight="fill" />
           </div>
           <div>
-            <h3 className="font-pixel text-xs sm:text-sm font-bold text-[#f0d060]">
-              MINI-GAME: MEMORY MATCH KARTU
+            <h3 className="font-pixel text-[10px] sm:text-xs font-bold text-[#f0d060]">
+              MEMORY MATCH
             </h3>
-            <p className="font-sans text-xs text-[#c4956a]">
-              Buka dan cocokkan pasangan istilah nilai dengan keterangannya!
-            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <PixelBadge variant="gold" size="sm">
-            {matchedPairIds.length}/{pairs.length} Pasangan Cocok
+            {matchedPairIds.length}/{pairs.length} Cocok
           </PixelBadge>
           <PixelBadge variant="wood" size="sm">
-            {movesCount} Percobaan
+            {movesCount} Coba
           </PixelBadge>
         </div>
       </div>
 
-      {content?.themeDescription && (
-        <div className="bg-[#170f07] p-3 rounded-lg border border-[#5a3a18] text-xs font-sans text-[#f0e0c0]">
-          <strong>Misi:</strong> {content.themeDescription}
-        </div>
-      )}
-
-      {/* 8 Cards Grid (2 rows x 4 cols on tablet/desktop, 4 rows x 2 cols on mobile) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 select-none">
+      {/* 8 Cards Grid (2 rows x 4 cols on all mobile screens!) */}
+      <div className="grid grid-cols-4 gap-1.5 sm:gap-2 flex-1 items-center select-none py-1">
         {cards.map((card, idx) => {
           const isFlipped = flippedIndices.includes(idx);
           const isMatched = matchedPairIds.includes(card.pairId);
@@ -206,41 +197,41 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
               type="button"
               onClick={() => handleCardClick(idx)}
               disabled={isOpen || isProcessing}
-              whileTap={{ scale: 0.96 }}
-              className={`h-32 sm:h-36 rounded-xl border-2 p-3 flex flex-col items-center justify-center text-center transition-all cursor-pointer relative overflow-hidden ${
+              whileTap={{ scale: 0.95 }}
+              className={`h-20 sm:h-28 rounded-lg sm:rounded-xl border p-1.5 sm:p-2 flex flex-col items-center justify-center text-center transition-all cursor-pointer relative overflow-hidden ${
                 isMatched
-                  ? 'bg-gradient-to-b from-[#235736] to-[#14331e] border-[#7ec850] text-[#f0ffd0] shadow-[0_0_12px_rgba(126,200,80,0.4)]'
+                  ? 'bg-gradient-to-b from-[#235736] to-[#14331e] border-[#7ec850] text-[#f0ffd0] shadow-[0_0_8px_rgba(126,200,80,0.3)]'
                   : isFlipped
-                  ? 'bg-gradient-to-b from-[#4d3b2e] to-[#2d1b0e] border-[#f0d060] text-white shadow-lg'
+                  ? 'bg-gradient-to-b from-[#4d3b2e] to-[#2d1b0e] border-[#f0d060] text-white shadow'
                   : 'bg-gradient-to-b from-[#281c12] to-[#170f07] border-[#5a3a18] hover:border-[#8b6f4e] text-[#a08060]'
               }`}
             >
               {isOpen ? (
-                <div className="flex flex-col items-center justify-between h-full w-full py-1">
+                <div className="flex flex-col items-center justify-between h-full w-full py-0.5">
                   {card.tag && (
-                    <span className="font-pixel text-[8px] text-[#f0d060] bg-[#120b06]/80 px-2 py-0.5 rounded border border-[#5a3a18]">
+                    <span className="font-pixel text-[7px] text-[#f0d060] bg-[#120b06]/80 px-1 py-0.2 rounded border border-[#5a3a18] line-clamp-1">
                       {card.tag}
                     </span>
                   )}
 
-                  <p className="font-sans text-xs sm:text-sm font-semibold leading-snug my-auto px-1">
+                  <p className="font-sans text-[10px] sm:text-xs font-semibold leading-tight my-auto px-0.5 line-clamp-3">
                     {card.text}
                   </p>
 
                   {isMatched && (
-                    <div className="flex items-center gap-1 text-[9px] font-pixel text-[#7ec850] mt-1">
-                      <CheckCircle size={12} weight="fill" />
+                    <div className="flex items-center gap-0.5 text-[7px] font-pixel text-[#7ec850]">
+                      <CheckCircle size={10} weight="fill" />
                       <span>COCOK</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-[#120b06] border border-[#8b6f4e] flex items-center justify-center text-[#f0d060] shadow-inner">
-                    <Star size={20} weight="fill" className="opacity-80" />
+                <div className="flex flex-col items-center justify-center gap-1">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#120b06] border border-[#8b6f4e] flex items-center justify-center text-[#f0d060] shadow-inner">
+                    <Star size={14} weight="fill" className="opacity-80" />
                   </div>
-                  <span className="font-pixel text-[9px] text-[#8b6f4e] uppercase">
-                    KARTU #{idx + 1}
+                  <span className="font-pixel text-[7px] sm:text-[8px] text-[#8b6f4e]">
+                    #{idx + 1}
                   </span>
                 </div>
               )}
@@ -251,30 +242,30 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({
 
       {/* Completion Banner */}
       {isFinished && (
-        <div className="bg-[#14230f] border-2 border-[#7ec850] p-4 sm:p-5 rounded-xl text-center space-y-2 animate-in fade-in">
-          <div className="flex items-center justify-center gap-2 font-pixel text-xs sm:text-sm text-[#7ec850] font-bold">
-            <CheckCircle size={20} weight="fill" />
-            <span>SEMUA {pairs.length} PASANGAN KARTU COCOK DITEMUKAN!</span>
+        <div className="bg-[#14230f] border border-[#7ec850] p-2 rounded-lg text-center space-y-0.5 animate-in fade-in shrink-0">
+          <div className="flex items-center justify-center gap-1.5 font-pixel text-[10px] sm:text-xs text-[#7ec850] font-bold">
+            <CheckCircle size={14} weight="fill" />
+            <span>SEMUA KARTU COCOK DITEMUKAN!</span>
           </div>
-          <p className="font-sans text-xs text-[#e0f0d0]">
-            Sempurna! Kamu berhasil menyelesaikan tantangan dalam {movesCount} langkah percobaan.
+          <p className="font-sans text-[10px] text-[#e0f0d0]">
+            Tuntas dalam {movesCount} percobaan.
           </p>
         </div>
       )}
 
       {/* Action Footer */}
-      <div className="border-t border-[#5a3a18] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs font-sans text-[#a08060]">
-          Cocokkan seluruh {pairs.length} pasang kartu untuk menyelesaikan mini-game.
+      <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-2 shrink-0">
+        <div className="text-[10px] font-sans text-[#a08060] truncate">
+          Cocokkan 4 pasang kartu istilah
         </div>
 
         <button
           type="button"
           onClick={handleResetGame}
-          className="w-full sm:w-auto rpg-btn-wood py-3 px-6 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+          className="rpg-btn-wood py-1.5 px-3 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5 cursor-pointer"
         >
-          <ArrowCounterClockwise size={16} weight="bold" />
-          <span>Kocok Ulang Kartu</span>
+          <ArrowCounterClockwise size={12} weight="bold" />
+          <span>Kocok Ulang</span>
         </button>
       </div>
     </div>

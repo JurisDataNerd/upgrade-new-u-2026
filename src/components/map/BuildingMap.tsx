@@ -55,19 +55,19 @@ export const BuildingMap: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 space-y-4">
-      {/* Top Simple Status Bar */}
-      <div className="bg-[#1f140a] border-2 border-[#5a3a18] rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#2d1b0e] border border-[#8b6f4e] rounded-lg flex items-center justify-center text-[#f0d060] shrink-0">
-            <GameController size={22} weight="bold" />
+    <div className="w-full h-full max-w-5xl mx-auto px-2.5 sm:px-6 py-2 sm:py-4 flex flex-col justify-between overflow-hidden gap-2">
+      {/* Top Status Bar (Compact) */}
+      <div className="bg-[#1f140a] border-2 border-[#5a3a18] rounded-xl p-2 sm:p-3 flex items-center justify-between gap-2 shadow-md shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#2d1b0e] border border-[#8b6f4e] rounded-lg flex items-center justify-center text-[#f0d060] shrink-0">
+            <GameController size={18} weight="bold" />
           </div>
-          <div>
-            <div className="font-pixel text-xs font-bold text-white">
+          <div className="min-w-0">
+            <div className="font-pixel text-[11px] sm:text-xs font-bold text-white truncate">
               PETA 9 LANTAI KAMPUS
             </div>
-            <div className="flex items-center gap-2 text-xs font-sans text-[#c4956a] mt-0.5">
-              <span>{completedFloors}/9 Lantai Tuntas</span>
+            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-sans text-[#c4956a] truncate">
+              <span>{completedFloors}/9 Tuntas</span>
               <span>•</span>
               <span className="text-[#7ec850]">{participant.completedBooths.length}/18 Stempel</span>
               <span>•</span>
@@ -76,26 +76,31 @@ export const BuildingMap: React.FC = () => {
           </div>
         </div>
 
-        <Link href="/play">
+        <Link href="/play" className="shrink-0">
           <button
             onClick={() => soundEnabled && soundEngine.playClick()}
-            className="w-full sm:w-auto rpg-btn-primary py-2.5 px-4 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+            className="rpg-btn-primary py-1.5 sm:py-2 px-3 text-[10px] sm:text-xs font-pixel font-bold flex items-center gap-1.5"
           >
-            <Play size={14} weight="fill" />
-            <span>Mulai Alur Cerita</span>
+            <Play size={12} weight="fill" />
+            <span>Mulai</span>
           </button>
         </Link>
       </div>
 
-      {/* Main Exploration: 9-Story List + Selected Floor */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
-        {/* Left: 9 Floors Clean List */}
-        <div className="md:col-span-5 space-y-1.5 bg-[#170f07] p-2.5 border-2 border-[#5a3a18] rounded-xl">
-          <div className="text-[10px] font-pixel text-[#a08060] px-2 py-1 uppercase tracking-wider">
-            Pilih Lantai (1 - 9):
-          </div>
+      {/* 9 Floors Horizontal Selector for Mobile / Grid on Tablet+ */}
+      <div className="bg-[#170f07] p-1.5 sm:p-2 border-2 border-[#5a3a18] rounded-xl shrink-0">
+        <div className="flex items-center justify-between px-1 pb-1">
+          <span className="text-[9px] font-pixel text-[#a08060] uppercase">
+            PILIH LANTAI:
+          </span>
+          <span className="text-[9px] font-pixel text-[#f0d060]">
+            Lantai Aktif: L{selectedFloorNumber}
+          </span>
+        </div>
 
-          {[...FLOORS_DATA].reverse().map((floor) => {
+        {/* 9 Buttons Grid (Fits 1 row of 9 on mobile without scroll!) */}
+        <div className="grid grid-cols-9 gap-1 sm:gap-2">
+          {FLOORS_DATA.map((floor) => {
             const status = getFloorStatus(floor.number);
             const isSelected = selectedFloorNumber === floor.number;
 
@@ -103,95 +108,72 @@ export const BuildingMap: React.FC = () => {
               <button
                 key={floor.number}
                 onClick={() => handleSelectFloor(floor.number)}
-                className={`w-full text-left rounded-lg p-2.5 flex items-center justify-between gap-2 border transition-all cursor-pointer ${
+                className={`py-1.5 sm:py-2 px-0.5 rounded-lg text-center border font-pixel text-[9px] sm:text-xs transition-all cursor-pointer flex flex-col items-center justify-center relative ${
                   isSelected
-                    ? 'bg-[#3d7828] border-[#f0d060] text-white font-bold shadow'
+                    ? 'bg-[#3d7828] border-[#f0d060] text-white font-bold shadow-[0_0_8px_rgba(240,208,96,0.4)] scale-[1.02]'
                     : status === 'completed'
-                    ? 'bg-[#1f3a2b]/60 border-[#4a8030] text-[#d0e8c0] hover:bg-[#1f3a2b]'
+                    ? 'bg-[#1f3a2b] border-[#4a8030] text-[#7ec850] hover:bg-[#284a37]'
                     : 'bg-[#23160c] border-[#3d2b1e] text-[#c4956a] hover:bg-[#2d1b0e]'
                 }`}
               >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span
-                    className={`w-6 h-6 rounded flex items-center justify-center font-pixel text-[10px] shrink-0 ${
-                      isSelected
-                        ? 'bg-[#f0d060] text-[#1b120a]'
-                        : status === 'completed'
-                        ? 'bg-[#235736] text-[#7ec850]'
-                        : 'bg-[#170f07] text-[#a08060]'
-                    }`}
-                  >
-                    L{floor.number}
-                  </span>
-                  <span className="font-pixel text-xs truncate">
-                    Lantai {floor.number}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5 shrink-0">
-                  {status === 'completed' ? (
-                    <PixelBadge variant="emerald" size="sm">
-                      <CheckCircle size={10} weight="bold" /> Tuntas
-                    </PixelBadge>
-                  ) : status === 'partial' ? (
-                    <PixelBadge variant="gold" size="sm">
-                      1/2
-                    </PixelBadge>
-                  ) : null}
-                  <CaretRight
-                    size={14}
-                    weight="bold"
-                    className={isSelected ? 'text-[#f0d060]' : 'text-[#5a3a18]'}
-                  />
-                </div>
+                <span>L{floor.number}</span>
+                {status === 'completed' && (
+                  <span className="w-1.5 h-1.5 bg-[#7ec850] rounded-full mt-0.5" />
+                )}
               </button>
             );
           })}
         </div>
+      </div>
 
-        {/* Right: Selected Floor Details & 2 Spots */}
-        <div className="md:col-span-7 space-y-3">
-          <div className="sdv-card p-4 sm:p-5 space-y-3">
-            <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-3">
-              <div>
-                <span className="font-pixel text-[9px] text-[#7ec850] uppercase tracking-wider">
-                  LANTAI {selectedFloor.number}
-                </span>
-                <h2 className="font-pixel text-sm sm:text-base font-bold text-white mt-0.5">
-                  {selectedFloor.name}
-                </h2>
-              </div>
-
-              <Link href={`/play/floor/${selectedFloor.number}/intro`}>
-                <button
-                  onClick={() => soundEnabled && soundEngine.playClick()}
-                  className="rpg-btn-primary py-2 px-3 text-xs font-pixel font-bold flex items-center gap-1.5"
-                >
-                  <span>Mulai Misi</span>
-                  <ArrowRight size={14} weight="bold" />
-                </button>
-              </Link>
-            </div>
-
-            {/* 2 Spots Mini-Cards */}
-            <div className="space-y-2.5 pt-1">
-              <div className="text-[10px] font-pixel text-[#a08060] uppercase">
-                2 Spot di Lantai Ini:
-              </div>
-
-              <SpotMiniCard
-                booth={selectedBoothA}
-                isCompleted={participant.completedBooths.includes(selectedBoothA.id)}
-                gameTypeLabel={getGameTypeLabel(selectedBoothA.tipe_game)}
-              />
-
-              <SpotMiniCard
-                booth={selectedBoothB}
-                isCompleted={participant.completedBooths.includes(selectedBoothB.id)}
-                gameTypeLabel={getGameTypeLabel(selectedBoothB.tipe_game)}
-              />
-            </div>
+      {/* Selected Floor Details Card */}
+      <div className="flex-1 sdv-card p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-lg">
+        {/* Floor Header */}
+        <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-2 shrink-0">
+          <div className="min-w-0">
+            <span className="font-pixel text-[8px] sm:text-[9px] text-[#7ec850] uppercase tracking-wider block">
+              ZONA LANTAI {selectedFloor.number}
+            </span>
+            <h2 className="font-pixel text-xs sm:text-sm font-bold text-white truncate mt-0.5">
+              {selectedFloor.name}
+            </h2>
           </div>
+
+          <Link href={`/play/floor/${selectedFloor.number}/intro`} className="shrink-0">
+            <button
+              onClick={() => soundEnabled && soundEngine.playClick()}
+              className="rpg-btn-primary py-1.5 px-3 text-[10px] sm:text-xs font-pixel font-bold flex items-center gap-1.5 shadow"
+            >
+              <span>Mulai Lantai</span>
+              <ArrowRight size={12} weight="bold" />
+            </button>
+          </Link>
+        </div>
+
+        {/* 2 Spots Grid */}
+        <div className="space-y-2 py-2 flex-1 flex flex-col justify-center">
+          <div className="text-[9px] font-pixel text-[#a08060] uppercase px-0.5">
+            2 Spot Tantangan:
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <SpotMiniCard
+              booth={selectedBoothA}
+              isCompleted={participant.completedBooths.includes(selectedBoothA.id)}
+              gameTypeLabel={getGameTypeLabel(selectedBoothA.tipe_game)}
+            />
+
+            <SpotMiniCard
+              booth={selectedBoothB}
+              isCompleted={participant.completedBooths.includes(selectedBoothB.id)}
+              gameTypeLabel={getGameTypeLabel(selectedBoothB.tipe_game)}
+            />
+          </div>
+        </div>
+
+        {/* Footer Note */}
+        <div className="border-t border-[#3d2b1e] pt-1.5 text-center text-[9px] font-sans text-[#a08060] shrink-0">
+          Setiap lantai memiliki 2 spot mini-game. Selesaikan keduanya untuk membuka stempel!
         </div>
       </div>
     </div>
@@ -213,27 +195,27 @@ const SpotMiniCard: React.FC<SpotMiniCardProps> = ({
 
   return (
     <div
-      className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition-all ${
+      className={`p-2 sm:p-2.5 rounded-xl border flex items-center justify-between gap-2 transition-all ${
         isCompleted
           ? 'bg-[#1a2e1a] border-[#4a8030]'
           : 'bg-[#170f07] border-[#3d2b1e] hover:border-[#5a3a18]'
       }`}
     >
-      <div className="flex items-center gap-3 min-w-0">
-        <div className="w-10 h-10 rounded-lg bg-[#23160c] border border-[#5a3a18] flex items-center justify-center shrink-0">
-          <StampIcon name={booth.stampIcon} size={20} className="text-[#f0d060]" />
+      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#23160c] border border-[#5a3a18] flex items-center justify-center shrink-0">
+          <StampIcon name={booth.stampIcon} size={16} className="text-[#f0d060]" />
         </div>
 
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-pixel text-[9px] text-[#f0d060]">
+          <div className="flex items-center gap-1.5">
+            <span className="font-pixel text-[8px] text-[#f0d060]">
               {booth.code}
             </span>
             <PixelBadge variant="gold" size="sm">
               {gameTypeLabel}
             </PixelBadge>
           </div>
-          <h4 className="font-pixel text-xs text-white truncate mt-0.5">
+          <h4 className="font-pixel text-[11px] sm:text-xs text-white truncate mt-0.5">
             {booth.name}
           </h4>
         </div>
@@ -243,13 +225,13 @@ const SpotMiniCard: React.FC<SpotMiniCardProps> = ({
         <Link href={`/play/floor/${booth.floorNumber}/spot/${booth.id}`}>
           <button
             onClick={() => soundEnabled && soundEngine.playClick()}
-            className={`py-1.5 px-3 rounded text-[11px] font-pixel font-bold cursor-pointer transition-all ${
+            className={`py-1 px-2.5 rounded text-[10px] sm:text-[11px] font-pixel font-bold cursor-pointer transition-all ${
               isCompleted
                 ? 'bg-[#2d1b0e] text-[#a08060] border border-[#5a3a18] hover:text-white'
                 : 'rpg-btn-primary'
             }`}
           >
-            {isCompleted ? 'Main Ulang' : 'Mainkan'}
+            {isCompleted ? 'Ulang' : 'Main'}
           </button>
         </Link>
       </div>

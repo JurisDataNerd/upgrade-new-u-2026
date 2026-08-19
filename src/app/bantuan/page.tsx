@@ -23,118 +23,122 @@ export default function BantuanPage() {
   const soundEnabled = useGameStore((state) => state.soundEnabled);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#2d1b0e] text-[#f0e0c0]">
+    <div className="min-h-[100dvh] h-[100dvh] max-h-[100dvh] flex flex-col bg-[#2d1b0e] text-[#f0e0c0] overflow-hidden">
       <CrtScanlines />
       <Navbar />
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 space-y-6">
+      <main className="max-w-2xl mx-auto px-2.5 sm:px-6 py-2 sm:py-3 flex-1 flex flex-col justify-between overflow-hidden w-full gap-2">
         {/* Simple Header */}
-        <div className="text-center space-y-1">
-          <div className="inline-flex items-center gap-1.5 bg-[#14230f] border border-[#7ec850] rounded-full px-3 py-0.5 text-[10px] font-pixel text-[#7ec850]">
-            <Info size={14} weight="bold" />
+        <div className="text-center space-y-0.5 shrink-0">
+          <div className="inline-flex items-center gap-1 bg-[#14230f] border border-[#7ec850] rounded-full px-2.5 py-0.5 text-[8px] sm:text-[9px] font-pixel text-[#7ec850]">
+            <Info size={12} weight="bold" />
             <span>PANDUAN SINGKAT</span>
           </div>
-          <h1 className="font-pixel text-lg sm:text-2xl font-bold text-[#f0d060]">
+          <h1 className="font-pixel text-sm sm:text-lg font-bold text-[#f0d060] mt-0.5">
             CARA BERMAIN GENIUS
           </h1>
-          <p className="font-sans text-xs sm:text-sm text-[#c4956a]">
-            Jelajahi 9 lantai gedung kampus UNU Yogya dan kumpulkan 18 stempel digital.
+          <p className="font-sans text-[11px] sm:text-xs text-[#c4956a] truncate">
+            Jelajahi 9 lantai gedung kampus UNU dan kumpulkan 18 stempel digital.
           </p>
         </div>
 
-        {/* 3 Simple Steps */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="bg-[#170f07] p-4 rounded-xl border border-[#5a3a18] space-y-2 text-center sm:text-left">
-            <div className="w-8 h-8 rounded-lg bg-[#23160c] border border-[#7ec850] text-[#7ec850] font-pixel text-xs font-bold flex items-center justify-center mx-auto sm:mx-0">
+        {/* 3 Simple Steps Grid */}
+        <div className="grid grid-cols-3 gap-1.5 shrink-0">
+          <div className="bg-[#170f07] p-2 rounded-xl border border-[#5a3a18] space-y-1 text-center">
+            <div className="w-6 h-6 rounded-md bg-[#23160c] border border-[#7ec850] text-[#7ec850] font-pixel text-[10px] font-bold flex items-center justify-center mx-auto">
               1
             </div>
-            <h3 className="font-pixel text-xs font-bold text-white">
-              Buka Prolog Lantai
+            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white truncate">
+              Prolog Lantai
             </h3>
-            <p className="font-sans text-xs text-[#a08060] leading-relaxed">
-              Mulai dari Lantai 1. Pahami tema dan poin misi karakter sebelum masuk ke spot.
+            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight line-clamp-2">
+              Buka tema & misi karakter.
             </p>
           </div>
 
-          <div className="bg-[#170f07] p-4 rounded-xl border border-[#5a3a18] space-y-2 text-center sm:text-left">
-            <div className="w-8 h-8 rounded-lg bg-[#23160c] border border-[#f0d060] text-[#f0d060] font-pixel text-xs font-bold flex items-center justify-center mx-auto sm:mx-0">
+          <div className="bg-[#170f07] p-2 rounded-xl border border-[#5a3a18] space-y-1 text-center">
+            <div className="w-6 h-6 rounded-md bg-[#23160c] border border-[#f0d060] text-[#f0d060] font-pixel text-[10px] font-bold flex items-center justify-center mx-auto">
               2
             </div>
-            <h3 className="font-pixel text-xs font-bold text-white">
-              Mainkan 2 Spot
+            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white truncate">
+              2 Spot Game
             </h3>
-            <p className="font-sans text-xs text-[#a08060] leading-relaxed">
-              Tiap lantai punya 2 spot mini-game (TTS, Tebak Kata, Memory Match, dll).
+            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight line-clamp-2">
+              Mainkan TTS, Kuis, Memory.
             </p>
           </div>
 
-          <div className="bg-[#170f07] p-4 rounded-xl border border-[#5a3a18] space-y-2 text-center sm:text-left">
-            <div className="w-8 h-8 rounded-lg bg-[#23160c] border border-[#60a8d8] text-[#60a8d8] font-pixel text-xs font-bold flex items-center justify-center mx-auto sm:mx-0">
+          <div className="bg-[#170f07] p-2 rounded-xl border border-[#5a3a18] space-y-1 text-center">
+            <div className="w-6 h-6 rounded-md bg-[#23160c] border border-[#60a8d8] text-[#60a8d8] font-pixel text-[10px] font-bold flex items-center justify-center mx-auto">
               3
             </div>
-            <h3 className="font-pixel text-xs font-bold text-white">
-              Koleksi 18 Stempel
+            <h3 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white truncate">
+              18 Stempel
             </h3>
-            <p className="font-sans text-xs text-[#a08060] leading-relaxed">
-              Tuntaskan seluruh 9 lantai untuk klaim paspor lengkap & sertifikat kelulusan.
+            <p className="font-sans text-[9px] sm:text-[10px] text-[#a08060] leading-tight line-clamp-2">
+              Klaim paspor & sertifikat.
             </p>
           </div>
         </div>
 
         {/* 6 Mini-Game Types Compact List */}
-        <div className="sdv-card p-4 sm:p-5 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-pixel text-[#f0d060] border-b border-[#5a3a18] pb-2.5">
-            <GameController size={16} weight="bold" />
+        <div className="flex-1 sdv-card p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-lg">
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-pixel text-[#f0d060] border-b border-[#5a3a18] pb-1.5 shrink-0">
+            <GameController size={14} weight="bold" />
             <span>6 TIPE MINI-GAME</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-sans">
-            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
-              <Sparkle size={14} weight="fill" className="text-[#7ec850] shrink-0" />
-              <span className="text-[#f0e0c0]">Teka-Teki Silang (TTS)</span>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-[10px] sm:text-xs font-sans py-1">
+            <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
+              <Sparkle size={12} weight="fill" className="text-[#7ec850] shrink-0" />
+              <span className="text-[#f0e0c0] truncate">TTS Kampus</span>
             </div>
-            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
-              <Sparkle size={14} weight="fill" className="text-[#f0d060] shrink-0" />
-              <span className="text-[#f0e0c0]">Tebak Kata</span>
+            <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
+              <Sparkle size={12} weight="fill" className="text-[#f0d060] shrink-0" />
+              <span className="text-[#f0e0c0] truncate">Tebak Kata</span>
             </div>
-            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
-              <MapPin size={14} weight="fill" className="text-[#60a8d8] shrink-0" />
-              <span className="text-[#f0e0c0]">Tebak Posisi Kampus</span>
+            <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
+              <MapPin size={12} weight="fill" className="text-[#60a8d8] shrink-0" />
+              <span className="text-[#f0e0c0] truncate">Tebak Posisi</span>
             </div>
-            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
-              <Cards size={14} weight="fill" className="text-[#f0a030] shrink-0" />
-              <span className="text-[#f0e0c0]">Memory Match Kartu</span>
+            <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
+              <Cards size={12} weight="fill" className="text-[#f0a030] shrink-0" />
+              <span className="text-[#f0e0c0] truncate">Memory Match</span>
             </div>
-            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
-              <Lightning size={14} weight="fill" className="text-[#e0a040] shrink-0" />
-              <span className="text-[#f0e0c0]">Kuis Cepat Timer</span>
+            <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
+              <Lightning size={12} weight="fill" className="text-[#e0a040] shrink-0" />
+              <span className="text-[#f0e0c0] truncate">Kuis Cepat</span>
             </div>
-            <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#3d2b1e] flex items-center gap-2">
-              <ShieldCheck size={14} weight="fill" className="text-[#7ec850] shrink-0" />
-              <span className="text-[#f0e0c0]">Uji Benar / Salah</span>
+            <div className="bg-[#170f07] p-2 rounded-lg border border-[#3d2b1e] flex items-center gap-1.5">
+              <ShieldCheck size={12} weight="fill" className="text-[#7ec850] shrink-0" />
+              <span className="text-[#f0e0c0] truncate">Benar / Salah</span>
             </div>
+          </div>
+
+          <div className="text-[9px] font-sans text-[#a08060] text-center border-t border-[#3d2b1e] pt-1 shrink-0">
+            Setiap tantangan yang selesai akan otomatis menambahkan stempel & XP!
           </div>
         </div>
 
         {/* Quick Actions CTA */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+        <div className="flex gap-2 pt-0.5 shrink-0">
           <Link href="/play" className="flex-1">
             <button
               onClick={() => soundEnabled && soundEngine.playClick()}
-              className="w-full rpg-btn-primary py-3.5 px-4 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+              className="w-full rpg-btn-primary py-2.5 px-3 text-xs font-pixel font-bold flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <Play size={16} weight="fill" />
-              <span>Mulai Petualangan</span>
+              <Play size={14} weight="fill" />
+              <span>Mulai Main</span>
             </button>
           </Link>
 
           <Link href="/paspor" className="flex-1">
             <button
               onClick={() => soundEnabled && soundEngine.playClick()}
-              className="w-full rpg-btn-wood py-3.5 px-4 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+              className="w-full rpg-btn-wood py-2.5 px-3 text-xs font-pixel font-bold flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <IdentificationBadge size={16} weight="bold" />
-              <span>Lihat Paspor Digital</span>
+              <IdentificationBadge size={14} weight="bold" />
+              <span>Lihat Paspor</span>
             </button>
           </Link>
         </div>

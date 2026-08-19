@@ -68,115 +68,111 @@ export default function FloorCompletePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#2d1b0e] text-[#f0e0c0]">
+    <div className="min-h-[100dvh] h-[100dvh] max-h-[100dvh] flex flex-col bg-[#2d1b0e] text-[#f0e0c0] overflow-hidden">
       <CrtScanlines />
       <Navbar />
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1 flex flex-col justify-center items-center text-center space-y-6">
+      <main className="max-w-2xl mx-auto px-2.5 sm:px-6 py-2 sm:py-3 flex-1 flex flex-col justify-between items-center text-center overflow-hidden w-full gap-2">
         {/* Victory Badge */}
-        <div className="inline-flex items-center gap-2 bg-[#14230f] border-2 border-[#7ec850] rounded-full px-5 py-1.5 shadow-lg">
-          <Sparkle size={18} weight="fill" className="text-[#f0d060]" />
-          <span className="font-pixel text-xs text-[#7ec850] font-bold uppercase tracking-wider">
+        <div className="inline-flex items-center gap-1.5 bg-[#14230f] border-2 border-[#7ec850] rounded-full px-3 py-1 shadow-md shrink-0">
+          <Sparkle size={14} weight="fill" className="text-[#f0d060]" />
+          <span className="font-pixel text-[9px] text-[#7ec850] font-bold uppercase tracking-wider">
             Lantai {floor.number} Selesai!
           </span>
         </div>
 
         {/* Grand Card */}
-        <div className="w-full sdv-card-gold p-6 sm:p-8 space-y-6 text-center relative overflow-hidden">
+        <div className="w-full flex-1 sdv-card-gold p-3 sm:p-5 flex flex-col justify-between text-center overflow-hidden shadow-2xl">
           {/* Header Title */}
-          <div className="space-y-2">
-            <h1 className="font-pixel text-xl sm:text-3xl font-extrabold text-[#f0d060] tracking-wide">
-              {hasNextFloor ? `LANTAI ${floor.number} SELESAI!` : 'SEMUA LANTAI SELESAI!'}
+          <div className="space-y-1 shrink-0">
+            <h1 className="font-pixel text-sm sm:text-xl font-bold text-[#f0d060] tracking-wide">
+              {hasNextFloor ? `LANTAI ${floor.number} TUNTAS!` : 'SEMUA LANTAI TUNTAS!'}
             </h1>
-            <p className="font-sans text-xs sm:text-sm text-[#f0e6d2] max-w-lg mx-auto leading-relaxed">
-              Kamu telah menyelesaikan kedua spot di{' '}
-              <strong className="text-white">{floor.name}</strong> dan mengumpulkan 2 stempel.
+            <p className="font-sans text-[11px] sm:text-xs text-[#f0e6d2] max-w-md mx-auto leading-snug truncate">
+              2 stempel di <strong>{floor.name}</strong> berhasil dikumpulkan!
             </p>
           </div>
 
-          {/* 2 Collected Stamps Showcase */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+          {/* 2 Collected Stamps Showcase (2 cols) */}
+          <div className="grid grid-cols-2 gap-2 my-1">
             {/* Stamp 1 */}
-            <div className="bg-[#170f07] p-4 rounded-xl border-2 border-[#7ec850] flex items-center gap-3.5 shadow-inner">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-b from-[#3d7828] to-[#255018] border-2 border-[#f0d060] flex items-center justify-center shrink-0 shadow">
-                <StampIcon name={boothA.stampIcon} size={24} className="text-[#f0d060]" />
+            <div className="bg-[#170f07] p-2 rounded-xl border-2 border-[#7ec850] flex items-center gap-2 shadow-inner">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-b from-[#3d7828] to-[#255018] border border-[#f0d060] flex items-center justify-center shrink-0 shadow">
+                <StampIcon name={boothA.stampIcon} size={16} className="text-[#f0d060]" />
               </div>
               <div className="text-left min-w-0">
-                <span className="font-pixel text-[8px] text-[#7ec850] uppercase">
-                  {boothA.code} • Stempel Resmi
+                <span className="font-pixel text-[7px] text-[#7ec850] uppercase block truncate">
+                  {boothA.code} • Stempel
                 </span>
-                <h4 className="font-pixel text-xs font-bold text-white truncate">
+                <h4 className="font-pixel text-[10px] sm:text-xs font-bold text-white truncate">
                   {boothA.name}
                 </h4>
-                <span className="font-mono text-[10px] text-[#f0d060]">
-                  Skor: {stampA?.score ?? 2}/{stampA?.totalQuestions ?? 2} Benar
+                <span className="font-mono text-[9px] text-[#f0d060] block">
+                  {stampA?.score ?? 2}/{stampA?.totalQuestions ?? 2} Benar
                 </span>
               </div>
             </div>
 
             {/* Stamp 2 */}
-            <div className="bg-[#170f07] p-4 rounded-xl border-2 border-[#7ec850] flex items-center gap-3.5 shadow-inner">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-b from-[#3d7828] to-[#255018] border-2 border-[#f0d060] flex items-center justify-center shrink-0 shadow">
-                <StampIcon name={boothB.stampIcon} size={24} className="text-[#f0d060]" />
+            <div className="bg-[#170f07] p-2 rounded-xl border-2 border-[#7ec850] flex items-center gap-2 shadow-inner">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-b from-[#3d7828] to-[#255018] border border-[#f0d060] flex items-center justify-center shrink-0 shadow">
+                <StampIcon name={boothB.stampIcon} size={16} className="text-[#f0d060]" />
               </div>
               <div className="text-left min-w-0">
-                <span className="font-pixel text-[8px] text-[#7ec850] uppercase">
-                  {boothB.code} • Stempel Resmi
+                <span className="font-pixel text-[7px] text-[#7ec850] uppercase block truncate">
+                  {boothB.code} • Stempel
                 </span>
-                <h4 className="font-pixel text-xs font-bold text-white truncate">
+                <h4 className="font-pixel text-[10px] sm:text-xs font-bold text-white truncate">
                   {boothB.name}
                 </h4>
-                <span className="font-mono text-[10px] text-[#f0d060]">
-                  Skor: {stampB?.score ?? 2}/{stampB?.totalQuestions ?? 2} Benar
+                <span className="font-mono text-[9px] text-[#f0d060] block">
+                  {stampB?.score ?? 2}/{stampB?.totalQuestions ?? 2} Benar
                 </span>
               </div>
             </div>
           </div>
 
           {/* Level Progress Banner */}
-          <div className="bg-[#281c12] p-4 rounded-xl border border-[#8b6f4e] flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 bg-[#170f07] border-2 border-[#f0d060] rounded-lg flex items-center justify-center text-xl shrink-0">
-                <Trophy size={22} weight="fill" className="text-[#f0d060]" />
+          <div className="bg-[#281c12] p-2 sm:p-2.5 rounded-xl border border-[#8b6f4e] flex items-center justify-between gap-2 shrink-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#170f07] border border-[#f0d060] rounded-lg flex items-center justify-center text-base shrink-0">
+                <Trophy size={16} weight="fill" className="text-[#f0d060]" />
               </div>
-              <div>
-                <span className="font-pixel text-[9px] text-[#a08060] uppercase">
-                  Level Saat Ini:
-                </span>
-                <div className="font-pixel text-xs font-bold text-white flex items-center gap-2 mt-0.5">
+              <div className="text-left min-w-0">
+                <div className="font-pixel text-[10px] sm:text-xs font-bold text-white flex items-center gap-1.5 truncate">
                   <span className="text-[#f0d060]">{currentLevel}</span>
                   <span className="text-[#a08060]">•</span>
-                  <span className="text-[#7ec850]">{completedFloors}/9 Lantai</span>
+                  <span className="text-[#7ec850]">{completedFloors}/9 Lt</span>
                 </div>
               </div>
             </div>
 
-            <PixelBadge variant="gold" size="md">
-              Total: {participant.totalXp} XP
+            <PixelBadge variant="gold" size="sm">
+              {participant.totalXp} XP
             </PixelBadge>
           </div>
 
-          {/* Big Next Floor CTA */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          {/* Action CTAs */}
+          <div className="pt-1 flex items-center justify-center gap-2 shrink-0">
             <button
               type="button"
               onClick={handleNextAction}
-              className="w-full sm:w-auto rpg-btn-primary py-4 px-10 text-xs sm:text-sm font-pixel font-bold flex items-center justify-center gap-3 shadow-xl cursor-pointer"
+              className="flex-1 rpg-btn-primary py-2.5 sm:py-3 px-4 text-xs font-pixel font-bold flex items-center justify-center gap-2 shadow-xl cursor-pointer"
             >
               <span>
                 {hasNextFloor
-                  ? `Lanjut ke Lantai ${nextFloorNumber}`
-                  : 'Buka Paspor & Sertifikat'}
+                  ? `Lanjut L${nextFloorNumber}`
+                  : 'Buka Paspor'}
               </span>
-              <ArrowRight size={18} weight="bold" />
+              <ArrowRight size={14} weight="bold" />
             </button>
 
-            <Link href="/peta" className="w-full sm:w-auto">
+            <Link href="/peta" className="shrink-0">
               <button
                 onClick={() => soundEnabled && soundEngine.playClick()}
-                className="w-full sm:w-auto rpg-btn-wood py-4 px-6 text-xs font-pixel font-bold flex items-center justify-center gap-2 cursor-pointer"
+                className="rpg-btn-wood py-2.5 sm:py-3 px-3 text-xs font-pixel font-bold flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Buildings size={16} weight="bold" />
+                <Buildings size={14} weight="bold" />
                 <span>Peta</span>
               </button>
             </Link>

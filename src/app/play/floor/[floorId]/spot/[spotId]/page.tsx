@@ -127,98 +127,68 @@ export default function LinearSpotPage() {
     }
   };
 
+  const [showStoryModal, setShowStoryModal] = useState<boolean>(false);
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#2d1b0e] text-[#f0e0c0]">
+    <div className="min-h-[100dvh] h-[100dvh] max-h-[100dvh] flex flex-col bg-[#2d1b0e] text-[#f0e0c0] overflow-hidden">
       <CrtScanlines />
       <Navbar />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 space-y-6">
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center justify-between">
-          <Link
-            href={`/play/floor/${floor.number}/intro`}
-            onClick={() => soundEnabled && soundEngine.playClick()}
-            className="inline-flex items-center gap-2 text-xs font-pixel text-[#c4956a] hover:text-[#f0d060] transition-colors"
-          >
-            <ArrowLeft size={16} weight="bold" />
-            <span>Kembali</span>
-          </Link>
+      <main className="max-w-2xl mx-auto px-2.5 sm:px-6 py-1.5 sm:py-2.5 flex-1 flex flex-col justify-between overflow-hidden w-full gap-1.5 sm:gap-2">
+        {/* Top Compact Spot Bar */}
+        <div className="flex items-center justify-between gap-2 bg-[#1f140a] border-2 border-[#5a3a18] rounded-xl px-2.5 py-1.5 shadow-md shrink-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <Link
+              href={`/play/floor/${floor.number}/intro`}
+              onClick={() => soundEnabled && soundEngine.playClick()}
+              className="inline-flex items-center gap-1 text-[11px] font-pixel text-[#c4956a] hover:text-[#f0d060] transition-colors shrink-0"
+            >
+              <ArrowLeft size={14} weight="bold" />
+              <span>L{floor.number}</span>
+            </Link>
 
-          <div className="flex items-center gap-2">
-            <PixelBadge variant="wood" size="sm">
-              Lantai {floor.number}
-            </PixelBadge>
-            <PixelBadge variant="gold" size="sm">
-              Spot {isSpot1 ? '1' : '2'} • {booth.code}
-            </PixelBadge>
-          </div>
-        </div>
+            <div className="w-[1px] h-4 bg-[#5a3a18]" />
 
-        {/* Spot Information Header */}
-        <div className="sdv-card-gold p-5 sm:p-7 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#5a3a18] pb-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-13 h-13 bg-[#170f07] border-2 border-[#f0d060] rounded-xl flex items-center justify-center shadow-inner shrink-0">
-                <StampIcon name={booth.stampIcon} size={28} className="text-[#f0d060]" />
+            <div className="flex items-center gap-1.5 min-w-0">
+              <div className="w-6 h-6 bg-[#170f07] border border-[#f0d060] rounded-md flex items-center justify-center shrink-0">
+                <StampIcon name={booth.stampIcon} size={14} className="text-[#f0d060]" />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-pixel text-[9px] text-[#7ec850] uppercase">
-                    {floor.name.split(' - ')[1] || floor.name}
-                  </span>
-                  <PixelBadge variant="gold" size="sm">
-                    {booth.badgeTag}
-                  </PixelBadge>
-                </div>
-                <h1 className="font-pixel text-sm sm:text-base font-bold text-white mt-1">
+              <div className="min-w-0">
+                <h1 className="font-pixel text-[11px] sm:text-xs font-bold text-white truncate">
                   {booth.name}
                 </h1>
               </div>
             </div>
-
-            {/* Stamp Status Marker */}
-            {isAlreadyCompleted && (
-              <div className="flex items-center gap-2 bg-[#14230f] border border-[#7ec850] rounded-full px-3 py-1 shadow-sm">
-                <CheckCircle size={16} weight="fill" className="text-[#7ec850]" />
-                <span className="font-pixel text-[9px] text-[#7ec850] font-bold">
-                  Selesai
-                </span>
-              </div>
-            )}
           </div>
 
-          {/* Educational Story Box */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 font-pixel text-xs text-[#f0d060]">
-              <BookOpen size={16} weight="fill" />
-              <span>Materi Spot</span>
-            </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                if (soundEnabled) soundEngine.playSelect();
+                setShowStoryModal(true);
+              }}
+              className="py-1 px-2 text-[9px] sm:text-[10px] font-pixel text-[#f0d060] bg-[#2d1b0e] hover:bg-[#3d2b1e] border border-[#8b6f4e] rounded-md flex items-center gap-1 cursor-pointer"
+            >
+              <BookOpen size={12} weight="fill" />
+              <span>Materi</span>
+            </button>
 
-            <div className="bg-[#170f07] p-4 sm:p-5 border-2 border-[#5a3a18] rounded-xl relative shadow-inner">
-              <div className="flex items-start gap-4">
-                <div className="w-13 h-13 rounded-xl overflow-hidden bg-[#281c12] border-2 border-[#f0d060] shrink-0 relative shadow-md">
-                  <Image
-                    src={selectedAvatarObj.avatarImage}
-                    alt={selectedAvatarObj.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="space-y-1.5 flex-1">
-                  <div className="font-pixel text-[9px] text-[#7ec850] flex items-center gap-1.5">
-                    <span>{participant.name}</span>
-                  </div>
-                  <p className="font-sans text-xs sm:text-sm text-[#f0e6d2] leading-relaxed">
-                    {booth.story}
-                  </p>
-                </div>
+            {isAlreadyCompleted ? (
+              <div className="flex items-center gap-1 bg-[#14230f] border border-[#7ec850] rounded-md px-1.5 py-0.5">
+                <CheckCircle size={12} weight="fill" className="text-[#7ec850]" />
+                <span className="font-pixel text-[8px] text-[#7ec850]">Selesai</span>
               </div>
-            </div>
+            ) : (
+              <PixelBadge variant="gold" size="sm">
+                +250 XP
+              </PixelBadge>
+            )}
           </div>
         </div>
 
-        {/* Dynamic Mini-Game Arena */}
-        <div className="sdv-card p-5 sm:p-7">
+        {/* Dynamic Mini-Game Arena (Fits available viewport without scroll) */}
+        <div className="flex-1 sdv-card p-2.5 sm:p-4 flex flex-col justify-between overflow-hidden shadow-lg">
           <MiniGameContainer
             booth={booth}
             onComplete={handleMiniGameComplete}
@@ -226,6 +196,65 @@ export default function LinearSpotPage() {
           />
         </div>
       </main>
+
+      {/* Educational Story Lore Modal */}
+      {showStoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#0a0604]/85 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="w-full max-w-md bg-gradient-to-b from-[#2d1b0e] to-[#170f07] border-[3px] border-[#f0d060] rounded-2xl p-4 sm:p-6 shadow-2xl relative">
+            <div className="flex items-center justify-between border-b border-[#5a3a18] pb-2 mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 bg-[#170f07] border border-[#f0d060] rounded-md flex items-center justify-center">
+                  <StampIcon name={booth.stampIcon} size={16} className="text-[#f0d060]" />
+                </div>
+                <div>
+                  <span className="text-[8px] font-pixel text-[#7ec850] uppercase block">
+                    Materi Spot • {booth.code}
+                  </span>
+                  <h3 className="text-xs font-pixel font-bold text-white truncate">
+                    {booth.name}
+                  </h3>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowStoryModal(false)}
+                className="text-[#a08060] hover:text-[#f0d060] p-1 font-pixel text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex items-start gap-3 bg-[#170f07] p-3 rounded-xl border border-[#5a3a18] mb-4">
+              <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#281c12] border border-[#f0d060] shrink-0 relative">
+                <Image
+                  src={selectedAvatarObj.avatarImage}
+                  alt={selectedAvatarObj.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="min-w-0 flex-1 space-y-1">
+                <span className="font-pixel text-[9px] text-[#f0d060] block">
+                  {participant.name}
+                </span>
+                <p className="font-sans text-xs text-[#f0e6d2] leading-relaxed">
+                  {booth.story}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                if (soundEnabled) soundEngine.playClick();
+                setShowStoryModal(false);
+              }}
+              className="w-full rpg-btn-primary py-2.5 px-4 text-xs font-pixel font-bold"
+            >
+              TUTUP & MAINKAN MISI
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Stamp Award Celebration Modal */}
       <CelebrationModal
@@ -239,8 +268,8 @@ export default function LinearSpotPage() {
         onNextAction={handleNextStep}
         nextActionLabel={
           isSpot1
-            ? `Lanjut ke Spot 2 (${boothB.code})`
-            : `Evaluasi Lantai ${floor.number} Tuntas!`
+            ? `Lanjut Spot 2 (${boothB.code})`
+            : `Lantai ${floor.number} Tuntas!`
         }
       />
     </div>

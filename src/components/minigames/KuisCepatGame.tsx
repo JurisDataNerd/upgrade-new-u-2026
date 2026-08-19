@@ -124,67 +124,59 @@ export const KuisCepatGame: React.FC<KuisCepatGameProps> = ({
       : 'bg-[#d44040] animate-pulse';
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-[#5a3a18] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
-            <Lightning size={18} weight="fill" />
+    <div className="h-full flex flex-col justify-between overflow-hidden gap-1.5 sm:gap-2 select-none">
+      {/* Top Compact Timer & Question Count Header */}
+      <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-1.5 shrink-0">
+        <div className="flex items-center gap-1.5">
+          <div className="p-1 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
+            <Lightning size={14} weight="fill" />
           </div>
           <div>
-            <h3 className="font-pixel text-xs sm:text-sm font-bold text-[#f0d060]">
-              MINI-GAME: KUIS CEPAT DENGAN TIMER
+            <h3 className="font-pixel text-[10px] sm:text-xs font-bold text-[#f0d060]">
+              KUIS CEPAT
             </h3>
-            <p className="font-sans text-xs text-[#c4956a]">
-              Pilih jawaban tepat sebelum waktu habis!
-            </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Timer Display */}
+          <div className="flex items-center gap-1 bg-[#170f07] border border-[#5a3a18] px-2 py-0.5 rounded-md text-[10px] font-pixel">
+            <Timer size={12} weight="bold" className="text-[#f0d060]" />
+            <span
+              className={`font-mono font-bold ${
+                timeLeft <= 5 ? 'text-[#ff8080] animate-bounce' : 'text-[#7ec850]'
+              }`}
+            >
+              {timeLeft}s
+            </span>
+          </div>
+
           <PixelBadge variant="gold" size="sm">
-            Soal {currentIndex + 1} dari {questions.length}
+            {currentIndex + 1}/{questions.length}
           </PixelBadge>
         </div>
       </div>
 
-      {/* Countdown Timer Bar */}
-      <div className="bg-[#170f07] p-3 rounded-xl border-2 border-[#5a3a18] space-y-2">
-        <div className="flex items-center justify-between font-pixel text-xs">
-          <div className="flex items-center gap-1.5 text-[#f0d060]">
-            <Timer size={16} weight="bold" />
-            <span>SISA WAKTU:</span>
-          </div>
-          <span
-            className={`font-mono text-sm font-bold ${
-              timeLeft <= 5 ? 'text-[#ff8080] animate-bounce' : 'text-[#7ec850]'
-            }`}
-          >
-            {timeLeft} DETIK
-          </span>
-        </div>
-
-        {/* Progress Fill */}
-        <div className="w-full h-3 bg-[#120b06] border border-[#5a3a18] rounded-full overflow-hidden">
-          <div
-            className={`h-full transition-all duration-1000 ${timerColorClass}`}
-            style={{ width: `${timerPercentage}%` }}
-          />
-        </div>
+      {/* Countdown Timer Line Bar */}
+      <div className="w-full h-1.5 bg-[#120b06] border border-[#5a3a18] rounded-full overflow-hidden shrink-0">
+        <div
+          className={`h-full transition-all duration-1000 ${timerColorClass}`}
+          style={{ width: `${timerPercentage}%` }}
+        />
       </div>
 
       {/* Question Card */}
-      <div className="sdv-card-elevated p-4 sm:p-5 border-2 border-[#5a3a18] space-y-3">
-        <span className="font-pixel text-[9px] text-[#7ec850] uppercase tracking-wider">
-          SOAL #{currentIndex + 1}
+      <div className="sdv-card-elevated p-2.5 sm:p-3 border border-[#5a3a18] shrink-0">
+        <span className="font-pixel text-[8px] text-[#7ec850] uppercase tracking-wider block mb-1">
+          SOAL #{currentIndex + 1}:
         </span>
-        <h4 className="font-sans text-xs sm:text-sm font-bold text-white leading-relaxed">
+        <h4 className="font-sans text-xs sm:text-sm font-bold text-white leading-snug">
           {currentQuestion.text}
         </h4>
       </div>
 
-      {/* Multiple Choice Options */}
-      <div className="space-y-2.5">
+      {/* Multiple Choice Options (Grid 2 cols on tablet / 1 col on mobile) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 flex-1 overflow-y-auto py-0.5">
         {currentQuestion.options.map((option, optIdx) => {
           const isSelected = selectedOptionIndex === optIdx;
           let optionClass =
@@ -209,25 +201,25 @@ export const KuisCepatGame: React.FC<KuisCepatGameProps> = ({
               type="button"
               onClick={() => handleSelectOption(optIdx)}
               disabled={isQuestionSubmitted || isTimeUp}
-              className={`w-full text-left p-3.5 rounded-xl border-2 transition-all flex items-start gap-3 cursor-pointer ${optionClass}`}
+              className={`w-full text-left p-2 sm:p-2.5 rounded-lg border transition-all flex items-center gap-2 cursor-pointer ${optionClass}`}
             >
-              <span className="font-pixel text-[10px] w-6 h-6 flex items-center justify-center rounded-md bg-[#281c12] text-[#f0d060] border border-[#5a3a18] shrink-0 mt-0.5 font-bold">
+              <span className="font-pixel text-[9px] w-5 h-5 flex items-center justify-center rounded bg-[#281c12] text-[#f0d060] border border-[#5a3a18] shrink-0 font-bold">
                 {String.fromCharCode(65 + optIdx)}
               </span>
-              <span className="font-sans text-xs leading-relaxed flex-1">
+              <span className="font-sans text-[11px] sm:text-xs leading-tight flex-1">
                 {option}
               </span>
               {(isQuestionSubmitted || isTimeUp) &&
                 optIdx === currentQuestion.correctAnswerIndex && (
                   <CheckCircle
-                    size={18}
+                    size={16}
                     weight="fill"
                     className="text-[#7ec850] shrink-0"
                   />
                 )}
               {isQuestionSubmitted && isSelected && !isCurrentCorrect && (
                 <XCircle
-                  size={18}
+                  size={16}
                   weight="fill"
                   className="text-[#ff8080] shrink-0"
                 />
@@ -237,70 +229,68 @@ export const KuisCepatGame: React.FC<KuisCepatGameProps> = ({
         })}
       </div>
 
-      {/* Feedback Card */}
+      {/* Feedback Alert Card */}
       {(isQuestionSubmitted || isTimeUp) && (
         <div
-          className={`p-4 rounded-xl border-2 space-y-2 animate-in fade-in ${
+          className={`p-2 rounded-lg border text-left animate-in fade-in shrink-0 ${
             isCurrentCorrect
               ? 'bg-[#14230f] border-[#7ec850] text-[#e0f0d0]'
               : 'bg-[#2d1210] border-[#d44040] text-[#ffd0d0]'
           }`}
         >
-          <div className="flex items-center gap-2 font-pixel text-xs font-bold">
+          <div className="flex items-center gap-1.5 font-pixel text-[10px] font-bold">
             {isTimeUp && !selectedOptionIndex ? (
               <>
-                <Timer size={18} weight="fill" className="text-[#ff8080]" />
+                <Timer size={14} weight="fill" className="text-[#ff8080]" />
                 <span className="text-[#ff8080]">Waktu Habis!</span>
               </>
             ) : isCurrentCorrect ? (
               <>
-                <CheckCircle size={18} weight="fill" className="text-[#7ec850]" />
+                <CheckCircle size={14} weight="fill" className="text-[#7ec850]" />
                 <span className="text-[#7ec850]">Jawaban Tepat!</span>
               </>
             ) : (
               <>
-                <XCircle size={18} weight="fill" className="text-[#ff8080]" />
-                <span className="text-[#ff8080]">Jawaban Kurang Tepat</span>
+                <XCircle size={14} weight="fill" className="text-[#ff8080]" />
+                <span className="text-[#ff8080]">Kurang Tepat!</span>
               </>
             )}
           </div>
-          <p className="font-sans text-xs leading-relaxed">
+          <p className="font-sans text-[10px] sm:text-[11px] leading-tight mt-0.5 line-clamp-2">
             {currentQuestion.explanation}
           </p>
         </div>
       )}
 
       {/* Footer Actions */}
-      <div className="border-t border-[#5a3a18] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs font-sans text-[#a08060]">
-          {selectedOptionIndex !== null
-            ? 'Opsi dipilih, tekan Kirim Jawaban'
-            : 'Pilih salah satu jawaban sebelum timer habis'}
+      <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-2 shrink-0">
+        <div className="text-[10px] font-sans text-[#a08060] truncate">
+          {selectedOptionIndex !== null ? 'Siap dikirim' : 'Pilih 1 jawaban'}
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="shrink-0">
           {!isQuestionSubmitted && !isTimeUp ? (
             <button
               type="button"
               onClick={handleCheckAnswer}
               disabled={selectedOptionIndex === null}
-              className="w-full sm:w-auto rpg-btn-primary py-3.5 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
+              className="rpg-btn-primary py-2 px-4 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none"
             >
-              <Check size={16} weight="bold" />
-              <span>KIRIM JAWABAN CEPAT</span>
+              <Check size={14} weight="bold" />
+              <span>KIRIM JAWABAN</span>
             </button>
           ) : (
             <button
               type="button"
               onClick={handleNextQuestion}
-              className="w-full sm:w-auto rpg-btn-primary py-3.5 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+              className="rpg-btn-primary py-2 px-4 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5"
             >
               <span>
                 {currentIndex < questions.length - 1
-                  ? 'Lanjut Soal Berikutnya'
-                  : 'Selesaikan Mini-Game'}
+                  ? 'Lanjut Soal'
+                  : 'Selesai'}
               </span>
-              <ArrowRight size={16} weight="bold" />
+              <ArrowRight size={14} weight="bold" />
             </button>
           )}
         </div>

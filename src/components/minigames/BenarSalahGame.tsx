@@ -78,57 +78,52 @@ export const BenarSalahGame: React.FC<BenarSalahGameProps> = ({
     selectedChoice !== null && selectedChoice === currentStatement.isCorrect;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-[#5a3a18] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
-            <ShieldCheck size={18} weight="fill" />
+    <div className="h-full flex flex-col justify-between overflow-hidden gap-1.5 sm:gap-2 select-none">
+      {/* Top Header */}
+      <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-1.5 shrink-0">
+        <div className="flex items-center gap-1.5">
+          <div className="p-1 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
+            <ShieldCheck size={14} weight="fill" />
           </div>
           <div>
-            <h3 className="font-pixel text-xs sm:text-sm font-bold text-[#f0d060]">
-              MINI-GAME: UJI BENAR ATAU SALAH
+            <h3 className="font-pixel text-[10px] sm:text-xs font-bold text-[#f0d060]">
+              UJI BENAR / SALAH
             </h3>
-            <p className="font-sans text-xs text-[#c4956a]">
-              Evaluasi pernyataan berikut: tentukan BENAR atau SALAH secara tepat!
-            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <PixelBadge variant="emerald" size="sm">
-            Pernyataan {currentIndex + 1} dari {statements.length}
-          </PixelBadge>
-        </div>
+        <PixelBadge variant="emerald" size="sm">
+          Pernyataan {currentIndex + 1}/{statements.length}
+        </PixelBadge>
       </div>
 
       {/* Statement Card */}
-      <div className="sdv-card-gold p-5 sm:p-7 space-y-4">
-        <div className="flex items-center justify-between border-b border-[#5a3a18] pb-2">
-          <span className="font-pixel text-[9px] text-[#7ec850] uppercase tracking-wider">
+      <div className="sdv-card-elevated p-3 sm:p-4 space-y-2 flex-1 flex flex-col justify-center text-center">
+        <div className="flex items-center justify-between border-b border-[#5a3a18] pb-1">
+          <span className="font-pixel text-[8px] text-[#7ec850] uppercase tracking-wider">
             PERNYATAAN #{currentIndex + 1}
           </span>
-          <span className="font-pixel text-[9px] text-[#f0d060]">
+          <span className="font-pixel text-[8px] text-[#f0d060]">
             PILIH BENAR / SALAH
           </span>
         </div>
 
-        <div className="bg-[#170f07] p-5 sm:p-6 border-2 border-[#5a3a18] rounded-xl shadow-inner text-center">
-          <p className="font-sans text-sm sm:text-base font-semibold text-white leading-relaxed">
-            &quot;{currentStatement.statement}&quot;
+        <div className="bg-[#170f07] p-3 sm:p-4 border border-[#5a3a18] rounded-xl shadow-inner my-auto">
+          <p className="font-sans text-xs sm:text-sm font-semibold text-white leading-relaxed">
+            &ldquo;{currentStatement.statement}&rdquo;
           </p>
         </div>
 
-        {/* Big Tactile Dual Action Buttons */}
+        {/* Dual Action Buttons */}
         {!isRoundSubmitted ? (
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-2">
+          <div className="grid grid-cols-2 gap-2 pt-1">
             {/* BENAR Button */}
             <button
               type="button"
               onClick={() => handleAnswer(true)}
-              className="py-4 px-6 rounded-xl border-3 border-[#7ec850] bg-gradient-to-b from-[#3d7828] to-[#255018] text-white font-pixel text-sm sm:text-base font-bold shadow-[0_5px_#122808] hover:translate-y-[-2px] active:translate-y-[2px] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="py-3 px-4 rounded-xl border-2 border-[#7ec850] bg-gradient-to-b from-[#3d7828] to-[#255018] text-white font-pixel text-xs sm:text-sm font-bold shadow-[0_3px_#122808] hover:translate-y-[-1px] active:translate-y-[1px] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <Check size={22} weight="bold" className="text-[#f0d060]" />
+              <Check size={18} weight="bold" className="text-[#f0d060]" />
               <span>BENAR</span>
             </button>
 
@@ -136,39 +131,39 @@ export const BenarSalahGame: React.FC<BenarSalahGameProps> = ({
             <button
               type="button"
               onClick={() => handleAnswer(false)}
-              className="py-4 px-6 rounded-xl border-3 border-[#d44040] bg-gradient-to-b from-[#8b3a2b] to-[#5a1e14] text-white font-pixel text-sm sm:text-base font-bold shadow-[0_5px_#2d0a06] hover:translate-y-[-2px] active:translate-y-[2px] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="py-3 px-4 rounded-xl border-2 border-[#d44040] bg-gradient-to-b from-[#8b3a2b] to-[#5a1e14] text-white font-pixel text-xs sm:text-sm font-bold shadow-[0_3px_#2d0a06] hover:translate-y-[-1px] active:translate-y-[1px] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <X size={22} weight="bold" className="text-white" />
+              <X size={18} weight="bold" className="text-white" />
               <span>SALAH</span>
             </button>
           </div>
         ) : (
           /* Feedback Card */
           <div
-            className={`p-4 sm:p-5 rounded-xl border-2 space-y-2 animate-in fade-in ${
+            className={`p-2.5 rounded-xl border text-left space-y-1 animate-in fade-in ${
               isUserCorrect
                 ? 'bg-[#14230f] border-[#7ec850] text-[#e0f0d0]'
                 : 'bg-[#2d1210] border-[#d44040] text-[#ffd0d0]'
             }`}
           >
-            <div className="flex items-center gap-2 font-pixel text-xs font-bold">
+            <div className="flex items-center gap-1.5 font-pixel text-[10px] font-bold">
               {isUserCorrect ? (
                 <>
-                  <CheckCircle size={18} weight="fill" className="text-[#7ec850]" />
+                  <CheckCircle size={14} weight="fill" className="text-[#7ec850]" />
                   <span className="text-[#7ec850]">
-                    PILIHAN KAMU TEPAT! (Kunci: {currentStatement.isCorrect ? 'BENAR' : 'SALAH'})
+                    PILIHAN TEPAT! (Kunci: {currentStatement.isCorrect ? 'BENAR' : 'SALAH'})
                   </span>
                 </>
               ) : (
                 <>
-                  <XCircle size={18} weight="fill" className="text-[#ff8080]" />
+                  <XCircle size={14} weight="fill" className="text-[#ff8080]" />
                   <span className="text-[#ff8080]">
-                    Pilihan Kurang Tepat (Kunci: {currentStatement.isCorrect ? 'BENAR' : 'SALAH'})
+                    Kurang Tepat (Kunci: {currentStatement.isCorrect ? 'BENAR' : 'SALAH'})
                   </span>
                 </>
               )}
             </div>
-            <p className="font-sans text-xs leading-relaxed">
+            <p className="font-sans text-[10px] sm:text-[11px] leading-tight line-clamp-2">
               {currentStatement.explanation}
             </p>
           </div>
@@ -176,25 +171,25 @@ export const BenarSalahGame: React.FC<BenarSalahGameProps> = ({
       </div>
 
       {/* Footer Navigation */}
-      <div className="border-t border-[#5a3a18] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs font-sans text-[#a08060]">
+      <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-2 shrink-0">
+        <div className="text-[10px] font-sans text-[#a08060] truncate">
           {isRoundSubmitted
-            ? 'Pernyataan telah dinilai'
-            : 'Tekan tombol BENAR atau SALAH di atas'}
+            ? 'Pernyataan dinilai'
+            : 'Pilih BENAR atau SALAH'}
         </div>
 
         {isRoundSubmitted && (
           <button
             type="button"
             onClick={handleNextStatement}
-            className="w-full sm:w-auto rpg-btn-primary py-3.5 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+            className="rpg-btn-primary py-2 px-4 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5"
           >
             <span>
               {currentIndex < statements.length - 1
-                ? 'Lanjut Pernyataan Berikutnya'
-                : 'Selesaikan Mini-Game'}
+                ? 'Lanjut Soal'
+                : 'Selesai'}
             </span>
-            <ArrowRight size={16} weight="bold" />
+            <ArrowRight size={14} weight="bold" />
           </button>
         )}
       </div>

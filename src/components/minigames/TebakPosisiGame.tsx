@@ -84,174 +84,159 @@ export const TebakPosisiGame: React.FC<TebakPosisiGameProps> = ({
     selectedOptionIndex === currentItem.correctOptionIndex;
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col justify-between overflow-hidden gap-1.5 sm:gap-2 select-none">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-[#5a3a18] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
-            <MapPin size={18} weight="fill" />
+      <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-1.5 shrink-0">
+        <div className="flex items-center gap-1.5">
+          <div className="p-1 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
+            <MapPin size={14} weight="fill" />
           </div>
           <div>
-            <h3 className="font-pixel text-xs sm:text-sm font-bold text-[#f0d060]">
-              MINI-GAME: TEBAK POSISI SPOR KAMPUS
+            <h3 className="font-pixel text-[10px] sm:text-xs font-bold text-[#f0d060]">
+              TEBAK POSISI
             </h3>
-            <p className="font-sans text-xs text-[#c4956a]">
-              Perhatikan foto spot gedung kampus, lalu pilih lokasi lantai/sayap yang tepat!
-            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <PixelBadge variant="cyan" size="sm">
-            Spot {currentIndex + 1} dari {items.length}
+            Spot {currentIndex + 1}/{items.length}
           </PixelBadge>
         </div>
       </div>
 
-      {/* Visual Photo Card */}
-      <div className="sdv-card-gold overflow-hidden p-3 sm:p-4 space-y-3">
-        <div className="relative w-full h-44 sm:h-56 rounded-xl overflow-hidden border-2 border-[#8b6f4e] shadow-md bg-[#120b06]">
+      {/* Visual Photo & Prompt Card */}
+      <div className="sdv-card-elevated overflow-hidden p-2 sm:p-2.5 space-y-1.5 shrink-0">
+        <div className="relative w-full h-24 sm:h-32 rounded-lg overflow-hidden border border-[#8b6f4e] shadow bg-[#120b06]">
           <Image
             src={currentItem.imageUrl || '/unu-hero.jpeg'}
             alt={currentItem.imageAlt || 'Spot Kampus UNU'}
             fill
             className="object-cover object-center filter brightness-[0.95]"
           />
-          <div className="absolute top-2 left-2 bg-[#120b06]/85 backdrop-blur-md px-2.5 py-1 rounded-md border border-[#f0d060] text-[9px] font-pixel text-[#f0d060] flex items-center gap-1.5 shadow">
-            <Buildings size={14} weight="fill" className="text-[#7ec850]" />
-            <span>GEDUNG 9 LANTAI UNU YOGYA</span>
+          <div className="absolute top-1.5 left-1.5 bg-[#120b06]/85 backdrop-blur-md px-1.5 py-0.5 rounded border border-[#f0d060] text-[8px] font-pixel text-[#f0d060] flex items-center gap-1 shadow">
+            <Buildings size={10} weight="fill" className="text-[#7ec850]" />
+            <span>KAMPUS UNU</span>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#160d07]/80 via-transparent to-transparent pointer-events-none" />
         </div>
 
         {/* Prompt */}
-        <div className="space-y-1 pt-1">
-          <span className="font-pixel text-[9px] text-[#7ec850] uppercase tracking-wider">
-            PERTANYAAN LOKASI:
-          </span>
-          <h4 className="font-sans text-xs sm:text-sm font-bold text-white leading-relaxed">
-            {currentItem.prompt}
-          </h4>
-        </div>
+        <h4 className="font-sans text-[11px] sm:text-xs font-bold text-white leading-snug line-clamp-2">
+          {currentItem.prompt}
+        </h4>
       </div>
 
-      {/* Multiple Choice Options */}
-      <div className="space-y-2.5">
-        <span className="font-pixel text-[9px] text-[#c4956a] uppercase px-1">
-          Pilihan Lokasi Ruang / Fasilitas:
-        </span>
+      {/* Multiple Choice Options (2x2 grid) */}
+      <div className="grid grid-cols-2 gap-1.5 flex-1 overflow-y-auto py-0.5">
+        {currentItem.options.map((option, optIdx) => {
+          const isSelected = selectedOptionIndex === optIdx;
+          let optionClass =
+            'bg-[#170f07] border-[#5a3a18] text-[#f0e0c0] hover:border-[#8b6f4e]';
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          {currentItem.options.map((option, optIdx) => {
-            const isSelected = selectedOptionIndex === optIdx;
-            let optionClass =
-              'bg-[#170f07] border-[#5a3a18] text-[#f0e0c0] hover:border-[#8b6f4e]';
-
-            if (isRoundSubmitted) {
-              if (optIdx === currentItem.correctOptionIndex) {
-                optionClass =
-                  'bg-[#1f3a2b] border-[#7ec850] text-[#e0f0d0] shadow-md font-medium';
-              } else if (isSelected && !isSelectedCorrect) {
-                optionClass =
-                  'bg-[#3a1814] border-[#d44040] text-[#ffd0d0] shadow-md';
-              }
-            } else if (isSelected) {
+          if (isRoundSubmitted) {
+            if (optIdx === currentItem.correctOptionIndex) {
               optionClass =
-                'bg-[#2d1b0e] border-[#f0d060] text-white shadow-md font-medium';
+                'bg-[#1f3a2b] border-[#7ec850] text-[#e0f0d0] shadow-md font-medium';
+            } else if (isSelected && !isSelectedCorrect) {
+              optionClass =
+                'bg-[#3a1814] border-[#d44040] text-[#ffd0d0] shadow-md';
             }
+          } else if (isSelected) {
+            optionClass =
+              'bg-[#2d1b0e] border-[#f0d060] text-white shadow-md font-medium';
+          }
 
-            return (
-              <button
-                key={optIdx}
-                type="button"
-                onClick={() => handleSelectOption(optIdx)}
-                disabled={isRoundSubmitted}
-                className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 cursor-pointer ${optionClass}`}
-              >
-                <span className="font-pixel text-[10px] w-6 h-6 flex items-center justify-center rounded-md bg-[#281c12] text-[#f0d060] border border-[#5a3a18] shrink-0 mt-0.5 font-bold">
-                  {String.fromCharCode(65 + optIdx)}
-                </span>
-                <span className="font-sans text-xs leading-relaxed flex-1">
-                  {option}
-                </span>
-                {isRoundSubmitted &&
-                  optIdx === currentItem.correctOptionIndex && (
-                    <CheckCircle
-                      size={18}
-                      weight="fill"
-                      className="text-[#7ec850] shrink-0"
-                    />
-                  )}
-                {isRoundSubmitted && isSelected && !isSelectedCorrect && (
-                  <XCircle
-                    size={18}
+          return (
+            <button
+              key={optIdx}
+              type="button"
+              onClick={() => handleSelectOption(optIdx)}
+              disabled={isRoundSubmitted}
+              className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all flex items-center gap-1.5 cursor-pointer ${optionClass}`}
+            >
+              <span className="font-pixel text-[9px] w-5 h-5 flex items-center justify-center rounded bg-[#281c12] text-[#f0d060] border border-[#5a3a18] shrink-0 font-bold">
+                {String.fromCharCode(65 + optIdx)}
+              </span>
+              <span className="font-sans text-[11px] sm:text-xs leading-tight flex-1 line-clamp-2">
+                {option}
+              </span>
+              {isRoundSubmitted &&
+                optIdx === currentItem.correctOptionIndex && (
+                  <CheckCircle
+                    size={16}
                     weight="fill"
-                    className="text-[#ff8080] shrink-0"
+                    className="text-[#7ec850] shrink-0"
                   />
                 )}
-              </button>
-            );
-          })}
-        </div>
+              {isRoundSubmitted && isSelected && !isSelectedCorrect && (
+                <XCircle
+                  size={16}
+                  weight="fill"
+                  className="text-[#ff8080] shrink-0"
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Feedback Card */}
       {isRoundSubmitted && (
         <div
-          className={`p-4 rounded-xl border-2 space-y-2 animate-in fade-in ${
+          className={`p-2 rounded-lg border space-y-0.5 animate-in fade-in shrink-0 ${
             isSelectedCorrect
               ? 'bg-[#14230f] border-[#7ec850] text-[#e0f0d0]'
               : 'bg-[#2d1210] border-[#d44040] text-[#ffd0d0]'
           }`}
         >
-          <div className="flex items-center gap-2 font-pixel text-xs font-bold">
+          <div className="flex items-center gap-1 font-pixel text-[10px] font-bold">
             {isSelectedCorrect ? (
               <>
-                <CheckCircle size={18} weight="fill" className="text-[#7ec850]" />
+                <CheckCircle size={14} weight="fill" className="text-[#7ec850]" />
                 <span className="text-[#7ec850]">Lokasi Tepat Sekali!</span>
               </>
             ) : (
               <>
-                <XCircle size={18} weight="fill" className="text-[#ff8080]" />
+                <XCircle size={14} weight="fill" className="text-[#ff8080]" />
                 <span className="text-[#ff8080]">Lokasi Belum Tepat</span>
               </>
             )}
           </div>
-          <p className="font-sans text-xs leading-relaxed">
+          <p className="font-sans text-[10px] sm:text-[11px] leading-tight line-clamp-2">
             {currentItem.explanation}
           </p>
         </div>
       )}
 
       {/* Footer Actions */}
-      <div className="border-t border-[#5a3a18] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs font-sans text-[#a08060]">
-          {selectedOptionIndex !== null ? '1 opsi dipilih' : 'Pilih salah satu lokasi di atas'}
+      <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-2 shrink-0">
+        <div className="text-[10px] font-sans text-[#a08060] truncate">
+          {selectedOptionIndex !== null ? '1 lokasi dipilih' : 'Pilih 1 lokasi'}
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="shrink-0">
           {!isRoundSubmitted ? (
             <button
               type="button"
               onClick={handleCheckAnswer}
               disabled={selectedOptionIndex === null}
-              className="w-full sm:w-auto rpg-btn-primary py-3.5 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
+              className="rpg-btn-primary py-2 px-4 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none"
             >
-              <Check size={16} weight="bold" />
-              <span>PILIH LOKASI INI</span>
+              <Check size={14} weight="bold" />
+              <span>PILIH LOKASI</span>
             </button>
           ) : (
             <button
               type="button"
               onClick={handleNextRound}
-              className="w-full sm:w-auto rpg-btn-primary py-3.5 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+              className="rpg-btn-primary py-2 px-4 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5"
             >
               <span>
                 {currentIndex < items.length - 1
-                  ? 'Lanjut Spot Berikutnya'
-                  : 'Selesaikan Mini-Game'}
+                  ? 'Lanjut Spot'
+                  : 'Selesai'}
               </span>
-              <ArrowRight size={16} weight="bold" />
+              <ArrowRight size={14} weight="bold" />
             </button>
           )}
         </div>

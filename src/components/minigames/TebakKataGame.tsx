@@ -135,62 +135,53 @@ export const TebakKataGame: React.FC<TebakKataGameProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col justify-between overflow-hidden gap-1.5 sm:gap-2 select-none">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-[#5a3a18] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
-            <Sparkle size={18} weight="fill" />
+      <div className="flex items-center justify-between gap-2 border-b border-[#5a3a18] pb-1.5 shrink-0">
+        <div className="flex items-center gap-1.5">
+          <div className="p-1 bg-[#170f07] border border-[#f0d060] rounded text-[#f0d060]">
+            <Sparkle size={14} weight="fill" />
           </div>
           <div>
-            <h3 className="font-pixel text-xs sm:text-sm font-bold text-[#f0d060]">
-              MINI-GAME: TEBAK KATA
+            <h3 className="font-pixel text-[10px] sm:text-xs font-bold text-[#f0d060]">
+              TEBAK KATA
             </h3>
-            <p className="font-sans text-xs text-[#c4956a]">
-              Susun huruf acak di bawah menjadi kata yang tepat sesuai petunjuk!
-            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <PixelBadge variant="gold" size="sm">
-            Kata {currentIndex + 1} dari {items.length}
+            Kata {currentIndex + 1}/{items.length}
           </PixelBadge>
         </div>
       </div>
 
-      {/* Clue Narrative Card */}
-      <div className="sdv-card-elevated p-4 sm:p-5 border-2 border-[#5a3a18] space-y-2.5">
-        <div className="flex items-center justify-between">
-          <span className="font-pixel text-[9px] text-[#7ec850] uppercase tracking-wider">
-            PETUNJUK KATA #{currentIndex + 1}
+      {/* Clue Card (Compact) */}
+      <div className="sdv-card-elevated p-2 sm:p-2.5 space-y-1 shrink-0">
+        <div className="flex items-center justify-between text-[8px] font-pixel">
+          <span className="text-[#7ec850] uppercase">
+            PETUNJUK #{currentIndex + 1}
           </span>
-          <span className="font-pixel text-[9px] text-[#f0d060]">
-            Target: {targetLength} Huruf
+          <span className="text-[#f0d060]">
+            {targetLength} Huruf
           </span>
         </div>
 
-        <p className="font-sans text-xs sm:text-sm text-white font-medium leading-relaxed">
+        <p className="font-sans text-[11px] sm:text-xs text-white font-medium leading-snug line-clamp-2">
           {currentItem.clue}
         </p>
 
         {showHint && currentItem.hint && (
-          <div className="bg-[#170f07] p-2.5 rounded-lg border border-[#f0d060]/50 text-xs font-sans text-[#f0d060] flex items-center gap-2 animate-in fade-in">
-            <Lightbulb size={16} weight="fill" className="shrink-0 text-[#f0d060]" />
-            <span>
-              <strong>Bantuan:</strong> {currentItem.hint}
-            </span>
+          <div className="bg-[#170f07] p-1.5 rounded border border-[#f0d060]/50 text-[10px] font-sans text-[#f0d060] flex items-center gap-1.5 animate-in fade-in">
+            <Lightbulb size={12} weight="fill" className="shrink-0 text-[#f0d060]" />
+            <span className="truncate"><strong>Petunjuk:</strong> {currentItem.hint}</span>
           </div>
         )}
       </div>
 
       {/* Answer Slots (Letter Boxes) */}
-      <div className="space-y-2 text-center">
-        <span className="font-pixel text-[9px] text-[#a08060] uppercase">
-          Kotak Jawaban (Klik huruf di kotak untuk menghapus):
-        </span>
-
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 py-2">
+      <div className="space-y-1 text-center shrink-0">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 py-0.5">
           {Array.from({ length: targetLength }).map((_, idx) => {
             const letter = selectedLetters[idx];
             const isFilled = Boolean(letter);
@@ -201,13 +192,13 @@ export const TebakKataGame: React.FC<TebakKataGameProps> = ({
                 type="button"
                 onClick={() => isFilled && handleRemovePlacedLetter(idx)}
                 disabled={isRoundSubmitted}
-                className={`w-11 h-12 sm:w-13 sm:h-14 rounded-xl border-2 font-pixel text-sm sm:text-base font-black transition-all flex items-center justify-center cursor-pointer ${
+                className={`w-8 h-9 sm:w-10 sm:h-11 rounded-lg border font-pixel text-xs sm:text-sm font-bold transition-all flex items-center justify-center cursor-pointer ${
                   isFilled
                     ? isRoundSubmitted
                       ? isRoundCorrect
-                        ? 'bg-[#1f3a2b] border-[#7ec850] text-[#7ec850] shadow-[0_0_12px_rgba(126,200,80,0.5)]'
+                        ? 'bg-[#1f3a2b] border-[#7ec850] text-[#7ec850] shadow-[0_0_8px_rgba(126,200,80,0.5)]'
                         : 'bg-[#3a1814] border-[#d44040] text-[#ff8080]'
-                      : 'bg-gradient-to-b from-[#3d7828] to-[#255018] border-[#f0d060] text-white shadow-md hover:scale-105 active:scale-95'
+                      : 'bg-gradient-to-b from-[#3d7828] to-[#255018] border-[#f0d060] text-white shadow-md'
                     : 'bg-[#170f07] border-dashed border-[#5a3a18] text-[#5a3a18]'
                 }`}
               >
@@ -220,12 +211,8 @@ export const TebakKataGame: React.FC<TebakKataGameProps> = ({
 
       {/* Scrambled Pool Tiles */}
       {!isRoundSubmitted && (
-        <div className="space-y-2 text-center bg-[#170f07] p-4 rounded-xl border-2 border-[#5a3a18]">
-          <span className="font-pixel text-[9px] text-[#c4956a] uppercase">
-            Pilihan Huruf Tersedia (Klik untuk memasukkan):
-          </span>
-
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+        <div className="space-y-1.5 text-center bg-[#170f07] p-2 rounded-xl border border-[#5a3a18] shrink-0">
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
             {currentItem.scrambledLetters.map((char, tileIdx) => {
               const isUsed = usedTileIndices.includes(tileIdx);
 
@@ -235,7 +222,7 @@ export const TebakKataGame: React.FC<TebakKataGameProps> = ({
                   type="button"
                   onClick={() => handleSelectPoolTile(char, tileIdx)}
                   disabled={isUsed}
-                  className={`w-10 h-11 sm:w-12 sm:h-13 rounded-lg border-2 font-pixel text-xs sm:text-sm font-bold transition-all flex items-center justify-center cursor-pointer ${
+                  className={`w-7 h-8 sm:w-9 sm:h-10 rounded-lg border font-pixel text-[11px] sm:text-xs font-bold transition-all flex items-center justify-center cursor-pointer ${
                     isUsed
                       ? 'bg-[#120b06] border-[#3d2b1e] text-[#5a3a18] opacity-30 pointer-events-none'
                       : 'bg-[#281c12] border-[#8b6f4e] hover:border-[#f0d060] text-[#f0e0c0] hover:text-[#f0d060] active:scale-95 shadow-sm'
@@ -247,25 +234,25 @@ export const TebakKataGame: React.FC<TebakKataGameProps> = ({
             })}
           </div>
 
-          <div className="flex items-center justify-center gap-3 pt-3">
+          <div className="flex items-center justify-center gap-2 pt-0.5">
             <button
               type="button"
               onClick={handleClearAll}
               disabled={selectedLetters.length === 0}
-              className="py-1.5 px-3 text-[10px] font-pixel text-[#a08060] hover:text-[#f0d060] bg-[#23160c] border border-[#5a3a18] rounded-md transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
+              className="py-1 px-2.5 text-[9px] font-pixel text-[#a08060] hover:text-[#f0d060] bg-[#23160c] border border-[#5a3a18] rounded transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-40"
             >
-              <ArrowCounterClockwise size={12} weight="bold" />
-              <span>Hapus Semua</span>
+              <ArrowCounterClockwise size={10} weight="bold" />
+              <span>Hapus</span>
             </button>
 
             {!showHint && currentItem.hint && (
               <button
                 type="button"
                 onClick={handleUseHint}
-                className="py-1.5 px-3 text-[10px] font-pixel text-[#f0d060] bg-[#2d1b0e] hover:bg-[#3d2b1e] border border-[#8b6f4e] rounded-md transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="py-1 px-2.5 text-[9px] font-pixel text-[#f0d060] bg-[#2d1b0e] hover:bg-[#3d2b1e] border border-[#8b6f4e] rounded transition-colors flex items-center gap-1 cursor-pointer"
               >
-                <Lightbulb size={12} weight="bold" />
-                <span>Buka Petunjuk</span>
+                <Lightbulb size={10} weight="bold" />
+                <span>Petunjuk</span>
               </button>
             )}
           </div>
@@ -275,71 +262,71 @@ export const TebakKataGame: React.FC<TebakKataGameProps> = ({
       {/* Feedback Card after Round Check */}
       {isRoundSubmitted && (
         <div
-          className={`p-4 sm:p-5 rounded-xl border-2 space-y-2 animate-in fade-in ${
+          className={`p-2 rounded-lg border text-left space-y-0.5 animate-in fade-in shrink-0 ${
             isRoundCorrect
               ? 'bg-[#14230f] border-[#7ec850] text-[#e0f0d0]'
               : 'bg-[#2d1210] border-[#d44040] text-[#ffd0d0]'
           }`}
         >
-          <div className="flex items-center gap-2 font-pixel text-xs font-bold">
+          <div className="flex items-center gap-1 font-pixel text-[10px] font-bold">
             {isRoundCorrect ? (
               <>
-                <CheckCircle size={18} weight="fill" className="text-[#7ec850]" />
+                <CheckCircle size={14} weight="fill" className="text-[#7ec850]" />
                 <span className="text-[#7ec850]">
-                  TEPAT SEKALI! KATA: {currentItem.targetWord}
+                  TEPAT! KATA: {currentItem.targetWord}
                 </span>
               </>
             ) : (
               <>
-                <XCircle size={18} weight="fill" className="text-[#ff8080]" />
+                <XCircle size={14} weight="fill" className="text-[#ff8080]" />
                 <span className="text-[#ff8080]">Belum Tepat, Coba Lagi!</span>
               </>
             )}
           </div>
-          <p className="font-sans text-xs leading-relaxed">
+          <p className="font-sans text-[10px] sm:text-[11px] leading-tight line-clamp-2">
             {currentItem.explanation}
           </p>
         </div>
       )}
 
       {/* Action Footer */}
-      <div className="border-t border-[#5a3a18] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs font-sans text-[#c4956a]">
+      <div className="border-t border-[#5a3a18] pt-1.5 flex items-center justify-between gap-2 shrink-0">
+        <div className="text-[10px] font-sans text-[#c4956a] truncate">
           {selectedLetters.length}/{targetLength} huruf terpasang
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="shrink-0">
           {!isRoundSubmitted ? (
             <button
               type="button"
               onClick={handleCheckWord}
               disabled={selectedLetters.length !== targetLength}
-              className="w-full sm:w-auto rpg-btn-primary py-3.5 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
+              className="rpg-btn-primary py-2 px-4 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none"
             >
-              <Check size={16} weight="bold" />
+              <Check size={14} weight="bold" />
               <span>CEK KATA</span>
             </button>
           ) : isRoundCorrect ? (
             <button
               type="button"
               onClick={handleNextRound}
-              className="w-full sm:w-auto rpg-btn-primary py-3.5 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+              className="rpg-btn-primary py-2 px-4 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5"
             >
               <span>
                 {currentIndex < items.length - 1
-                  ? 'Lanjut Kata Berikutnya'
-                  : 'Selesaikan Mini-Game'}
+                  ? 'Lanjut Kata'
+                  : 'Selesai'}
               </span>
-              <ArrowRight size={16} weight="bold" />
+              <ArrowRight size={14} weight="bold" />
             </button>
           ) : (
             <button
               type="button"
               onClick={handleRetryRound}
-              className="w-full sm:w-auto rpg-btn-wood py-3.5 px-8 text-xs font-pixel font-bold flex items-center justify-center gap-2"
+              className="rpg-btn-wood py-2 px-4 text-[10px] sm:text-xs font-pixel font-bold flex items-center justify-center gap-1.5"
             >
-              <ArrowCounterClockwise size={16} weight="bold" />
-              <span>Coba Susun Ulang</span>
+              <ArrowCounterClockwise size={14} weight="bold" />
+              <span>Susun Ulang</span>
             </button>
           )}
         </div>
