@@ -170,7 +170,7 @@ export const KuisCepatGame: React.FC<KuisCepatGameProps> = ({
         <span className="font-pixel text-[8px] text-[#7ec850] uppercase tracking-wider block mb-1">
           SOAL #{currentIndex + 1}:
         </span>
-        <h4 className="font-sans text-xs sm:text-sm font-bold text-white leading-snug">
+        <h4 className="font-sans text-xs sm:text-sm font-bold text-white leading-relaxed text-justify break-words">
           {currentQuestion.text}
         </h4>
       </div>
@@ -256,7 +256,7 @@ export const KuisCepatGame: React.FC<KuisCepatGameProps> = ({
               </>
             )}
           </div>
-          <p className="font-sans text-[10px] sm:text-[11px] leading-snug mt-0.5 break-words">
+          <p className="font-sans text-[10px] sm:text-[11px] leading-relaxed mt-0.5 text-justify break-words">
             {currentQuestion.explanation}
           </p>
         </div>

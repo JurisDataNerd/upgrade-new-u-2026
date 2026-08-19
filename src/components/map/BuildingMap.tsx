@@ -215,7 +215,7 @@ const SpotMiniCard: React.FC<SpotMiniCardProps> = ({
               {gameTypeLabel}
             </PixelBadge>
           </div>
-          <h4 className="font-sans text-xs font-bold text-white leading-tight break-words mt-0.5">
+          <h4 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white leading-normal break-words mt-0.5">
             {booth.name}
           </h4>
         </div>

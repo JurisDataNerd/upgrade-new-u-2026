@@ -111,7 +111,7 @@ export default function FloorIntroPage() {
             <h1 className="font-pixel text-sm sm:text-lg font-bold text-white tracking-wide mt-1 leading-snug break-words">
               {floor.name}
             </h1>
-            <p className="font-sans text-[11px] sm:text-xs text-[#f0d060] font-medium leading-snug break-words">
+            <p className="font-pixel text-[9px] sm:text-[10px] text-[#f0d060] leading-normal break-words">
               {floor.theme}
             </p>
           </div>
@@ -168,7 +168,7 @@ export default function FloorIntroPage() {
                 </span>
                 <span className="text-[8px] font-pixel text-[#7ec850]">• Misi Lantai</span>
               </div>
-              <p className="font-sans text-[11px] sm:text-xs text-[#d0c0a0] leading-snug break-words">
+              <p className="font-sans text-[11px] sm:text-xs text-[#d0c0a0] leading-relaxed text-justify break-words">
                 &ldquo;{floor.storyIntro?.narrative || floor.description}&rdquo;
               </p>
             </div>
@@ -213,7 +213,7 @@ export default function FloorIntroPage() {
                   )}
                 </div>
 
-                <h4 className="font-sans text-xs font-bold text-white leading-tight break-words mt-0.5">
+                <h4 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white leading-normal break-words mt-0.5">
                   {boothA.name}
                 </h4>
                 <div className="text-[9px] font-sans text-[#c4956a] mt-0.5">
@@ -248,7 +248,7 @@ export default function FloorIntroPage() {
                   )}
                 </div>
 
-                <h4 className="font-sans text-xs font-bold text-white leading-tight break-words mt-0.5">
+                <h4 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white leading-normal break-words mt-0.5">
                   {boothB.name}
                 </h4>
                 <div className="text-[9px] font-sans text-[#c4956a] mt-0.5">

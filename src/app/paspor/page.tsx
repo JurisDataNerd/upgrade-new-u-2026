@@ -509,7 +509,7 @@ const StampSlot: React.FC<StampSlotProps> = ({ booth, stampRecord, onClick }) =>
             </span>
           </div>
           <h4
-            className={`font-sans text-xs sm:text-sm leading-tight break-words ${
+            className={`font-pixel text-[9px] sm:text-[10px] leading-normal break-words ${
               isAcquired ? 'text-white font-bold' : 'text-[#a08060]'
             }`}
           >

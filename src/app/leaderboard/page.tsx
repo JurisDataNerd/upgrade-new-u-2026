@@ -305,7 +305,7 @@ export default function LeaderboardPage() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <h4
-                            className={`font-sans text-xs sm:text-sm font-bold leading-tight break-words ${
+                            className={`font-pixel text-[10px] sm:text-xs font-bold leading-normal break-words ${
                               isMe ? 'text-white' : 'text-[#f0e0c0]'
                             }`}
                           >
@@ -373,7 +373,7 @@ export default function LeaderboardPage() {
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <h3 className="font-sans text-xs sm:text-sm font-bold text-white leading-tight break-words">
+                          <h3 className="font-pixel text-[10px] sm:text-xs font-bold text-white leading-normal break-words">
                             {group.name}
                           </h3>
                           {hasMe && (
@@ -436,7 +436,7 @@ export default function LeaderboardPage() {
                                 />
                               </div>
                               <div className="min-w-0 flex-1">
-                                <div className="font-sans text-xs font-bold leading-tight break-words">
+                                <div className="font-pixel text-[9px] sm:text-[10px] font-bold leading-normal break-words">
                                   {member.name}
                                 </div>
                                 <div className="font-sans text-[9px] text-[#a08060] leading-tight break-words">

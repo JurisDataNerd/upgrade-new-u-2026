@@ -128,55 +128,58 @@ export default function BoothDetailPage() {
       <Navbar />
 
       <main className="max-w-2xl mx-auto px-2.5 sm:px-6 py-1.5 sm:py-2.5 flex-1 flex flex-col justify-between overflow-hidden w-full gap-1.5 sm:gap-2">
-        {/* Top Compact Booth Bar */}
-        <div className="flex items-center justify-between gap-2 bg-[#1f140a] border-2 border-[#5a3a18] rounded-xl px-2.5 py-1.5 shadow-md shrink-0">
-          <div className="flex items-center gap-2 min-w-0">
-            <Link
-              href="/peta"
-              onClick={() => soundEnabled && soundEngine.playClick()}
-              className="inline-flex items-center gap-1 text-[11px] font-pixel text-[#c4956a] hover:text-[#f0d060] transition-colors shrink-0"
-            >
-              <ArrowLeft size={14} weight="bold" />
-              <span>Peta</span>
-            </Link>
+        {/* Top Spot Status Bar (2-Row RPG Panel for Mobile-First & Pixel Theme) */}
+        <div className="bg-[#1f140a] border-2 border-[#5a3a18] rounded-xl p-2 sm:p-2.5 shadow-md shrink-0 space-y-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <Link
+                href={`/play/floor/${booth.floorNumber}/intro`}
+                onClick={() => soundEnabled && soundEngine.playClick()}
+                className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-pixel text-[#c4956a] hover:text-[#f0d060] transition-colors shrink-0 bg-[#170f07] px-2 py-1 rounded border border-[#5a3a18]"
+              >
+                <ArrowLeft size={12} weight="bold" />
+                <span>LT {booth.floorNumber}</span>
+              </Link>
 
-            <div className="w-[1px] h-4 bg-[#5a3a18]" />
+              <span className="font-pixel text-[8px] sm:text-[9px] text-[#f0d060] bg-[#281c12] px-1.5 py-1 rounded border border-[#5a3a18]">
+                {booth.code}
+              </span>
+            </div>
 
-            <div className="flex items-center gap-1.5 min-w-0 flex-1">
-              <div className="w-6 h-6 bg-[#170f07] border border-[#f0d060] rounded-md flex items-center justify-center shrink-0">
-                <StampIcon name={booth.stampIcon} size={14} className="text-[#f0d060]" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h1 className="font-sans text-xs sm:text-sm font-bold text-white leading-tight break-words">
-                  {booth.name}
-                </h1>
-              </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  if (soundEnabled) soundEngine.playSelect();
+                  setShowStoryModal(true);
+                }}
+                className="py-1 px-2.5 text-[8px] sm:text-[9px] font-pixel text-[#f0d060] bg-[#2d1b0e] hover:bg-[#3d2b1e] border border-[#8b6f4e] rounded-md flex items-center gap-1 cursor-pointer shadow"
+              >
+                <BookOpen size={12} weight="fill" />
+                <span>Materi</span>
+              </button>
+
+              {isAlreadyCompleted ? (
+                <div className="flex items-center gap-1 bg-[#14230f] border border-[#7ec850] rounded-md px-1.5 py-0.5">
+                  <CheckCircle size={12} weight="fill" className="text-[#7ec850]" />
+                  <span className="font-pixel text-[8px] text-[#7ec850]">Selesai</span>
+                </div>
+              ) : (
+                <PixelBadge variant="gold" size="sm">
+                  +250 XP
+                </PixelBadge>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              type="button"
-              onClick={() => {
-                if (soundEnabled) soundEngine.playSelect();
-                setShowStoryModal(true);
-              }}
-              className="py-1 px-2 text-[9px] sm:text-[10px] font-pixel text-[#f0d060] bg-[#2d1b0e] hover:bg-[#3d2b1e] border border-[#8b6f4e] rounded-md flex items-center gap-1 cursor-pointer"
-            >
-              <BookOpen size={12} weight="fill" />
-              <span>Materi</span>
-            </button>
-
-            {isAlreadyCompleted ? (
-              <div className="flex items-center gap-1 bg-[#14230f] border border-[#7ec850] rounded-md px-1.5 py-0.5">
-                <CheckCircle size={12} weight="fill" className="text-[#7ec850]" />
-                <span className="font-pixel text-[8px] text-[#7ec850]">Selesai</span>
-              </div>
-            ) : (
-              <PixelBadge variant="gold" size="sm">
-                +250 XP
-              </PixelBadge>
-            )}
+          {/* Spot Title Line with Stamp Icon */}
+          <div className="flex items-center gap-2 border-t border-[#3d2b1e] pt-1.5">
+            <div className="w-6 h-6 bg-[#170f07] border border-[#f0d060] rounded-md flex items-center justify-center shrink-0">
+              <StampIcon name={booth.stampIcon} size={14} className="text-[#f0d060]" />
+            </div>
+            <h1 className="font-pixel text-[9px] sm:text-[11px] font-bold text-white leading-normal break-words flex-1">
+              {booth.name}
+            </h1>
           </div>
         </div>
 
@@ -203,7 +206,7 @@ export default function BoothDetailPage() {
                   <span className="text-[8px] font-pixel text-[#7ec850] uppercase block">
                     Materi Corner • {booth.code}
                   </span>
-                  <h3 className="font-sans text-xs sm:text-sm font-bold text-white leading-tight break-words">
+                  <h3 className="font-pixel text-[10px] sm:text-xs font-bold text-white leading-normal break-words">
                     {booth.name}
                   </h3>
                 </div>
@@ -230,7 +233,7 @@ export default function BoothDetailPage() {
                 <span className="font-pixel text-[9px] text-[#f0d060] block">
                   {participant.name}
                 </span>
-                <p className="font-sans text-xs text-[#f0e6d2] leading-relaxed">
+                <p className="font-sans text-xs text-[#f0e6d2] leading-relaxed text-justify break-words">
                   {booth.story}
                 </p>
               </div>

@@ -167,14 +167,14 @@ export const TebakKataGame: React.FC<TebakKataGameProps> = ({
           </span>
         </div>
 
-        <p className="font-sans text-[11px] sm:text-xs text-white font-medium leading-snug break-words">
+        <p className="font-sans text-[11px] sm:text-xs text-white font-medium leading-relaxed text-justify break-words">
           {currentItem.clue}
         </p>
 
         {showHint && currentItem.hint && (
           <div className="bg-[#170f07] p-1.5 rounded border border-[#f0d060]/50 text-[10px] font-sans text-[#f0d060] flex items-center gap-1.5 animate-in fade-in">
             <Lightbulb size={12} weight="fill" className="shrink-0 text-[#f0d060]" />
-            <span className="break-words"><strong>Petunjuk:</strong> {currentItem.hint}</span>
+            <span className="break-words text-justify"><strong>Petunjuk:</strong> {currentItem.hint}</span>
           </div>
         )}
       </div>
@@ -283,7 +283,7 @@ export const TebakKataGame: React.FC<TebakKataGameProps> = ({
               </>
             )}
           </div>
-          <p className="font-sans text-[10px] sm:text-[11px] leading-snug break-words">
+          <p className="font-sans text-[10px] sm:text-[11px] leading-relaxed text-justify break-words">
             {currentItem.explanation}
           </p>
         </div>

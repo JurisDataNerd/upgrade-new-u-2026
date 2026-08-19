@@ -121,7 +121,7 @@ export const TebakPosisiGame: React.FC<TebakPosisiGameProps> = ({
         </div>
 
         {/* Prompt */}
-        <h4 className="font-sans text-[11px] sm:text-xs font-bold text-white leading-snug break-words">
+        <h4 className="font-sans text-[11px] sm:text-xs font-bold text-white leading-relaxed text-justify break-words">
           {currentItem.prompt}
         </h4>
       </div>
@@ -202,7 +202,7 @@ export const TebakPosisiGame: React.FC<TebakPosisiGameProps> = ({
               </>
             )}
           </div>
-          <p className="font-sans text-[10px] sm:text-[11px] leading-snug break-words">
+          <p className="font-sans text-[10px] sm:text-[11px] leading-relaxed text-justify break-words">
             {currentItem.explanation}
           </p>
         </div>

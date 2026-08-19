@@ -104,7 +104,7 @@ export default function FloorCompletePage() {
                 <span className="font-pixel text-[7px] text-[#7ec850] uppercase block">
                   {boothA.code} • Stempel
                 </span>
-                <h4 className="font-sans text-xs font-bold text-white leading-tight break-words mt-0.5">
+                <h4 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white leading-normal break-words mt-0.5">
                   {boothA.name}
                 </h4>
                 <span className="font-mono text-[9px] text-[#f0d060] block mt-0.5">
@@ -122,7 +122,7 @@ export default function FloorCompletePage() {
                 <span className="font-pixel text-[7px] text-[#7ec850] uppercase block">
                   {boothB.code} • Stempel
                 </span>
-                <h4 className="font-sans text-xs font-bold text-white leading-tight break-words mt-0.5">
+                <h4 className="font-pixel text-[9px] sm:text-[10px] font-bold text-white leading-normal break-words mt-0.5">
                   {boothB.name}
                 </h4>
                 <span className="font-mono text-[9px] text-[#f0d060] block mt-0.5">

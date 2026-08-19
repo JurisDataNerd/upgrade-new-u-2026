@@ -109,7 +109,7 @@ export const BenarSalahGame: React.FC<BenarSalahGameProps> = ({
         </div>
 
         <div className="bg-[#170f07] p-3 sm:p-4 border border-[#5a3a18] rounded-xl shadow-inner my-auto">
-          <p className="font-sans text-xs sm:text-sm font-semibold text-white leading-relaxed">
+          <p className="font-sans text-xs sm:text-sm font-semibold text-white leading-relaxed text-justify break-words">
             &ldquo;{currentStatement.statement}&rdquo;
           </p>
         </div>
@@ -163,7 +163,7 @@ export const BenarSalahGame: React.FC<BenarSalahGameProps> = ({
                 </>
               )}
             </div>
-            <p className="font-sans text-[10px] sm:text-[11px] leading-snug break-words">
+            <p className="font-sans text-[10px] sm:text-[11px] leading-relaxed text-justify break-words">
               {currentStatement.explanation}
             </p>
           </div>
