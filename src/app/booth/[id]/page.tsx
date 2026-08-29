@@ -37,7 +37,6 @@ export default function BoothDetailPage() {
     AVATAR_OPTIONS.find((a) => a.id === participant.avatar) || AVATAR_OPTIONS[0];
 
   const [showCelebration, setShowCelebration] = useState<boolean>(false);
-  const [showStoryModal, setShowStoryModal] = useState<boolean>(false);
   const [celebrationDetails, setCelebrationDetails] = useState<{
     stampRecord: StampRecord | null;
     isFloorCompleted: boolean;
@@ -120,6 +119,8 @@ export default function BoothDetailPage() {
       router.push(`/play/floor/${floor.number}/complete`);
     }
   };
+
+  const [showStoryModal, setShowStoryModal] = useState<boolean>(false);
 
   return (
     <div className="min-h-[100dvh] h-[100dvh] max-h-[100dvh] flex flex-col bg-[#2d1b0e] text-[#f0e0c0] overflow-hidden">

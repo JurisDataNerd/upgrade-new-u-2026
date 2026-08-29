@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -34,22 +34,6 @@ export default function LinearSpotPage() {
   const soundEnabled = useGameStore((state) => state.soundEnabled);
   const completeBooth = useGameStore((state) => state.completeBooth);
   const isAlreadyCompleted = useGameStore((state) => state.isBoothCompleted(spotId));
-  const hasHydrated = useGameStore((state) => state._hasHydrated);
-  const isRegistered = useGameStore((state) =>
-    Boolean(
-      state.participant.isRegistered &&
-        state.participant.name &&
-        state.participant.nim
-    )
-  );
-
-  // Registration gate: deep-linking into a spot requires a profile.
-  useEffect(() => {
-    if (!hasHydrated) return;
-    if (!isRegistered) {
-      router.replace('/');
-    }
-  }, [hasHydrated, isRegistered, router]);
 
   const floor =
     FLOORS_DATA.find((f) => f.number === floorNumber) || FLOORS_DATA[0];
@@ -63,7 +47,6 @@ export default function LinearSpotPage() {
     AVATAR_OPTIONS.find((a) => a.id === participant.avatar) || AVATAR_OPTIONS[0];
 
   const [showCelebration, setShowCelebration] = useState<boolean>(false);
-  const [showStoryModal, setShowStoryModal] = useState<boolean>(false);
   const [celebrationDetails, setCelebrationDetails] = useState<{
     stampRecord: StampRecord | null;
     isFloorCompleted: boolean;
@@ -143,6 +126,8 @@ export default function LinearSpotPage() {
       router.push(`/play/floor/${floor.number}/complete`);
     }
   };
+
+  const [showStoryModal, setShowStoryModal] = useState<boolean>(false);
 
   return (
     <div className="min-h-[100dvh] h-[100dvh] max-h-[100dvh] flex flex-col bg-[#2d1b0e] text-[#f0e0c0] overflow-hidden">
