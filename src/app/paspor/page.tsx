@@ -43,6 +43,23 @@ export default function PassportPage() {
   const handlePrint = () => {
     if (soundEnabled) soundEngine.playClick();
     if (typeof window !== 'undefined') {
+      // Passport print: make sure certificate mode is off.
+      document.body.classList.remove('print-certificate');
+      window.print();
+    }
+  };
+
+  const handlePrintCertificate = () => {
+    if (soundEnabled) soundEngine.playClick();
+    if (typeof window !== 'undefined') {
+      // Certificate print: isolate the certificate card via body class
+      // (see the @media print rules in globals.css).
+      document.body.classList.add('print-certificate');
+      const clearMode = () => {
+        document.body.classList.remove('print-certificate');
+        window.removeEventListener('afterprint', clearMode);
+      };
+      window.addEventListener('afterprint', clearMode);
       window.print();
     }
   };
@@ -58,7 +75,7 @@ export default function PassportPage() {
       <CrtScanlines />
       <Navbar />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 space-y-6">
+      <main className="print-area max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 space-y-6">
         {/* Header Title & Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -390,7 +407,7 @@ export default function PassportPage() {
       {/* Graduation Certificate Modal */}
       {showCertificate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0604]/90 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="w-full max-w-2xl bg-gradient-to-b from-[#2d1b0e] to-[#170f07] border-[4px] border-[#f0d060] rounded-2xl p-6 sm:p-8 text-center relative shadow-2xl">
+          <div className="print-area print-certificate w-full max-w-2xl bg-gradient-to-b from-[#2d1b0e] to-[#170f07] border-[4px] border-[#f0d060] rounded-2xl p-6 sm:p-8 text-center relative shadow-2xl">
             <div className="border-2 border-[#8b6f4e] rounded-xl p-6 sm:p-8 bg-[#170f07]/90 space-y-4 shadow-inner">
               <div className="flex items-center justify-center gap-3">
                 <Image
@@ -428,7 +445,7 @@ export default function PassportPage() {
 
               <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button
-                  onClick={handlePrint}
+                  onClick={handlePrintCertificate}
                   className="rpg-btn-primary py-3 px-6 text-xs font-pixel font-bold flex items-center justify-center gap-2"
                 >
                   <Printer size={18} weight="bold" />

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Sparkle,
   GameController,
@@ -20,7 +21,7 @@ import {
   Trophy,
 } from '@phosphor-icons/react';
 import { useGameStore } from '@/store/useGameStore';
-import { AVATAR_OPTIONS, UNU_FACULTIES } from '@/data/mockData';
+import { AVATAR_OPTIONS, GENIUS_GROUPS, UNU_FACULTIES } from '@/data/mockData';
 import { soundEngine } from '@/lib/sound';
 
 export const HeroSection: React.FC = () => {
@@ -33,8 +34,15 @@ export const HeroSection: React.FC = () => {
   const toggleSound = useGameStore((state) => state.toggleSound);
   const crtEffect = useGameStore((state) => state.crtEffect);
   const toggleCrt = useGameStore((state) => state.toggleCrt);
+  const hasHydrated = useGameStore((state) => state._hasHydrated);
+
+  const router = useRouter();
+  const isRegistered = Boolean(
+    participant.isRegistered && participant.name && participant.nim
+  );
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [gateNotice, setGateNotice] = useState(false);
   const [tempName, setTempName] = useState(participant.name);
   const [tempNim, setTempNim] = useState(participant.nim);
   const [tempFaculty, setTempFaculty] = useState(
@@ -44,18 +52,43 @@ export const HeroSection: React.FC = () => {
     participant.prodi || 'Informatika'
   );
   const [tempAvatar, setTempAvatar] = useState(participant.avatar);
+  const [tempGroupId, setTempGroupId] = useState(
+    participant.groupId || GENIUS_GROUPS[0].id
+  );
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
+    const group = GENIUS_GROUPS.find((g) => g.id === tempGroupId);
     setParticipantInfo({
-      name: tempName,
-      nim: tempNim,
+      name: tempName.trim(),
+      nim: tempNim.trim(),
       faculty: tempFaculty,
       prodi: tempProdi,
       avatar: tempAvatar,
+      groupId: group?.id,
+      groupName: group?.name,
+      isRegistered: true,
     });
     if (soundEnabled) soundEngine.playCorrect();
+    const shouldContinueJourney = gateNotice;
+    setGateNotice(false);
     setIsProfileModalOpen(false);
+    if (shouldContinueJourney) {
+      router.push('/play');
+    }
+  };
+
+  const handlePlayClick = () => {
+    if (soundEnabled) soundEngine.playClick();
+    // Wait for the persisted store before deciding, so returning players
+    // are not wrongly blocked right after a page load.
+    if (!hasHydrated) return;
+    if (!isRegistered) {
+      setGateNotice(true);
+      setIsProfileModalOpen(true);
+      return;
+    }
+    router.push('/play');
   };
 
   const handleFacultyChange = (newFac: string) => {
@@ -191,6 +224,7 @@ export const HeroSection: React.FC = () => {
             <button
               onClick={() => {
                 if (soundEnabled) soundEngine.playClick();
+                setGateNotice(false);
                 setIsProfileModalOpen(true);
               }}
               className="text-[9px] font-sans text-[#c4956a] hover:text-[#f0d060] underline cursor-pointer"
@@ -241,16 +275,14 @@ export const HeroSection: React.FC = () => {
 
         {/* Main Action Buttons Stack */}
         <div className="w-full max-w-sm flex flex-col items-center gap-2">
-          {/* Primary Action Button */}
-          <Link href="/play" className="w-full">
-            <button
-              onClick={() => soundEnabled && soundEngine.playClick()}
-              className="w-full py-2.5 sm:py-3.5 px-4 text-xs sm:text-sm font-pixel font-bold uppercase tracking-wider rpg-btn-primary flex items-center justify-center gap-2 shadow-lg"
-            >
-              <GameController size={18} weight="bold" />
-              <span>{totalStamps > 0 ? 'LANJUTKAN PENJELAJAHAN' : 'MULAI PERJALANAN'}</span>
-            </button>
-          </Link>
+          {/* Primary Action Button — gated: requires registered name + NIM */}
+          <button
+            onClick={handlePlayClick}
+            className="w-full py-2.5 sm:py-3.5 px-4 text-xs sm:text-sm font-pixel font-bold uppercase tracking-wider rpg-btn-primary flex items-center justify-center gap-2 shadow-lg"
+          >
+            <GameController size={18} weight="bold" />
+            <span>{totalStamps > 0 ? 'LANJUTKAN PENJELAJAHAN' : 'MULAI PERJALANAN'}</span>
+          </button>
 
           {/* Secondary 2 Buttons in 1 Row */}
           <div className="grid grid-cols-2 gap-2 w-full">
@@ -306,7 +338,7 @@ export const HeroSection: React.FC = () => {
           </div>
 
           <div className="font-pixel text-[7px] sm:text-[8px] text-[#8b6f4e] uppercase tracking-wider">
-            UNU YOGYAKARTA © 2026 • GENIUS PROTOTYPE
+            UNU YOGYAKARTA © 2026 • GENIUS: UPGRADE NEW YOU
           </div>
         </div>
       </div>
@@ -331,6 +363,12 @@ export const HeroSection: React.FC = () => {
                 PROFIL MAHASISWA BARU
               </h2>
             </div>
+
+            {gateNotice && (
+              <div className="mb-3 bg-[#14230f] border border-[#7ec850] text-[#a0d870] font-sans text-[11px] rounded-lg px-3 py-2 text-center">
+                Lengkapi Nama & NIM untuk memulai perjalananmu.
+              </div>
+            )}
 
             <form onSubmit={handleSaveProfile} className="space-y-3">
               {/* Avatar Pickers */}
@@ -447,6 +485,23 @@ export const HeroSection: React.FC = () => {
                       ))}
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block font-pixel text-[8px] text-[#c4956a] mb-0.5 uppercase">
+                    Kelompok Genius
+                  </label>
+                  <select
+                    value={tempGroupId}
+                    onChange={(e) => setTempGroupId(e.target.value)}
+                    className="w-full bg-[#170f07] border border-[#5a3a18] focus:border-[#f0d060] rounded-md px-2 py-1.5 text-[11px] text-white outline-none"
+                  >
+                    {GENIUS_GROUPS.map((g) => (
+                      <option key={g.id} value={g.id}>
+                        {g.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
