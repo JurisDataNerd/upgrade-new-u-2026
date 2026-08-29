@@ -4,7 +4,9 @@ Living checklist — update as items close. Roadmap & rationale: see `../plan.md
 
 ## Track A — Public demo
 
-- [x] Git + GitHub (repo already existed: `JurisDataNerd/upgrade-new-u-2026`)
+**Status 2026-08-29:** seluruh kode Track A selesai & terverifikasi (`next build` ✅, smoke test ✅, review di localhost:3000 ✅). Perubahan ada di **PR #2** (`feat/track-a-public-demo-reapply`) — menunggu review & merge oleh author. Riwayat: PR #1 terlanjur ter-merge lalu di-revert (`9ae4090`); PR #2 me-re-apply perubahan yang sama (branch lama tak bisa dipakai karena sudah tercatat merged di GitHub).
+
+- [x] Git + GitHub (repo sudah ada `JurisDataNerd/upgrade-new-u-2026`; alur review via branch + PR)
 - [x] Persist localStorage (`genius_unu_game_state_v1` — Zustand `persist` + `StoreHydrator`, `skipHydration` untuk SSR)
 - [x] Registration gate (nama + NIM wajib; gate di tombol landing, `/play`, intro lantai, dan spot mini-game)
 - [x] Kelompok picker (`Genius 01`–`Genius 10` dari `GENIUS_GROUPS` di modal profil)
@@ -12,10 +14,13 @@ Living checklist — update as items close. Roadmap & rationale: see `../plan.md
 - [x] Print CSS (paspor `.print-area`, sertifikat `.print-certificate`, A4 portrait, warna dipertahankan)
 - [x] Meta/OG + drop "PROTOTYPE" (OpenGraph/Twitter, `robots.txt`, `app/icon.svg`, footer landing)
 - [x] README sync (kode `B1-A`…`B9-B`, nama lantai, pasangan mini-game, URL repo)
-- [ ] Vercel deploy (perlu: push GitHub + import project di akun Vercel)
+- [ ] **Merge PR #2 oleh author** → https://github.com/JurisDataNerd/upgrade-new-u-2026/pull/2
+- [ ] Vercel deploy (setelah merge: Vercel → Add New Project → import repo → Deploy, zero config)
 - [ ] Phone QA (Android Chrome + iOS Safari: fit-to-screen, audio unlock, print, refresh → progres tetap)
 
 ## Track B — PKKMB event (mulai setelah Track A live)
+
+**Status 2026-08-29:** belum mulai — menunggu keputusan author: **demo-only** (Track A cukup) vs **full PKKMB event** (Track B wajib; leaderboard & identitas saat ini masih dummy/local).
 
 - [ ] Backend + identity (MongoDB Atlas + Next.js Route Handlers + driver `mongodb`; login by NIM)
 - [ ] Live leaderboard (polling `/api/leaderboard` tiap 5–10 s)
