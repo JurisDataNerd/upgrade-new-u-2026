@@ -78,6 +78,8 @@ export default function FloorIntroPage() {
         return 'Tebak Lokasi';
       case 'tebak_gambar':
         return 'Tebak Gambar';
+      case 'kuis_balapan':
+        return 'Kuis Balapan';
       case 'memory_match':
         return 'Mencocokkan Kartu';
       case 'kuis_cepat':

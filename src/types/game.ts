@@ -12,6 +12,7 @@ export type GameType =
   | 'tebak_kata'
   | 'tebak_posisi'
   | 'tebak_gambar'
+  | 'kuis_balapan'
   | 'memory_match'
   | 'kuis_cepat'
   | 'benar_salah'
@@ -101,6 +102,13 @@ export interface TebakGambarContent {
   items: TebakGambarItem[];
 }
 
+// 3c. Kuis Balapan (Type-Racer-style race driven by answering questions)
+export interface KuisBalapanContent {
+  questions: Question[];
+  /** Detik antara tiap langkah rival; default 8 detik. */
+  rivalIntervalSeconds?: number;
+}
+
 // 4. Memory Match (Pair Matching)
 export interface MemoryPair {
   id: string;
@@ -155,6 +163,7 @@ export interface Booth {
   tebakKataContent?: TebakKataContent;
   tebakPosisiContent?: TebakPosisiContent;
   tebakGambarContent?: TebakGambarContent;
+  kuisBalapanContent?: KuisBalapanContent;
   memoryMatchContent?: MemoryMatchContent;
   kuisCepatContent?: KuisCepatContent;
   benarSalahContent?: BenarSalahContent;

@@ -16,7 +16,7 @@
 - [Tentang Proyek](#-tentang-proyek)
 - [Fitur Utama](#-fitur-utama)
 - [Struktur 9 Lantai & 18 Corner](#-struktur-9-lantai--18-corner)
-- [6 Tipe Mini-Game](#-6-tipe-mini-game)
+- [8 Tipe Mini-Game](#-8-tipe-mini-game)
 - [Teknologi & Arsitektur](#-teknologi--arsitektur)
 - [Struktur Folder](#-struktur-folder)
 - [Panduan Instalasi & Menjalankan](#-panduan-instalasi--menjalankan)
@@ -38,7 +38,7 @@ Aplikasi ini mengubah pengenalan fasilitas gedung, nilai Aswaja An-Nahdliyyah, t
 
 - 🏛️ **Eksplorasi 9 Lantai Interaktif:** Peta visual gedung 9 lantai dengan indikator progres tuntas secara *real-time*.
 - 🎯 **18 Corner & Materi Edukasi:** Setiap lantai memiliki 2 spot corner lengkap dengan materi pengenalan kampus dan mini-game edukatif.
-- 🕹️ **6 Engine Mini-Game Unik:** Teka-Teki Silang (TTS), Tebak Kata, Tebak Posisi Ruangan, Memory Match, Kuis Cepat Berwaktu, dan Benar/Salah.
+- 🕹️ **8 Engine Mini-Game Unik:** TTS, Tebak Kata, Tebak Posisi, Tebak Gambar, Memory Match, Kuis Cepat Berwaktu, Benar/Salah, dan Kuis Balapan (gaya *type racer* yang dimodifikasi — balapan dijawab, bukan diketik).
 - 📜 **Paspor Digital & Kartu Mahasiswa (KTM):** Kartu identitas RPG dengan nama, NIM, fakultas, prodi, koleksi 18 stempel digital, serta tombol cetak sertifikat.
 - 🏆 **Papan Peringkat (Leaderboard):** Sistem peringkat individu dan kelompok berdasarkan perolehan Total XP dan jumlah stempel.
 - 🔐 **Registrasi & Pemilihan Kelompok:** Nama + NIM wajib diisi sebelum bermain (*registration gate*), lengkap dengan pemilih Kelompok Genius (`Genius 01`–`Genius 10`).
@@ -53,7 +53,7 @@ Aplikasi ini mengubah pengenalan fasilitas gedung, nilai Aswaja An-Nahdliyyah, t
 
 | Lantai | Nama Zona & Tema | Kode & Nama Spot 1 | Kode & Nama Spot 2 | Tipe Game |
 | :--- | :--- | :--- | :--- | :--- |
-| **L1** | Welcome Hall & Karakter Kampus | `B1-A` Corner Nilai Dasar & Aswaja An-Nahdliyyah | `B1-B` Corner Budaya Akademik & Etika Mahasiswa | Tebak Kata & Benar/Salah |
+| **L1** | Welcome Hall & Karakter Kampus | `B1-A` Corner Nilai Dasar & Aswaja An-Nahdliyyah | `B1-B` Corner Budaya Akademik & Etika Mahasiswa | Tebak Gambar & Kuis Balapan |
 | **L2** | Kesehatan & Ketahanan Mahasiswa | `B2-A` Corner Klinik Kampus & Konseling Sebaya | `B2-B` Corner Kampus Bersinar (Bersih Narkoba) | Tebak Posisi & Kuis Cepat |
 | **L3** | Ruang Kolaborasi & Soft Skills | `B3-A` Corner Dinamika Kelompok & Komunikasi Asertif | `B3-B` Corner Kepemimpinan Inklusif & Organisasi | TTS & Memory Match |
 | **L4** | Student Hub & Satgas PPKS | `B4-A` Corner Ruang Aman & Satgas PPKS | `B4-B` Corner Anti-Perundungan & Solidaritas | Benar/Salah & Tebak Posisi |
@@ -68,7 +68,7 @@ Aplikasi ini mengubah pengenalan fasilitas gedung, nilai Aswaja An-Nahdliyyah, t
 
 ---
 
-## 🎲 6 Tipe Mini-Game
+## 🎲 8 Tipe Mini-Game
 
 1. **TTS Kampus (`TtsGame.tsx`):**
    - Teka-teki silang kotak huruf interaktif dengan navigasi nomor soal mendatar & menurun.
@@ -82,6 +82,10 @@ Aplikasi ini mengubah pengenalan fasilitas gedung, nilai Aswaja An-Nahdliyyah, t
    - Kuis pilihan ganda dengan *countdown timer progress bar* dinamis dan pembahasannya.
 6. **Benar / Salah (`BenarSalahGame.tsx`):**
    - Evaluasi pernyataan etika dan nilai kampus dengan tombol taktil besar BENAR atau SALAH.
+7. **Tebak Gambar (`TebakGambarGame.tsx`):**
+   - Menjawab pertanyaan berdasarkan gambar/visual soal; mendukung gambar asli (`imageUrl`) maupun placeholder emoji sementara.
+8. **Kuis Balapan (`KuisBalapanGame.tsx`):**
+   - *Race quiz* bergaya *type racer* yang dimodifikasi: tiap jawaban **benar** memacu mobilmu 🚗 mendekati garis finis, sementara rival 🏎️ melaju otomatis setiap beberapa detik — jawab cepat sebelum rival menang!
 
 ---
 

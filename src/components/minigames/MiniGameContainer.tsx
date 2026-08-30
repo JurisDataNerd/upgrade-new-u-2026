@@ -6,6 +6,7 @@ import { TtsGame } from './TtsGame';
 import { TebakKataGame } from './TebakKataGame';
 import { TebakPosisiGame } from './TebakPosisiGame';
 import { TebakGambarGame } from './TebakGambarGame';
+import { KuisBalapanGame } from './KuisBalapanGame';
 import { MemoryMatchGame } from './MemoryMatchGame';
 import { KuisCepatGame } from './KuisCepatGame';
 import { BenarSalahGame } from './BenarSalahGame';
@@ -55,6 +56,15 @@ export const MiniGameContainer: React.FC<MiniGameContainerProps> = ({
       return (
         <TebakGambarGame
           content={booth.tebakGambarContent}
+          onComplete={onComplete}
+          isCompleted={isCompleted}
+        />
+      );
+
+    case 'kuis_balapan':
+      return (
+        <KuisBalapanGame
+          content={booth.kuisBalapanContent}
           onComplete={onComplete}
           isCompleted={isCompleted}
         />

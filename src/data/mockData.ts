@@ -383,8 +383,8 @@ export const BOOTHS_DATA: Record<string, Booth> = {
     code: 'B1-B',
     name: 'Corner Budaya Akademik & Etika Mahasiswa',
     subtitle: 'Tata Krama dan Kedisiplinan Kehidupan Kampus',
-    type: 'benar_salah',
-    tipe_game: 'benar_salah',
+    type: 'kuis_balapan',
+    tipe_game: 'kuis_balapan',
     category: 'umum',
     readingTime: '2 menit baca',
     iconName: 'GraduationCap',
@@ -408,31 +408,55 @@ export const BOOTHS_DATA: Record<string, Booth> = {
         explanation: 'Etika menghubungi dosen wajib mencantumkan salam, identitas lengkap, tujuan jelas, dan bahasa santun.',
       },
     ],
-    benarSalahContent: {
-      statements: [
+    // Soal sementara bertema NU/adab akademik — akan diganti soal berbasis
+    // modul PKKMB saat materinya tersedia.
+    kuisBalapanContent: {
+      rivalIntervalSeconds: 8,
+      questions: [
         {
-          id: 'bs-1b-1',
-          statement:
-            'Saat mengirim pesan konfirmasi atau izin ke dosen, mahasiswa wajib memberi salam, menyebutkan nama & NIM, serta berbahasa santun.',
-          isCorrect: true,
+          id: 'qb-1b-1',
+          text: 'Dalam tradisi pesantren NU, menuntut ilmu harus didahului oleh...',
+          options: ['Adab kepada guru', 'Kecerdasan instan', 'Fasilitas mewah', 'Jumlah hafalan banyak'],
+          correctAnswerIndex: 0,
           explanation:
-            'Benar! Komunikasi akademik formal harus mengedepankan tata krama, kejelasan identitas, dan waktu yang sopan.',
+            'Para ulama NU mengajarkan "al-adabu qablal-\'ilm" — adab mendahului ilmu. Hormat kepada guru adalah kunci berkahnya menuntut ilmu.',
         },
         {
-          id: 'bs-1b-2',
-          statement:
-            'Mahasiswa diperbolehkan menitipkan presensi (absen titip) kepada teman jika sedang terlambat bangun.',
-          isCorrect: false,
+          id: 'qb-1b-2',
+          text: 'Metode membaca kitab kuning secara kolektif, dengan guru membaca dan menjelaskan (syarah) di depan santri, disebut...',
+          options: ['Bandongan', 'Sorogan', 'Presentasi', 'Diskusi panel'],
+          correctAnswerIndex: 0,
           explanation:
-            'Salah! Menitipkan presensi adalah pelanggaran integritas akademik dan ketidakjujuran yang dilarang di kampus.',
+            'Bandongan adalah metode belajar kitab secara massal: guru membaca teks Arab beserta terjemah dan syarahnya. Sorogan bersifat individual (santri maju satu per satu).',
         },
         {
-          id: 'bs-1b-3',
-          statement:
-            'Menjaga kebersihan ruang kelas dan merawat fasilitas bersama kampus merupakan tanggung jawab seluruh mahasiswa.',
-          isCorrect: true,
+          id: 'qb-1b-3',
+          text: 'Mengutip pendapat atau tulisan orang lain dalam karya ilmiah tanpa mencantumkan sumbernya termasuk...',
+          options: ['Plagiarisme', 'Parafrase yang baik', 'Sitasi lazim', 'Rujukan sekunder'],
+          correctAnswerIndex: 0,
           explanation:
-            'Benar! Fasilitas kampus adalah milik bersama yang wajib dijaga kebersihan dan keberlangsungannya oleh segenap sivitas.',
+            'Plagiarisme melanggar integritas akademik. Nilai kejujuran (istiqamah dan amanah) yang diajarkan Aswaja wajib dijaga dalam karya tulis ilmiah.',
+        },
+        {
+          id: 'qb-1b-4',
+          text: 'Etika yang tepat saat mahasiswa datang terlambat masuk ruang kuliah adalah...',
+          options: [
+            'Minta izin dengan sopan, lalu masuk pelan dan duduk di dekat pintu',
+            'Menyusup diam-diam ke kursi paling belakang',
+            'Mengetuk pintu keras agar dosen tahu',
+            'Membatalkan kelas itu saja',
+          ],
+          correctAnswerIndex: 0,
+          explanation:
+            'Keterlambatan kadang tak terelakkan; adabnya adalah meminta izin secara sopan dan masuk dengan mengganggu seminimal mungkin jalannya perkuliahan.',
+        },
+        {
+          id: 'qb-1b-5',
+          text: 'Hari Santri Nasional, yang diambil dari momentum Resolusi Jihad, diperingati setiap tanggal...',
+          options: ['22 Oktober', '31 Januari', '17 Agustus', '1 Muharram'],
+          correctAnswerIndex: 0,
+          explanation:
+            '22 Oktober ditetapkan sebagai Hari Santri Nasional (Kepres No. 24 Tahun 2015), mengenang Resolusi Jihad KH. Hasyim Asy\'ari tahun 1945.',
         },
       ],
     },
