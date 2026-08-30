@@ -43,6 +43,10 @@ export const BuildingMap: React.FC = () => {
         return 'Tebak Kata';
       case 'tebak_posisi':
         return 'Tebak Posisi';
+      case 'tebak_gambar':
+        return 'Tebak Gambar';
+      case 'kuis_balapan':
+        return 'Kuis Balapan';
       case 'memory_match':
         return 'Memory Match';
       case 'kuis_cepat':

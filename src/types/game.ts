@@ -11,6 +11,8 @@ export type GameType =
   | 'tts'
   | 'tebak_kata'
   | 'tebak_posisi'
+  | 'tebak_gambar'
+  | 'kuis_balapan'
   | 'memory_match'
   | 'kuis_cepat'
   | 'benar_salah'
@@ -82,6 +84,31 @@ export interface TebakPosisiContent {
   items: TebakPosisiItem[];
 }
 
+// 3b. Tebak Gambar (Picture Quiz — soal berbasis gambar/modul)
+export interface TebakGambarItem {
+  id: string;
+  /** Placeholder visual (emoji) sampai gambar asli dari modul tersedia. */
+  imageEmoji: string;
+  /** Gambar asli (opsional) — jika diisi, dipakai menggantikan emoji. */
+  imageUrl?: string;
+  imageAlt?: string;
+  prompt: string;
+  options: string[];
+  correctOptionIndex: number;
+  explanation: string;
+}
+
+export interface TebakGambarContent {
+  items: TebakGambarItem[];
+}
+
+// 3c. Kuis Balapan (Type-Racer-style race driven by answering questions)
+export interface KuisBalapanContent {
+  questions: Question[];
+  /** Detik antara tiap langkah rival; default 8 detik. */
+  rivalIntervalSeconds?: number;
+}
+
 // 4. Memory Match (Pair Matching)
 export interface MemoryPair {
   id: string;
@@ -135,6 +162,8 @@ export interface Booth {
   ttsContent?: TtsContent;
   tebakKataContent?: TebakKataContent;
   tebakPosisiContent?: TebakPosisiContent;
+  tebakGambarContent?: TebakGambarContent;
+  kuisBalapanContent?: KuisBalapanContent;
   memoryMatchContent?: MemoryMatchContent;
   kuisCepatContent?: KuisCepatContent;
   benarSalahContent?: BenarSalahContent;

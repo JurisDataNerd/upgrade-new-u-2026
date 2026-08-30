@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -34,6 +34,22 @@ export default function FloorIntroPage() {
   const soundEnabled = useGameStore((state) => state.soundEnabled);
   const participant = useGameStore((state) => state.participant);
   const getFloorStatus = useGameStore((state) => state.getFloorStatus);
+  const hasHydrated = useGameStore((state) => state._hasHydrated);
+  const isRegistered = useGameStore((state) =>
+    Boolean(
+      state.participant.isRegistered &&
+        state.participant.name &&
+        state.participant.nim
+    )
+  );
+
+  // Registration gate: deep-linking into the play flow requires a profile.
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (!isRegistered) {
+      router.replace('/');
+    }
+  }, [hasHydrated, isRegistered, router]);
 
   const [isPortalPulsing, setIsPortalPulsing] = useState(false);
   const floorStatus = getFloorStatus(floor.number);
@@ -60,6 +76,10 @@ export default function FloorIntroPage() {
         return 'Tebak Kata';
       case 'tebak_posisi':
         return 'Tebak Lokasi';
+      case 'tebak_gambar':
+        return 'Tebak Gambar';
+      case 'kuis_balapan':
+        return 'Kuis Balapan';
       case 'memory_match':
         return 'Mencocokkan Kartu';
       case 'kuis_cepat':

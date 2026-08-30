@@ -16,7 +16,7 @@
 - [Tentang Proyek](#-tentang-proyek)
 - [Fitur Utama](#-fitur-utama)
 - [Struktur 9 Lantai & 18 Corner](#-struktur-9-lantai--18-corner)
-- [6 Tipe Mini-Game](#-6-tipe-mini-game)
+- [8 Tipe Mini-Game](#-8-tipe-mini-game)
 - [Teknologi & Arsitektur](#-teknologi--arsitektur)
 - [Struktur Folder](#-struktur-folder)
 - [Panduan Instalasi & Menjalankan](#-panduan-instalasi--menjalankan)
@@ -38,9 +38,12 @@ Aplikasi ini mengubah pengenalan fasilitas gedung, nilai Aswaja An-Nahdliyyah, t
 
 - 🏛️ **Eksplorasi 9 Lantai Interaktif:** Peta visual gedung 9 lantai dengan indikator progres tuntas secara *real-time*.
 - 🎯 **18 Corner & Materi Edukasi:** Setiap lantai memiliki 2 spot corner lengkap dengan materi pengenalan kampus dan mini-game edukatif.
-- 🕹️ **6 Engine Mini-Game Unik:** Teka-Teki Silang (TTS), Tebak Kata, Tebak Posisi Ruangan, Memory Match, Kuis Cepat Berwaktu, dan Benar/Salah.
+- 🕹️ **8 Engine Mini-Game Unik:** TTS, Tebak Kata, Tebak Posisi, Tebak Gambar, Memory Match, Kuis Cepat Berwaktu, Benar/Salah, dan Kuis Balapan (gaya *type racer* yang dimodifikasi — balapan dijawab, bukan diketik).
 - 📜 **Paspor Digital & Kartu Mahasiswa (KTM):** Kartu identitas RPG dengan nama, NIM, fakultas, prodi, koleksi 18 stempel digital, serta tombol cetak sertifikat.
 - 🏆 **Papan Peringkat (Leaderboard):** Sistem peringkat individu dan kelompok berdasarkan perolehan Total XP dan jumlah stempel.
+- 🔐 **Registrasi & Pemilihan Kelompok:** Nama + NIM wajib diisi sebelum bermain (*registration gate*), lengkap dengan pemilih Kelompok Genius (`Genius 01`–`Genius 10`).
+- 💾 **Progres Tersimpan:** Seluruh progres (profil, stempel, XP, preferensi suara/CRT) dipersistenkan ke `localStorage` — aman meski halaman di-*refresh*.
+- 🖨️ **Cetak Paspor & Sertifikat:** *Print stylesheet* khusus A4 untuk Paspor Digital dan Sertifikat Kelulusan.
 - 🎵 **8-Bit Synthesizer Sound Engine:** Efek suara retro dinamis berbasis browser Web Audio API tanpa ketergantungan file audio eksternal (klik, benar, salah, level-up, fanfar selebrasi).
 - 📱 **Mobile-First & Fit-to-Screen (100dvh):** Antarmuka responsif penuh yang pas di satu layar ponsel tanpa *scrolling* yang mengganggu selama *gameplay*.
 
@@ -50,19 +53,22 @@ Aplikasi ini mengubah pengenalan fasilitas gedung, nilai Aswaja An-Nahdliyyah, t
 
 | Lantai | Nama Zona & Tema | Kode & Nama Spot 1 | Kode & Nama Spot 2 | Tipe Game |
 | :--- | :--- | :--- | :--- | :--- |
-| **L1** | Ground Zero • Aswaja & Etika | `B01` Corner Nilai Dasar & Aswaja | `B02` Corner Budaya Akademik & Etika | TTS & Tebak Kata |
-| **L2** | Welcoming Zone & Health | `B03` Corner Klinik Kampus & Konseling | `B04` Corner Kampus Bersinar (Bersih Narkoba) | Benar/Salah & Kuis Cepat |
-| **L3** | Student Lounge & Kolaborasi | `B05` Corner Dinamika Kelompok | `B06` Corner Kepemimpinan Inklusif | Memory Match & Tebak Posisi |
-| **L4** | Ruang Aman & Solidaritas | `B07` Corner Ruang Aman & PPKS | `B08` Corner Anti-Perundungan | Kuis Cepat & TTS |
-| **L5** | Knowledge Sanctuary & Library | `B09` Corner Perpustakaan Modern | `B10` Corner Kejujuran Akademik | Tebak Kata & Benar/Salah |
-| **L6** | Future Labs & Riset Kampus | `B11` Corner Laboratorium Terpadu | `B12` Corner Riset Berkelanjutan | Tebak Posisi & Memory Match |
-| **L7** | Technopreneur & AI Hub | `B13` Corner Inkubator Startup | `B14` Corner Creative Hub & AI Studio | TTS & Kuis Cepat |
-| **L8** | Integritas & Tata Kelola | `B15` Corner Zona Integritas | `B16` Corner Tolak Gratifikasi & Suap | Benar/Salah & Tebak Kata |
-| **L9** | Summit & Puncak Transformasi | `B17` Corner Visi Kebangsaan 2045 | `B18` Corner Ikrar "Upgraded You" | Tebak Posisi & Memory Match |
+| **L1** | Welcome Hall & Karakter Kampus | `B1-A` Corner Nilai Dasar & Aswaja An-Nahdliyyah | `B1-B` Corner Budaya Akademik & Etika Mahasiswa | Tebak Gambar & Kuis Balapan |
+| **L2** | Kesehatan & Ketahanan Mahasiswa | `B2-A` Corner Klinik Kampus & Konseling Sebaya | `B2-B` Corner Kampus Bersinar (Bersih Narkoba) | Tebak Posisi & Kuis Cepat |
+| **L3** | Ruang Kolaborasi & Soft Skills | `B3-A` Corner Dinamika Kelompok & Komunikasi Asertif | `B3-B` Corner Kepemimpinan Inklusif & Organisasi | TTS & Memory Match |
+| **L4** | Student Hub & Satgas PPKS | `B4-A` Corner Ruang Aman & Satgas PPKS | `B4-B` Corner Anti-Perundungan & Solidaritas | Benar/Salah & Tebak Posisi |
+| **L5** | Perpustakaan & Knowledge Hub | `B5-A` Corner Perpustakaan Modern & Jurnal Digital | `B5-B` Corner Kejujuran Akademik & Anti-Plagiarisme | TTS & Tebak Kata |
+| **L6** | Laboratorium Riset & Inovasi | `B6-A` Corner Fasilitas Laboratorium Terpadu | `B6-B` Corner Riset Berkelanjutan & Green Campus | Memory Match & Kuis Cepat |
+| **L7** | Inkubator Kreatif & Technopreneur | `B7-A` Corner Inkubator Startup & Technopreneur | `B7-B` Corner Creative Hub & AI Studio | Tebak Kata & Tebak Posisi |
+| **L8** | Zona Integritas & Good Governance | `B8-A` Corner Zona Integritas & Good Governance | `B8-B` Corner Tolak Gratifikasi & Suap | TTS & Benar/Salah |
+| **L9** | Auditorium Cakrawala & Puncak GENIUS | `B9-A` Corner Visi Kebangsaan & UNU 2045 | `B9-B` Corner Ikrar & Puncak Transformasi "Upgraded You" | Memory Match & Kuis Cepat |
+
+> Kode spot (`B1-A` … `B9-B`) dan pasangan mini-game di atas disinkronkan langsung
+> dari `src/data/mockData.ts` (`FLOORS_DATA` & `BOOTHS_DATA`).
 
 ---
 
-## 🎲 6 Tipe Mini-Game
+## 🎲 8 Tipe Mini-Game
 
 1. **TTS Kampus (`TtsGame.tsx`):**
    - Teka-teki silang kotak huruf interaktif dengan navigasi nomor soal mendatar & menurun.
@@ -76,6 +82,10 @@ Aplikasi ini mengubah pengenalan fasilitas gedung, nilai Aswaja An-Nahdliyyah, t
    - Kuis pilihan ganda dengan *countdown timer progress bar* dinamis dan pembahasannya.
 6. **Benar / Salah (`BenarSalahGame.tsx`):**
    - Evaluasi pernyataan etika dan nilai kampus dengan tombol taktil besar BENAR atau SALAH.
+7. **Tebak Gambar (`TebakGambarGame.tsx`):**
+   - Menjawab pertanyaan berdasarkan gambar/visual soal; mendukung gambar asli (`imageUrl`) maupun placeholder emoji sementara.
+8. **Kuis Balapan (`KuisBalapanGame.tsx`):**
+   - *Race quiz* bergaya *type racer* yang dimodifikasi: tiap jawaban **benar** memacu mobilmu 🚗 mendekati garis finis, sementara rival 🏎️ melaju otomatis setiap beberapa detik — jawab cepat sebelum rival menang!
 
 ---
 
@@ -94,12 +104,12 @@ Aplikasi ini mengubah pengenalan fasilitas gedung, nilai Aswaja An-Nahdliyyah, t
 ## 📁 Struktur Folder
 
 ```text
-genius-unu/
+upgrade-new-u-2026/
 ├── public/                     # Aset gambar & ilustrasi karakter avatar
 │   ├── character-cewek-avatar.png
 │   ├── character-cowok-avatar.png
 │   ├── unu-hero.jpeg
-│   └── logo-unu.png
+│   └── unu.png
 ├── src/
 │   ├── app/                    # Next.js App Router Pages
 │   │   ├── layout.tsx          # Root Layout & Viewport config
@@ -144,8 +154,8 @@ Pastikan Anda telah menginstal:
 
 ### 2. Kloning Repositori
 ```bash
-git clone https://github.com/username/genius-unu.git
-cd genius-unu
+git clone https://github.com/JurisDataNerd/upgrade-new-u-2026.git
+cd upgrade-new-u-2026
 ```
 
 ### 3. Instalasi Dependensi
@@ -169,7 +179,7 @@ npm run start
 
 ## 🔊 Audio Engine (Web Audio API)
 
-Aplikasi ini menggunakan synthesizer audio retro prosedural yang dibuat dengan Web Audio API murni ([`src/lib/sound.ts`](file:///home/fauzan/Projects/genius-unu/src/lib/sound.ts)):
+Aplikasi ini menggunakan synthesizer audio retro prosedural yang dibuat dengan Web Audio API murni ([`src/lib/sound.ts`](src/lib/sound.ts)):
 - **Click Sound:** Osilator triangle frekuensi 600Hz -> 300Hz.
 - **Success Tone:** Harmoni arpeggio 523Hz -> 659Hz -> 784Hz -> 1046Hz.
 - **Error Tone:** Frekuensi rendah sawtooth 180Hz -> 110Hz.
