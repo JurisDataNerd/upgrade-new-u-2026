@@ -76,6 +76,8 @@ export default function FloorIntroPage() {
         return 'Tebak Kata';
       case 'tebak_posisi':
         return 'Tebak Lokasi';
+      case 'tebak_gambar':
+        return 'Tebak Gambar';
       case 'memory_match':
         return 'Mencocokkan Kartu';
       case 'kuis_cepat':

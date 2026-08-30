@@ -260,8 +260,8 @@ export const BOOTHS_DATA: Record<string, Booth> = {
     code: 'B1-A',
     name: 'Corner Nilai Dasar & Aswaja An-Nahdliyyah',
     subtitle: 'Mengenal Fondasi Karakter Kampus UNU',
-    type: 'tebak_kata',
-    tipe_game: 'tebak_kata',
+    type: 'tebak_gambar',
+    tipe_game: 'tebak_gambar',
     category: 'umum',
     readingTime: '2 menit baca',
     iconName: 'Sparkle',
@@ -297,6 +297,82 @@ export const BOOTHS_DATA: Record<string, Booth> = {
           scrambledLetters: ['T', 'A', 'W', 'A', 'S', 'U', 'T', 'H', 'O', 'P'],
           hint: 'Dimulai dengan huruf T, 8 huruf',
           explanation: 'Tawasuth mengajarkan jalan tengah yang bijak dan proporsional dalam menyikapi berbagai persoalan.',
+        },
+      ],
+    },
+    // Soal sementara bertema NU — akan diganti soal berbasis modul PKKMB
+    // saat materinya tersedia (struktur mendukung imageUrl asli per soal).
+    tebakGambarContent: {
+      items: [
+        {
+          id: 'tg-1a-1',
+          imageEmoji: '⭐',
+          imageAlt: 'Bintang sembilan',
+          prompt:
+            'Lambang organisasi ini menampilkan bintang berjumlah sembilan yang melambangkan semangat perjuangan Wali Sanga. Organisasi apakah itu?',
+          options: ['Nahdlatul Ulama (NU)', 'Muhammadiyah', 'Persatuan Islam (Persis)', 'GP Ansor'],
+          correctOptionIndex: 0,
+          explanation:
+            'Sembilan bintang pada lambang NU melambangkan Wali Sanga, para penyebarkan Islam di Nusantara yang menjadi rujukan tradisi keilmuan NU.',
+        },
+        {
+          id: 'tg-1a-2',
+          imageEmoji: '📖',
+          imageAlt: 'Kitab klasik',
+          prompt:
+            'Kitab klasik berbahasa Arab yang menjadi rujukan utama tradisi keilmuan di pesantren-pesantren NU dikenal dengan istilah...',
+          options: ['Kitab Kuning', 'Buku Paket', 'Majalah Ilmiah', 'Kamus Besar'],
+          correctOptionIndex: 0,
+          explanation:
+            'Kitab Kuning (turats) adalah warisan keilmuan ulama yang diajarkan turun-temurun di pesantren dengan metode sorogan, bandongan, dan musyawarah.',
+        },
+        {
+          id: 'tg-1a-3',
+          imageEmoji: '🕌',
+          imageAlt: 'Masjid',
+          prompt:
+            'Nahdlatul Ulama didirikan oleh para ulama pesantren, dipelopori KH. Hasyim Asy\'ari. NU berdiri pada tanggal...',
+          options: ['31 Januari 1926', '17 Agustus 1945', '20 Mei 1908', '28 Oktober 1928'],
+          correctOptionIndex: 0,
+          explanation:
+            'NU dideklarasikan di Surabaya pada 31 Januari 1926 (16 Rajab 1344 H) oleh para ulama pesantren untuk menjaga tradisi Ahlussunnah wal Jama\'ah.',
+        },
+        {
+          id: 'tg-1a-4',
+          imageEmoji: '📜',
+          imageAlt: 'Maklumat atau fatwa',
+          prompt:
+            'Fatwa Resolusi Jihad yang memobilisasi santri dan rakyat melawan penjajah pada masa perjuangan kemerdekaan dikeluarkan oleh...',
+          options: ['KH. Hasyim Asy\'ari', 'KH. Ahmad Dahlan', 'Ir. Soekarno', 'HOS Tjokroaminoto'],
+          correctOptionIndex: 0,
+          explanation:
+            'Resolusi Jihad dicetuskan KH. Hasyim Asy\'ari (Hadratus Syaikh) pada 22 Oktober 1945, menegaskan wajibnya perlawanan terhadap penjajah yang ingin kembali berkuasa.',
+        },
+        {
+          id: 'tg-1a-5',
+          imageEmoji: '🤝',
+          imageAlt: 'Persatuan',
+          prompt: 'Istilah "Nahdlatul Ulama" secara harfiah bermakna...',
+          options: ['Kebangkitan Ulama', 'Persatuan Pemuda', 'Rumah Ilmu', 'Barisan Santri'],
+          correctOptionIndex: 0,
+          explanation:
+            '"Nahdlatul Ulama" berarti kebangkitan para ulama — organisasi yang lahir dari dan untuk menjaga tradisi keislaman Ahlussunnah wal Jama\'ah di Indonesia.',
+        },
+        {
+          id: 'tg-1a-6',
+          imageEmoji: '⚖️',
+          imageAlt: 'Timbangan keseimbangan',
+          prompt:
+            'Sebagai pengamal manhaj Ahlussunnah wal Jama\'ah (Aswaja), NU menekankan sikap hidup yang...',
+          options: [
+            'Moderat dan seimbang (tawasuth)',
+            'Kaku menolak semua perubahan',
+            'Menutup diri dari ilmu modern',
+            'Ekstrem dalam berpendapat',
+          ],
+          correctOptionIndex: 0,
+          explanation:
+            'Aswaja ala NU mengedepankan tawasuth (moderat), tawazun (seimbang), tasamuh (toleran), dan i\'tidal (adil) — jalan tengah dalam beragama dan berbangsa.',
         },
       ],
     },

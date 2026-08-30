@@ -14,6 +14,7 @@ Living checklist — update as items close. Roadmap & rationale: see `../plan.md
 - [x] Print CSS (paspor `.print-area`, sertifikat `.print-certificate`, A4 portrait, warna dipertahankan)
 - [x] Meta/OG + drop "PROTOTYPE" (OpenGraph/Twitter, `robots.txt`, `app/icon.svg`, footer landing)
 - [x] README sync (kode `B1-A`…`B9-B`, nama lantai, pasangan mini-game, URL repo)
+- [x] Fitur tambahan (permintaan author): **mini-game Tebak Gambar** (`tebak_gambar`) di `B1-A` dengan 6 soal sementara bertema NU (lambang, kitab kuning, sejarah berdirinya NU, Resolusi Jihad, makna nama, manhaj Aswaja). Struktur soal sudah mendukung `imageUrl` per soal — tinggal diisi gambar asli dari modul PKKMB saat tersedia.
 - [ ] **Merge PR #2 oleh author** → https://github.com/JurisDataNerd/upgrade-new-u-2026/pull/2
 - [ ] Vercel deploy (setelah merge: Vercel → Add New Project → import repo → Deploy, zero config)
 - [ ] Phone QA (Android Chrome + iOS Safari: fit-to-screen, audio unlock, print, refresh → progres tetap)
