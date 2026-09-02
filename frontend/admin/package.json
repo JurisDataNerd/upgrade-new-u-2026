@@ -4,26 +4,32 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3002",
-    "build": "vite build",
-    "preview": "vite preview --port 3002",
-    "typecheck": "tsc --noEmit"
+    "build": "nuxt build",
+    "dev": "nuxt dev --port 3002",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview --port 3002",
+    "postinstall": "nuxt prepare",
+    "typecheck": "npx nuxi typecheck"
   },
   "dependencies": {
-    "@genius-unu/shared": "workspace:*",
-    "@phosphor-icons/vue": "^2.2.1",
-    "clsx": "^2.1.1",
-    "pinia": "^4.0.3",
-    "tailwind-merge": "^3.6.0",
-    "vue": "^3.5.42",
-    "vue-router": "^4.5.0"
+    "@genius/types": "workspace:*",
+    "lucide-vue-next": "^0.475.0"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^20.19.43",
-    "@vitejs/plugin-vue": "^6.0.8",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3",
-    "vite": "^8.2.2"
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "nuxt": "^3.15.4",
+    "postcss": "^8",
+    "radix-vue": "^1.9.17",
+    "shadcn-nuxt": "2.8.2",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "5.7.3",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "vue-tsc": "2.2.8"
   }
 }

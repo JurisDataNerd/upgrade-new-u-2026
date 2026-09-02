@@ -1,18 +1,7 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@genius-unu/shared": ["../../packages/shared/src/index.ts"]
-    }
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "vite.config.ts"
-  ],
-  "exclude": ["node_modules", "dist"]
+    "strict": true,
+    "skipLibCheck": true
+  }
 }
