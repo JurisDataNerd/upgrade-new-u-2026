@@ -12,7 +12,19 @@
 
 ---
 
-## 📌 Struktur Monorepo
+## 📚 Dokumentasi Lengkap Proyek (`docs/`)
+
+Dokumentasi arsitektur, integrasi alur rundown 3 hari kegiatan, pemodelan MongoDB Atlas, spesifikasi modul, dan roadmap telah disusun secara terstruktur di folder [`docs/`](./docs/README.md):
+
+* 📑 [**01. Pemetaan Rundown 3 Hari ke Fitur Aplikasi**](./docs/01-RUNDOWN-DAN-EVENT-FLOW.md)
+* 🏗️ [**02. Arsitektur Sistem & Spesifikasi Tech Stack**](./docs/02-ARSITEKTUR-DAN-TECH-STACK.md)
+* 🍃 [**03. Skema Database NoSQL (MongoDB Atlas)**](./docs/03-SKEMA-DATABASE-MONGODB.md)
+* ⚙️ [**04. Spesifikasi Fitur Utama & Logika Gamifikasi**](./docs/04-SPESIFIKASI-FITUR-UTAMA.md)
+* 📡 [**05. Spesifikasi Kontrak REST API Backend**](./docs/05-SPESIFIKASI-REST-API.md)
+* 🔍 [**06. Audit Status Implementasi & Gap Analysis**](./docs/06-AUDIT-PROGRESS-SAAT-INI.md)
+* 🗺️ [**07. Roadmap Pengembangan Menuju Produksi**](./docs/07-ROADMAP-PENGEMBANGAN.md)
+
+---
 
 Proyek ini menggunakan arsitektur **Monorepo (Bun Workspaces)** yang memisahkan aplikasi mahasiswa baru, dashboard admin panitia, backend API service, dan shared domain types:
 
