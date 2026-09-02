@@ -1,31 +1,22 @@
 {
-  "name": "genius-unu",
-  "version": "0.1.0",
+  "name": "genius-unu-monorepo",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "frontend/*",
+    "backend",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "icons:generate": "node scripts/generate-icons.js"
-  },
-  "dependencies": {
-    "@phosphor-icons/vue": "^2.2.1",
-    "canvas-confetti": "^1.9.4",
-    "clsx": "^2.1.1",
-    "pinia": "^4.0.3",
-    "tailwind-merge": "^3.6.0",
-    "vue": "^3.5.42",
-    "vue-router": "^4.5.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@types/canvas-confetti": "^1.9.0",
-    "@types/node": "^20.19.43",
-    "@vitejs/plugin-vue": "^6.0.8",
-    "sharp": "^0.35.4",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3",
-    "vite": "^8.2.2"
+    "dev": "bun --filter '*' dev",
+    "dev:user": "bun --filter @genius-unu/user dev",
+    "dev:admin": "bun --filter @genius-unu/admin dev",
+    "dev:backend": "bun --filter @genius-unu/backend dev",
+    "build": "bun --filter '*' build",
+    "build:user": "bun --filter @genius-unu/user build",
+    "build:admin": "bun --filter @genius-unu/admin build",
+    "build:backend": "bun --filter @genius-unu/backend build",
+    "typecheck": "bun --filter '*' typecheck"
   }
 }
