@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2d1b0e"/>
+      <stop offset="100%" stop-color="#140b05"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe885"/>
+      <stop offset="50%" stop-color="#f0d060"/>
+      <stop offset="100%" stop-color="#c49520"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a5a3a"/>
+      <stop offset="100%" stop-color="#14331e"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3d2b1e"/>
+      <stop offset="100%" stop-color="#1f140a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Base Rounded Container with Stardew Valley Double-Inset Wood Frame -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#bgGrad)" stroke="#5a3a18" stroke-width="16"/>
+  <rect x="36" y="36" width="440" height="440" rx="80" fill="none" stroke="#8b6f4e" stroke-width="8"/>
+  <rect x="52" y="52" width="408" height="408" rx="68" fill="url(#emeraldGrad)" stroke="#f0d060" stroke-width="12"/>
+
+  <!-- Pixel Corner Highlights -->
+  <rect x="76" y="76" width="16" height="16" fill="#f0d060" opacity="0.8"/>
+  <rect x="420" y="76" width="16" height="16" fill="#f0d060" opacity="0.8"/>
+  <rect x="76" y="420" width="16" height="16" fill="#f0d060" opacity="0.8"/>
+  <rect x="420" y="420" width="16" height="16" fill="#f0d060" opacity="0.8"/>
+
+  <!-- Center Golden Crown / Cap Emblem -->
+  <!-- Crown Base -->
+  <path d="M 176 170 L 210 130 L 256 165 L 302 130 L 336 170 L 320 200 L 192 200 Z" fill="url(#goldGrad)" stroke="#1a1005" stroke-width="6"/>
+  <!-- Crown Jewels -->
+  <circle cx="210" cy="130" r="10" fill="#7ec850" stroke="#1a1005" stroke-width="3"/>
+  <circle cx="256" cy="165" r="12" fill="#60a8d8" stroke="#1a1005" stroke-width="3"/>
+  <circle cx="302" cy="130" r="10" fill="#7ec850" stroke="#1a1005" stroke-width="3"/>
+
+  <!-- Bold Pixel 'U' Emblem -->
+  <!-- Left Pillar -->
+  <rect x="160" y="215" width="56" height="135" rx="10" fill="url(#goldGrad)" stroke="#1a1005" stroke-width="8"/>
+  <!-- Right Pillar -->
+  <rect x="296" y="215" width="56" height="135" rx="10" fill="url(#goldGrad)" stroke="#1a1005" stroke-width="8"/>
+  <!-- Bottom Curve -->
+  <path d="M 160 310 C 160 385, 352 385, 352 310 L 296 310 C 296 350, 216 350, 216 310 Z" fill="url(#goldGrad)" stroke="#1a1005" stroke-width="8"/>
+
+  <!-- Inner Shimmer of 'U' -->
+  <rect x="174" y="228" width="16" height="90" rx="4" fill="#ffffff" opacity="0.4"/>
+  <rect x="310" y="228" width="16" height="90" rx="4" fill="#ffffff" opacity="0.4"/>
+
+  <!-- Star Sparkles -->
+  <!-- Top Right Sparkle -->
+  <path d="M 390 150 Q 390 175 415 175 Q 390 175 390 200 Q 390 175 365 175 Q 390 175 390 150 Z" fill="#ffe885"/>
+  <circle cx="390" cy="175" r="5" fill="#ffffff"/>
+
+  <!-- Bottom Left Sparkle -->
+  <path d="M 120 340 Q 120 358 138 358 Q 120 358 120 376 Q 120 358 102 358 Q 120 358 120 340 Z" fill="#7ec850"/>
+
+  <!-- Subtitle Tag: 2026 / GENIUS -->
+  <rect x="180" y="395" width="152" height="34" rx="8" fill="#140b05" stroke="#f0d060" stroke-width="4"/>
+  <text x="256" y="418" font-family="'Press Start 2P', monospace, sans-serif" font-size="14" font-weight="bold" fill="#f0d060" text-anchor="middle" letter-spacing="2">GENIUS</text>
+</svg>
