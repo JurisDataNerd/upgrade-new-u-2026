@@ -1,13 +1,19 @@
 # 📡 Spesifikasi Kontrak REST API Backend
 ### *Dokumentasi Endpoint RESTful API GENIUS UNU Yogyakarta 2026*
 
-Dokumen ini mendefinisikan seluruh kontrak antarmuka API (*API Contracts*), format payload request/response JSON, kode status HTTP, serta mekanisme otentikasi JWT yang menghubungkan aplikasi frontend dengan backend Node.js.
+Dokumen ini mendefinisikan kontrak antarmuka API (*API Contracts*), format payload request/response JSON, kode status HTTP, serta mekanisme otentikasi JWT yang menghubungkan aplikasi frontend dengan backend Elysia / Bun.
+
+> [!TIP]
+> **Dokumentasi Interaktif Resmi (Live Single Source of Truth):**
+> Dokumentasi API interaktif dengan antarmuka modern, pengujian request langsung di browser, dan OpenAPI 3.0.3 spec dapat diakses secara live di:
+> * 📖 **Scalar API Reference:** [`http://localhost:3001/swagger`](http://localhost:3001/swagger) *(atau [`/reference`](http://localhost:3001/reference))*
+> * 📄 **OpenAPI Spec (JSON):** [`http://localhost:3001/swagger/json`](http://localhost:3001/swagger/json)
 
 ---
 
 ## 🌐 Konvensi Umum API
 
-* **Base URL:** `http://localhost:3001/api/v1` (Lokal) / `https://api-genius.unu-jogja.ac.id/api/v1` (Produksi)
+* **Base URL:** `http://localhost:3001/api` (Lokal) / `https://api-genius.unu-jogja.ac.id/api` (Produksi)
 * **Format Data:** `application/json; charset=utf-8`
 * **Header Otentikasi:** `Authorization: Bearer <JWT_TOKEN>`
 
@@ -25,8 +31,10 @@ Dokumen ini mendefinisikan seluruh kontrak antarmuka API (*API Contracts*), form
 ```json
 {
   "success": false,
-  "error": "UNAUTHORIZED",
-  "message": "Sesi login telah kedaluwarsa atau token tidak valid",
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Sesi login telah kedaluwarsa atau token tidak valid"
+  },
   "timestamp": "2026-09-22T07:15:00.000Z"
 }
 ```
