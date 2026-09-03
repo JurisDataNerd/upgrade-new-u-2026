@@ -7,7 +7,12 @@ import { generateAiQuestions, GEMINI_MODELS, FREE_TIER_MODELS } from "../lib/ai"
 import { aiGateway } from "../lib/aiGateway";
 import { logAudit } from "../lib/audit";
 
-export const aiRoutes = new Elysia({ prefix: "/api/ai" })
+export const aiRoutes = new Elysia({
+  prefix: "/api/ai",
+  detail: {
+    tags: ["AI Tools & Generation"],
+  },
+})
   .use(authMiddleware)
   .use(requireAdmin)
 

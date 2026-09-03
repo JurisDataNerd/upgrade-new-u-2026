@@ -4,7 +4,12 @@ import { auditLogs, users } from "../db/schema";
 import { eq, sql, desc, and, or, ilike } from "drizzle-orm";
 import { requireAdmin, authMiddleware } from "../middleware/auth";
 
-export const auditLogRoutes = new Elysia({ prefix: "/api/audit-logs" })
+export const auditLogRoutes = new Elysia({
+  prefix: "/api/audit-logs",
+  detail: {
+    tags: ["Audit Logs & Security"],
+  },
+})
   .use(authMiddleware)
   .use(requireAdmin)
 

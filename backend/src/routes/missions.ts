@@ -4,7 +4,12 @@ import { missions, locations, games, floors, stages } from "../db/schema";
 import { eq, sql, asc, or, ilike } from "drizzle-orm";
 import { requireAdmin } from "../middleware/auth";
 
-export const missionRoutes = new Elysia({ prefix: "/api/missions" })
+export const missionRoutes = new Elysia({
+  prefix: "/api/missions",
+  detail: {
+    tags: ["Missions & Tantangan Pos"],
+  },
+})
   .use(requireAdmin)
 
   // GET /api/missions — List all missions with location and game details

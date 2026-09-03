@@ -4,7 +4,12 @@ import { questions } from "../db/schema";
 import { eq, sql, desc, and } from "drizzle-orm";
 import { requireAdmin, authMiddleware } from "../middleware/auth";
 
-export const questionRoutes = new Elysia({ prefix: "/api/questions" })
+export const questionRoutes = new Elysia({
+  prefix: "/api/questions",
+  detail: {
+    tags: ["Question Bank & Materi"],
+  },
+})
   .use(authMiddleware)
 
   // GET /api/questions/random — Get randomized question set for games

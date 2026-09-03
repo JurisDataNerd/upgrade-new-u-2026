@@ -76,26 +76,50 @@ const app = new Elysia()
     })
   )
 
-  // Alias /reference to redirect to /swagger
-  .get("/reference", ({ set }) => {
-    set.redirect = "/swagger";
-  })
+  // Alias /reference to redirect to /swagger (hidden from API docs)
+  .get(
+    "/reference",
+    ({ set }) => {
+      set.redirect = "/swagger";
+    },
+    {
+      detail: { hide: true },
+    }
+  )
 
   // Realtime Native WebSocket
   .use(realtimeRoutes)
 
   // Health check & Version
-  .get("/", () => ({
-    name: "GENIUS 2026 Gamification API",
-    version: "1.0.0",
-    status: "online",
-    university: "Universitas Nahdlatul Ulama Yogyakarta",
-  }))
-  .get("/api/health", () => ({
-    status: "healthy",
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-  }))
+  .get(
+    "/",
+    () => ({
+      name: "GENIUS 2026 Gamification API",
+      version: "1.0.0",
+      status: "online",
+      university: "Universitas Nahdlatul Ulama Yogyakarta",
+    }),
+    {
+      detail: {
+        tags: ["System & Health"],
+        summary: "Informasi versi & status layanan API",
+      },
+    }
+  )
+  .get(
+    "/api/health",
+    () => ({
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    }),
+    {
+      detail: {
+        tags: ["System & Health"],
+        summary: "Pemeriksaan kesehatan server & uptime",
+      },
+    }
+  )
 
   // Mount API modules
   .use(authRoutes)

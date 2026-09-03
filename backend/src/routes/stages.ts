@@ -4,7 +4,12 @@ import { stages } from "../db/schema";
 import { eq, asc } from "drizzle-orm";
 import { requireAdmin } from "../middleware/auth";
 
-export const stageRoutes = new Elysia({ prefix: "/api/stages" })
+export const stageRoutes = new Elysia({
+  prefix: "/api/stages",
+  detail: {
+    tags: ["Stages & Event Timeline"],
+  },
+})
   .use(requireAdmin)
 
   .get("/", async () => {

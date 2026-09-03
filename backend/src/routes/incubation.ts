@@ -11,7 +11,12 @@ import {
 } from "../engine/incubation";
 import { broadcastLeaderboardUpdate, broadcastAdminEvent } from "../realtime";
 
-export const incubationRoutes = new Elysia({ prefix: "/api/incubation" })
+export const incubationRoutes = new Elysia({
+  prefix: "/api/incubation",
+  detail: {
+    tags: ["Day 1 Incubation & Quiz"],
+  },
+})
   .use(authMiddleware)
 
   // GET /api/incubation/status — Check if Day 1 Incubation is currently OPEN

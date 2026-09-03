@@ -12,7 +12,12 @@ import { eq, sql, desc } from "drizzle-orm";
 import { requireAdmin } from "../middleware/auth";
 import { broadcastToTopic, broadcastAdminEvent, broadcastAnnouncement } from "../realtime";
 
-export const monitoringRoutes = new Elysia({ prefix: "/api/monitoring" })
+export const monitoringRoutes = new Elysia({
+  prefix: "/api/monitoring",
+  detail: {
+    tags: ["Monitoring & Operations"],
+  },
+})
   .use(requireAdmin)
 
   // GET /api/monitoring/stats — Overall live event health and summary counters

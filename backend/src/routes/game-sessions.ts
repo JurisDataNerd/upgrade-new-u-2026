@@ -26,7 +26,12 @@ import {
   saveAIDrawingResult,
 } from "../engine/aiDrawing";
 
-export const gameSessionRoutes = new Elysia({ prefix: "/api/game-sessions" })
+export const gameSessionRoutes = new Elysia({
+  prefix: "/api/game-sessions",
+  detail: {
+    tags: ["Game Sessions & Play Engine"],
+  },
+})
   .use(authMiddleware)
   .use(requireUser)
 

@@ -5,7 +5,12 @@ import { eq, sql, desc, inArray } from "drizzle-orm";
 import { authMiddleware, requireUser, requireAdmin } from "../middleware/auth";
 import { AchievementEngine } from "../engine/achievements";
 
-export const achievementRoutes = new Elysia({ prefix: "/api/achievements" })
+export const achievementRoutes = new Elysia({
+  prefix: "/api/achievements",
+  detail: {
+    tags: ["Achievements & Lencana"],
+  },
+})
   .use(authMiddleware)
   .use(requireUser)
 

@@ -4,7 +4,12 @@ import { routes, routeStops, locations, floors, teams, stages } from "../db/sche
 import { eq, asc, sql, inArray } from "drizzle-orm";
 import { requireAdmin } from "../middleware/auth";
 
-export const routeRoutes = new Elysia({ prefix: "/api/routes" })
+export const routeRoutes = new Elysia({
+  prefix: "/api/routes",
+  detail: {
+    tags: ["Routes & Alur Kelompok"],
+  },
+})
   .use(requireAdmin)
 
   // GET /api/routes — List routes with stop counts and assigned team counts
