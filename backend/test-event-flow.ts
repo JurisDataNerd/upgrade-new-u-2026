@@ -57,7 +57,7 @@ async function runTests() {
   if (boothsData.data && boothsData.data.length > 0) {
     testBoothId = boothsData.data[0].id;
     // Cari QR code dari booth pertama
-    testBoothQr = "ORMAWA-QR-SILAT-UNU2026";
+    testBoothQr = "UNU-ORMAWA-SILAT-2026";
     console.log(`   ➔ Stan Sample: ${boothsData.data[0].name} (Kategori: ${boothsData.data[0].category})`);
   }
   console.log("   ✅ Katalog stan UKM berhasil diambil!\n");
@@ -112,7 +112,7 @@ async function runTests() {
   console.log("   ✅ Paspor stan mahasiswa berhasil ditampilkan!\n");
 
   // 7. Test POST /api/reflections (Kuesioner Refleksi Harian -> +25 XP)
-  console.log("📝 [TEST 7] POST /api/reflections (Kirim Refleksi Hari 1)...");
+  console.log("📝 [TEST 7] POST /api/reflections (Kirim Refleksi Hari 2)...");
   const refRes = await fetch(`${BASE_URL}/reflections`, {
     method: "POST",
     headers: {
@@ -121,11 +121,11 @@ async function runTests() {
     },
     body: JSON.stringify({
       participantId: testParticipantId,
-      day: 1,
+      day: 2,
       ratingFasilitas: 5,
       ratingMateri: 5,
       ratingBuddy: 5,
-      essayInsight: "Hari ini saya sangat terinspirasi oleh materi keaswajaan dan semangat kolaborasi kelompok.",
+      essayInsight: "Hari kedua sangat menantang dan seru saat eksplorasi 9 lantai serta kunjungan stan UKM.",
     }),
   });
   const refData = await refRes.json();
@@ -143,7 +143,7 @@ async function runTests() {
     },
     body: JSON.stringify({
       participantId: testParticipantId,
-      day: 1,
+      day: 2,
       ratingFasilitas: 4,
       ratingMateri: 4,
       ratingBuddy: 4,

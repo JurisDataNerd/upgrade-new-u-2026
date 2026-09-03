@@ -98,8 +98,8 @@ Membangun endpoint backend Elysia.js untuk mendukung seluruh alur lapangan 3 har
 - [x] Buat file `backend/src/routes/attendance.ts` (Check-In, Check-Out, Status, Recap) — *Teruji 100%*.
 - [x] Buat file `backend/src/routes/fgd.ts` (Rubrik 3 pilar FGD 1, 2, 6) — *Teruji 100%*.
 - [x] Pasang dokumentasi interaktif **Scalar API Reference** di `http://localhost:3001/swagger`.
-- [ ] Buat file `backend/src/routes/ormawa.ts` (Katalog booth, Scan QR UKM, Capping XP +75).
-- [ ] Buat file `backend/src/routes/reflections.ts` (Kuesioner harian).
-- [ ] Buat file `backend/src/routes/system.ts` (Freeze leaderboard toggle & status event).
+- [x] Buat file `backend/src/routes/ormawa.ts` (Katalog booth, Scan QR UKM, Capping XP +75) — *Teruji 100%*.
+- [x] Buat file `backend/src/routes/reflections.ts` (Kuesioner harian +25 XP, rekap panitia) — *Teruji 100%*.
+- [x] Buat file `backend/src/routes/system.ts` (Freeze leaderboard toggle & status event) — *Teruji 100%*.
 - [x] Daftarkan seluruh router baru di `backend/src/index.ts`.
 - [x] Verifikasi dengan `bun run typecheck` (0 errors).
