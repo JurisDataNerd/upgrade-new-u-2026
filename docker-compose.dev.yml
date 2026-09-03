@@ -1,0 +1,25 @@
+# GENIUS UNU 2026 - Local Development Database
+# Gunakan file ini untuk menyalakan database PostgreSQL saat mengembangkan kode secara lokal dengan hot-reload:
+#   docker compose -f docker-compose.dev.yml up -d
+#   bun run dev
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: genius_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: genius
+      POSTGRES_PASSWORD: genius2026
+      POSTGRES_DB: genius_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U genius -d genius_2026"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_dev_data:

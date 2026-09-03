@@ -44,7 +44,31 @@ export function useApi() {
 
     const body = options.body || {};
 
-    // Simulate minor asynchronous network latency
+    // 0. Attempt live Backend API request if available
+    try {
+      const config = useRuntimeConfig();
+      const baseUrl = config.public?.apiBase || "http://localhost:3001/api";
+      const auth = useAuth();
+      const headers: Record<string, string> = {};
+      if (auth.token?.value && auth.token.value !== "mock-static-token") {
+        headers["Authorization"] = `Bearer ${auth.token.value}`;
+      }
+
+      const liveResponse = await $fetch<T>(`${baseUrl}${cleanPath}`, {
+        method: method as any,
+        headers,
+        body: ["POST", "PUT", "PATCH"].includes(method) ? body : undefined,
+        params: queryParams,
+      });
+
+      if (liveResponse) {
+        return liveResponse;
+      }
+    } catch {
+      // Fallback seamlessly to in-memory mockDb when backend is offline
+    }
+
+    // Simulate minor asynchronous network latency for fallback
     await new Promise((resolve) => setTimeout(resolve, 60));
 
     // 1. Stats & Dashboard

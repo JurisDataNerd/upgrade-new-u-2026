@@ -40,3 +40,11 @@ bun run dev
 # Build all packages
 bun run build
 ```
+
+## Game Module Development Rules (Plug-and-Play)
+* All mini-games are decoupled and dispatched via `frontend/user/src/components/minigames/MiniGameContainer.vue`.
+* Game components must accept `props: { content, isCompleted?: boolean }` and emit `@complete(score: number, totalQuestions: number)`.
+* Minimum passing score is 70% to earn golden stamps and XP.
+* UI theme must follow Stardew Valley Retro RPG aesthetic (Wood `#3a2818`, Parchment `#fbf6e9`, Green `#38761d`).
+* Full guidelines: see `docs/08-PANDUAN-MODUL-GAME-DAN-KONTRIBUSI.md` and `CONTRIBUTING.md`.
+
