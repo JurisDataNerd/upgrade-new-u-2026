@@ -9,7 +9,12 @@ import { broadcastLeaderboardUpdate, broadcastAdminEvent } from "../realtime";
 const BUDDY_STAGE_BUDGET_LIMIT = 100; // Total 100 pts budget per stage for Buddy
 const BUDDY_SINGLE_BONUS_MAX = 25; // Max 25 pts per single bonus award
 
-export const scoreRoutes = new Elysia({ prefix: "/api/scores" })
+export const scoreRoutes = new Elysia({
+  prefix: "/api/scores",
+  detail: {
+    tags: ["Scores & XP Ledger"],
+  },
+})
   .use(authMiddleware)
   .use(requireBuddyOrAdmin)
 

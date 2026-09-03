@@ -16,7 +16,12 @@ import { eq, sql, asc, or, ilike, inArray, and } from "drizzle-orm";
 import { requireAdmin, authMiddleware, requireUser } from "../middleware/auth";
 import { broadcastLocationOccupancy } from "../realtime";
 
-export const locationRoutes = new Elysia({ prefix: "/api/locations" })
+export const locationRoutes = new Elysia({
+  prefix: "/api/locations",
+  detail: {
+    tags: ["Locations & Pos Checkpoints"],
+  },
+})
   .use(authMiddleware)
 
   // POST /api/locations/validate-qr — Full QR Validation Chain for Participants & Buddies

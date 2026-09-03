@@ -4,7 +4,12 @@ import { teams, teamMembers, users, routes, scoreTransactions } from "../db/sche
 import { eq, sql, desc, inArray, or, ilike, and } from "drizzle-orm";
 import { requireAdmin } from "../middleware/auth";
 
-export const teamRoutes = new Elysia({ prefix: "/api/teams" })
+export const teamRoutes = new Elysia({
+  prefix: "/api/teams",
+  detail: {
+    tags: ["Teams & Regu"],
+  },
+})
   .use(requireAdmin)
 
   // GET /api/teams — List all teams with route, buddy list, and participant counts

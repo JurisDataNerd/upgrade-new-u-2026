@@ -5,7 +5,12 @@ import { eq, and, sql, desc } from "drizzle-orm";
 import { authMiddleware } from "../middleware/auth";
 import { broadcastLeaderboardUpdate, broadcastAdminEvent } from "../realtime";
 
-export const attendanceRoutes = new Elysia({ prefix: "/api/attendance" })
+export const attendanceRoutes = new Elysia({
+  prefix: "/api/attendance",
+  detail: {
+    tags: ["Attendance & Presensi Gate"],
+  },
+})
   .use(authMiddleware)
 
   // POST /api/attendance/check-in — Mahasiswa scan QR kedatangan pagi
@@ -160,6 +165,10 @@ export const attendanceRoutes = new Elysia({ prefix: "/api/attendance" })
       };
     },
     {
+      detail: {
+        summary: "Check-in presensi gerbang pagi (Anti-Titip Absen +100 XP)",
+        description: "Validasi token QR gerbang pagi, mencegah presensi ganda di hari yang sama, menghitung status ON_TIME / LATE, serta menginjeksi +100 XP ke leaderboard.",
+      },
       body: t.Object({
         participantId: t.Optional(t.String()),
         day: t.Number({ minimum: 1, maximum: 3 }),
@@ -264,6 +273,10 @@ export const attendanceRoutes = new Elysia({ prefix: "/api/attendance" })
       };
     },
     {
+      detail: {
+        summary: "Check-out presensi kepulangan sore (+50 XP)",
+        description: "Mencatat waktu kepulangan mahasiswa dan memberikan bonus presensi kepulangan +50 XP.",
+      },
       body: t.Object({
         participantId: t.Optional(t.String()),
         day: t.Number({ minimum: 1, maximum: 3 }),
@@ -310,6 +323,10 @@ export const attendanceRoutes = new Elysia({ prefix: "/api/attendance" })
       };
     },
     {
+      detail: {
+        summary: "Cek status presensi harian mahasiswa",
+        description: "Mengembalikan detail status presensi masuk dan pulang mahasiswa pada hari yang diminta.",
+      },
       params: t.Object({ participantId: t.String() }),
       query: t.Object({ day: t.Optional(t.String()) }),
     }
@@ -373,6 +390,10 @@ export const attendanceRoutes = new Elysia({ prefix: "/api/attendance" })
       };
     },
     {
+      detail: {
+        summary: "Rekapitulasi kehadiran panitia & buddy per hari",
+        description: "Menghasilkan statistik jumlah kehadiran (tepat waktu, terlambat) dan daftar mahasiswa yang telah hadir.",
+      },
       query: t.Object({ day: t.Optional(t.String()) }),
     }
   );

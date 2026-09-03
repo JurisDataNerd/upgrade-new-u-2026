@@ -6,7 +6,12 @@ import { hashPassword } from "../lib/password";
 import { requireAdmin } from "../middleware/auth";
 import { RPG_CHARACTERS, TITLE_CATALOG, PRESET_AVATARS } from "@genius/types";
 
-export const userRoutes = new Elysia({ prefix: "/api/users" })
+export const userRoutes = new Elysia({
+  prefix: "/api/users",
+  detail: {
+    tags: ["Users & RPG Profiles"],
+  },
+})
   // GET /api/users/rpg-catalog — Public/Authenticated catalog of RPG Classes, Evolution & Titles
   .get("/rpg-catalog", () => {
     return {

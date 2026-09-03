@@ -5,7 +5,12 @@ import { eq, and, sql, desc } from "drizzle-orm";
 import { authMiddleware } from "../middleware/auth";
 import { broadcastLeaderboardUpdate, broadcastAdminEvent } from "../realtime";
 
-export const fgdRoutes = new Elysia({ prefix: "/api/buddy/evaluations" })
+export const fgdRoutes = new Elysia({
+  prefix: "/api/buddy/evaluations",
+  detail: {
+    tags: ["FGD Evaluation & Buddy Rubrik"],
+  },
+})
   .use(authMiddleware)
 
   // POST /api/buddy/evaluations — Buddy submit evaluasi rubrik 3 pilar FGD
@@ -147,6 +152,10 @@ export const fgdRoutes = new Elysia({ prefix: "/api/buddy/evaluations" })
       };
     },
     {
+      detail: {
+        summary: "Submit evaluasi rubrik 3 pilar FGD (Keaktifan, Kedalaman, Adab)",
+        description: "Buddy menginput nilai rubrik 3 pilar (skala 3-15) yang otomatis dikonversi menjadi hingga +200 XP live ke leaderboard.",
+      },
       body: t.Object({
         sessionId: t.String({ minLength: 3 }),
         participantId: t.String(),
@@ -214,6 +223,10 @@ export const fgdRoutes = new Elysia({ prefix: "/api/buddy/evaluations" })
       };
     },
     {
+      detail: {
+        summary: "Rekap evaluasi FGD seluruh anggota kelompok",
+        description: "Menampilkan matriks penilaian seluruh anggota tim untuk sesi FGD 1, FGD 2, dan FGD 6 beserta total perolehan XP.",
+      },
       params: t.Object({ teamId: t.String() }),
       query: t.Object({ sessionId: t.Optional(t.String()) }),
     }
@@ -247,6 +260,10 @@ export const fgdRoutes = new Elysia({ prefix: "/api/buddy/evaluations" })
       };
     },
     {
+      detail: {
+        summary: "Riwayat penilaian evaluasi mahasiswa",
+        description: "Menampilkan seluruh riwayat penilaian FGD yang diperoleh oleh mahasiswa dari Buddy pendampingnya.",
+      },
       params: t.Object({ participantId: t.String() }),
     }
   );

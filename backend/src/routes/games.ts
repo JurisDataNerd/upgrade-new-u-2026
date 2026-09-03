@@ -4,7 +4,12 @@ import { games, missions } from "../db/schema";
 import { eq, sql, desc, or, ilike, inArray } from "drizzle-orm";
 import { requireAdmin } from "../middleware/auth";
 
-export const gameRoutes = new Elysia({ prefix: "/api/games" })
+export const gameRoutes = new Elysia({
+  prefix: "/api/games",
+  detail: {
+    tags: ["Mini Games & Quests"],
+  },
+})
   .use(requireAdmin)
 
   // GET /api/games — List all game definitions with mission usage counts

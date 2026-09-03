@@ -6,7 +6,12 @@ import { signToken } from "../lib/jwt";
 import { verifyPassword } from "../lib/password";
 import { authMiddleware, requireUser } from "../middleware/auth";
 
-export const authRoutes = new Elysia({ prefix: "/api/auth" })
+export const authRoutes = new Elysia({
+  prefix: "/api/auth",
+  detail: {
+    tags: ["Auth & Session"],
+  },
+})
   .use(authMiddleware)
 
   // POST /api/auth/login

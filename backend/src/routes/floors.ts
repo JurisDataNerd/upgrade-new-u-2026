@@ -4,7 +4,12 @@ import { floors, locations } from "../db/schema";
 import { eq, asc, sql } from "drizzle-orm";
 import { requireAdmin } from "../middleware/auth";
 
-export const floorRoutes = new Elysia({ prefix: "/api/floors" })
+export const floorRoutes = new Elysia({
+  prefix: "/api/floors",
+  detail: {
+    tags: ["Floors & Campus Layout"],
+  },
+})
   .use(requireAdmin)
 
   // GET /api/floors — List all 9 floors with location counts

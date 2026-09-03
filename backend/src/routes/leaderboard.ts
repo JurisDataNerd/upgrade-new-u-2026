@@ -6,7 +6,12 @@ import { authMiddleware, requireUser } from "../middleware/auth";
 import { broadcastLeaderboardUpdate } from "../realtime";
 import { logAudit } from "../lib/audit";
 
-export const leaderboardRoutes = new Elysia({ prefix: "/api/leaderboard" })
+export const leaderboardRoutes = new Elysia({
+  prefix: "/api/leaderboard",
+  detail: {
+    tags: ["Leaderboard & Ranking"],
+  },
+})
   .use(authMiddleware)
   .use(requireUser)
 
