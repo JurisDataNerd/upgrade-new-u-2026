@@ -22,6 +22,9 @@ import { aiRoutes } from "./routes/ai";
 import { incubationRoutes } from "./routes/incubation";
 import { attendanceRoutes } from "./routes/attendance";
 import { fgdRoutes } from "./routes/fgd";
+import { ormawaRoutes } from "./routes/ormawa";
+import { reflectionRoutes } from "./routes/reflections";
+import { systemRoutes } from "./routes/system";
 import { realtimeRoutes, setGlobalWsApp } from "./realtime";
 import { swagger } from "@elysiajs/swagger";
 
@@ -142,6 +145,9 @@ const app = new Elysia()
   .use(incubationRoutes)
   .use(attendanceRoutes)
   .use(fgdRoutes)
+  .use(ormawaRoutes)
+  .use(reflectionRoutes)
+  .use(systemRoutes)
 
   // Global Structured Error Handler
   .onError(({ code, error, set, request }) => {

@@ -5,6 +5,7 @@ import { eq, sql, desc, and } from "drizzle-orm";
 import { authMiddleware, requireUser } from "../middleware/auth";
 import { broadcastLeaderboardUpdate } from "../realtime";
 import { logAudit } from "../lib/audit";
+import { getSystemSettings } from "./system";
 
 export const leaderboardRoutes = new Elysia({
   prefix: "/api/leaderboard",
@@ -126,6 +127,11 @@ export const leaderboardRoutes = new Elysia({
           ...tx,
           balanceAfter: tx.amount,
         })),
+      },
+      meta: {
+        isFrozen: getSystemSettings().isLeaderboardFrozen,
+        frozenAt: getSystemSettings().frozenAt,
+        freezeMessage: getSystemSettings().freezeMessage,
       },
     };
   })
