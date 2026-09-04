@@ -14,6 +14,31 @@
       </button>
 
       <button
+        type="button"
+        :class="[
+          'pixel-btn h-8 px-3 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer',
+          isFrozen
+            ? 'bg-cyan-950 border-cyan-400 text-cyan-300 shadow animate-pulse'
+            : 'bg-[#271d15] border-[#523e2b] text-gray-300 hover:text-white'
+        ]"
+        @click="toggleFreeze"
+        title="Bekukan / Buka Skor Publik Mahasiswa"
+      >
+        <Snowflake class="h-3.5 w-3.5 text-cyan-400" />
+        <span class="hidden sm:inline">{{ isFrozen ? 'FREEZE AKTIF' : 'FREEZE KLASEMEN' }}</span>
+      </button>
+
+      <NuxtLink
+        to="/projector"
+        target="_blank"
+        class="pixel-btn h-8 px-3 text-xs font-mono font-bold bg-[#3b1d54] text-[#d8b4fe] border-[#a855f7] flex items-center gap-1.5 hover:bg-[#4c246f] transition-all shadow"
+        title="Buka Mode Proyektor Layar Panggung"
+      >
+        <Tv class="h-3.5 w-3.5 text-[#c084fc]" />
+        <span class="hidden sm:inline">LAYAR PANGGUNG</span>
+      </NuxtLink>
+
+      <button
         class="pixel-btn h-8 px-3 text-xs font-mono font-bold bg-[#271d15] text-[#38bdf8] border-[#0284c7] flex items-center gap-1.5 hover:bg-[#3d2d1e]"
         @click="exportLedgerCSV"
         title="Export CSV"
@@ -32,6 +57,24 @@
       </button>
     </TopbarActions>
 
+    <!-- Freeze Alert Notice Banner -->
+    <div
+      v-if="isFrozen"
+      class="p-2.5 bg-cyan-950/70 border border-cyan-500/50 rounded-lg flex items-center justify-between gap-3 text-xs font-mono text-cyan-200 shadow"
+    >
+      <div class="flex items-center gap-2">
+        <Snowflake class="h-4 w-4 text-cyan-400 shrink-0 animate-spin" />
+        <span><strong>MODE FREEZE AKTIF:</strong> Tampilan skor publik mahasiswa dibekukan untuk persiapan Awarding Panggung Hari ke-3. Data di dashboard admin ini tetap sinkron realtime.</span>
+      </div>
+      <button
+        type="button"
+        @click="toggleFreeze"
+        class="text-[10px] underline text-cyan-400 hover:text-white shrink-0 cursor-pointer"
+      >
+        Buka Freeze
+      </button>
+    </div>
+
     <!-- Top 3 Podium Visual Banner (Pixel Theme) -->
     <div class="grid grid-cols-1 gap-3 md:grid-cols-3 font-mono">
       <!-- Silver (Rank 2) -->
@@ -40,7 +83,7 @@
           #2
         </div>
         <div>
-          <div class="font-bold text-foreground text-xs">{{ podiumTeams[1]?.name || 'Tim Merpati Putih' }}</div>
+          <div class="font-bold text-foreground text-xs">{{ podiumTeams[1]?.name || 'Genius 02' }}</div>
           <div class="text-[10px] text-muted-foreground mt-0.5">Buddy: {{ podiumTeams[1]?.buddy || 'Siti R.' }} · {{ podiumTeams[1]?.floor || 'Lantai 5' }}</div>
         </div>
         <div class="font-pixel text-sm font-bold text-[#e2e8f0]">
@@ -55,7 +98,7 @@
           👑 #1
         </div>
         <div>
-          <div class="font-pixel text-xs sm:text-sm font-bold text-[#facc15]">{{ podiumTeams[0]?.name || 'Tim Garuda Sakti' }}</div>
+          <div class="font-pixel text-xs sm:text-sm font-bold text-[#facc15]">{{ podiumTeams[0]?.name || 'Genius 01' }}</div>
           <div class="text-[10px] text-muted-foreground mt-0.5">Buddy: {{ podiumTeams[0]?.buddy || 'Budi Santoso' }} · {{ podiumTeams[0]?.floor || 'Lantai 2' }}</div>
         </div>
         <div class="font-pixel text-base font-bold text-[#facc15]">
@@ -70,7 +113,7 @@
           #3
         </div>
         <div>
-          <div class="font-bold text-foreground text-xs">{{ podiumTeams[2]?.name || 'Tim Rajawali Emas' }}</div>
+          <div class="font-bold text-foreground text-xs">{{ podiumTeams[2]?.name || 'Genius 03' }}</div>
           <div class="text-[10px] text-muted-foreground mt-0.5">Buddy: {{ podiumTeams[2]?.buddy || 'Ahmad F.' }} · {{ podiumTeams[2]?.floor || 'Lantai 6' }}</div>
         </div>
         <div class="font-pixel text-sm font-bold text-[#fb923c]">
@@ -246,8 +289,20 @@
               </td>
 
               <td class="p-3">
-                <div class="font-bold text-foreground">{{ p.fullName }}</div>
-                <div class="text-[10px] text-muted-foreground">@{{ p.username }}</div>
+                <div class="flex items-center gap-2.5">
+                  <div class="h-8 w-8 rounded border border-[#f59e0b]/40 overflow-hidden bg-[#1e1712] shrink-0 shadow-sm">
+                    <img
+                      :src="getParticipantAvatar(p)"
+                      :alt="p.fullName"
+                      class="h-full w-full object-cover"
+                      style="image-rendering: pixelated;"
+                    />
+                  </div>
+                  <div>
+                    <div class="font-bold text-foreground leading-tight">{{ p.fullName }}</div>
+                    <div class="text-[10px] text-muted-foreground">@{{ p.username }}</div>
+                  </div>
+                </div>
               </td>
 
               <td class="p-3">
@@ -417,6 +472,8 @@ import {
   Search,
   Scale,
   Download,
+  Snowflake,
+  Tv,
 } from "lucide-vue-next";
 import { Label } from "@/components/ui/label";
 import {
@@ -433,9 +490,17 @@ const api = useApi();
 
 const loading = ref(false);
 const submitting = ref(false);
+const isFrozen = ref(false);
 const activeTab = ref<"team" | "participant" | "ledger">("team");
 const searchQuery = ref("");
 const stageFilter = ref("");
+
+const toggleFreeze = () => {
+  isFrozen.value = !isFrozen.value;
+  if (import.meta.client) {
+    localStorage.setItem("genius_leaderboard_frozen", isFrozen.value ? "true" : "false");
+  }
+};
 
 // Pagination state
 const currentPage = ref(1);
@@ -578,6 +643,19 @@ function exportLedgerCSV() {
   document.body.removeChild(link);
 }
 
+function getParticipantAvatar(p: any) {
+  if (p.avatarUrl) return p.avatarUrl;
+  const isFemale =
+    p.gender === "FEMALE" ||
+    p.fullName?.toLowerCase().includes("siti") ||
+    p.fullName?.toLowerCase().includes("dewi") ||
+    p.fullName?.toLowerCase().includes("annisa") ||
+    p.fullName?.toLowerCase().includes("zahra") ||
+    p.fullName?.toLowerCase().includes("putri") ||
+    p.fullName?.toLowerCase().includes("rina");
+  return isFemale ? "/character-cewek-avatar.png" : "/character-cowok-avatar.png";
+}
+
 function formatDate(iso: string) {
   if (!iso) return "-";
   return new Date(iso).toLocaleString("id-ID", {
@@ -589,6 +667,12 @@ function formatDate(iso: string) {
 }
 
 onMounted(() => {
+  if (import.meta.client) {
+    const savedFreeze = localStorage.getItem("genius_leaderboard_frozen");
+    if (savedFreeze !== null) {
+      isFrozen.value = savedFreeze === "true";
+    }
+  }
   fetchData();
 });
 </script>

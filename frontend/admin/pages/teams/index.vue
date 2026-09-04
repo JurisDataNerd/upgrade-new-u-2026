@@ -317,7 +317,7 @@
             <Label class="text-xs text-foreground font-semibold">Nama Tim:</Label>
             <input
               v-model="form.name"
-              placeholder="Contoh: Team Garuda Sakti"
+              placeholder="Contoh: Genius 01"
               class="w-full h-8 px-2 bg-[#271d15] border border-[#523e2b] text-foreground focus:outline-none focus:border-[#f59e0b]"
               required
             />
@@ -327,7 +327,7 @@
             <Label class="text-xs text-foreground font-semibold">Kode Unik Tim:</Label>
             <input
               v-model="form.code"
-              placeholder="Contoh: TEAM-GARUDA"
+              placeholder="Contoh: GENIUS-01"
               class="w-full h-8 px-2 bg-[#271d15] border border-[#523e2b] text-[#facc15] font-bold uppercase focus:outline-none focus:border-[#f59e0b]"
               required
             />

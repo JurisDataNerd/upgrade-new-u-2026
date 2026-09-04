@@ -81,10 +81,19 @@
         <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <!-- Buddy Identity Left Section -->
           <div class="flex items-start sm:items-center gap-3.5">
-            <!-- Commander Crown Emblem -->
-            <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-xl bg-gradient-to-br from-[#ca8a04]/30 to-[#1e1712] border-2 border-[#f59e0b] flex flex-col items-center justify-center font-pixel shadow-[0_0_20px_rgba(245,158,11,0.35)] shrink-0">
-              <Crown class="h-7 w-7 text-[#facc15]" />
-              <span class="text-[8px] text-amber-300 font-bold uppercase mt-0.5 tracking-wider">BUDDY</span>
+            <!-- Commander Avatar & Crown Emblem -->
+            <div class="relative group shrink-0">
+              <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-xl border-2 border-[#f59e0b] overflow-hidden bg-[#1e1712] shadow-[0_0_20px_rgba(245,158,11,0.35)] flex items-center justify-center">
+                <img
+                  :src="buddyAvatarUrl"
+                  :alt="buddy.fullName || 'Buddy'"
+                  class="h-full w-full object-cover"
+                  style="image-rendering: pixelated;"
+                />
+              </div>
+              <div class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-[#facc15] border-2 border-black flex items-center justify-center shadow-md" title="Commander Buddy">
+                <Crown class="h-3 w-3 text-black" />
+              </div>
             </div>
 
             <!-- Identity Info -->
@@ -301,41 +310,20 @@
             </div>
           </div>
 
-          <!-- DYNAMIC BUDDY COMMANDER FIGURE (SVG VECTOR) -->
-          <div class="relative my-4 flex items-center justify-center z-10 select-none">
+          <!-- DYNAMIC BUDDY COMMANDER FIGURE (OFFICIAL UNU PIXEL CHARACTER) -->
+          <div class="relative my-4 flex items-center justify-center z-10 select-none min-h-[260px]">
             <!-- Glowing Orbit Rings -->
-            <div class="absolute h-56 w-56 rounded-full border border-dashed border-[#ca8a04] opacity-40 animate-[spin_20s_linear_infinite]" />
-            <div class="absolute h-44 w-44 rounded-full border border-[#f59e0b] opacity-30 animate-[spin_12s_linear_infinite_reverse]" />
+            <div class="absolute h-60 w-60 rounded-full border border-dashed border-[#ca8a04] opacity-40 animate-[spin_20s_linear_infinite]" />
+            <div class="absolute h-48 w-48 rounded-full border border-[#f59e0b] opacity-30 animate-[spin_12s_linear_infinite_reverse]" />
 
-            <!-- Commander Graphics -->
+            <!-- Commander Character Sprite -->
             <div class="relative flex flex-col items-center group transition-transform hover:scale-105 duration-300">
-              <svg width="180" height="240" viewBox="0 0 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]">
-                <!-- Head / Visor with Crown -->
-                <path d="M70 45 C70 25, 110 25, 110 45 L110 65 C110 75, 70 75, 70 65 Z" fill="#201a14" stroke="#f59e0b" stroke-width="3" />
-                <polygon points="75,30 83,18 90,26 97,18 105,30" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
-                <rect x="74" y="44" width="32" height="10" rx="3" fill="#facc15" class="animate-pulse" />
-
-                <!-- Torso with Gold Commander Plate -->
-                <path d="M62 70 L118 70 L112 135 L68 135 Z" fill="#2d2218" stroke="#f59e0b" stroke-width="3" />
-                <line x1="72" y1="85" x2="108" y2="85" stroke="#facc15" stroke-width="2.5" />
-                <line x1="75" y1="100" x2="105" y2="100" stroke="#facc15" stroke-width="2.5" />
-                <line x1="78" y1="115" x2="102" y2="115" stroke="#facc15" stroke-width="2.5" />
-
-                <!-- Arms -->
-                <path d="M62 72 L45 110 L52 114 L68 80 Z" fill="#201a14" stroke="#f59e0b" stroke-width="2" />
-                <path d="M118 72 L135 110 L128 114 L112 80 Z" fill="#201a14" stroke="#f59e0b" stroke-width="2" />
-
-                <!-- Gold Scepter Staff in Hand -->
-                <line x1="135" y1="40" x2="135" y2="210" stroke="#facc15" stroke-width="5" stroke-linecap="round" class="drop-shadow-[0_0_8px_#facc15]" />
-                <circle cx="135" cy="38" r="10" fill="#ca8a04" stroke="#facc15" stroke-width="2" />
-                <circle cx="135" cy="38" r="4" fill="#fff" />
-
-                <!-- Legs -->
-                <path d="M72 135 L68 205 L82 205 L84 135 Z" fill="#18130e" stroke="#f59e0b" stroke-width="2.5" />
-                <path d="M96 135 L98 205 L112 205 L108 135 Z" fill="#18130e" stroke="#f59e0b" stroke-width="2.5" />
-                <rect x="64" y="200" width="20" height="10" rx="2" fill="#201a14" stroke="#f59e0b" stroke-width="2" />
-                <rect x="96" y="200" width="20" height="10" rx="2" fill="#201a14" stroke="#f59e0b" stroke-width="2" />
-              </svg>
+              <img
+                :src="buddySpriteUrl"
+                :alt="buddy.fullName || 'Karakter Buddy'"
+                class="h-60 w-auto object-contain drop-shadow-[0_0_24px_rgba(245,158,11,0.5)]"
+                style="image-rendering: pixelated;"
+              />
             </div>
 
             <!-- Pedestal Ring Base -->
@@ -736,6 +724,7 @@ import {
   CharacterTier,
   getEvolutionForClassAndTier,
 } from "@genius/types";
+import { mockDb } from "@/lib/mockDb";
 
 const route = useRoute();
 const api = useApi();
@@ -746,6 +735,29 @@ const loading = ref(true);
 const saving = ref(false);
 const buddy = ref<any>(null);
 const teamsList = ref<any[]>([]);
+
+const buddySpriteUrl = computed(() => {
+  const isFemale =
+    buddy.value?.gender === "FEMALE" ||
+    buddy.value?.username?.includes("rina") ||
+    buddy.value?.username?.includes("putri") ||
+    buddy.value?.fullName?.toLowerCase().includes("rina") ||
+    buddy.value?.fullName?.toLowerCase().includes("putri") ||
+    buddy.value?.fullName?.toLowerCase().includes("sari");
+  return isFemale ? "/character-cewek.png" : "/character-cowok.png";
+});
+
+const buddyAvatarUrl = computed(() => {
+  if (buddy.value?.avatarUrl) return buddy.value.avatarUrl;
+  const isFemale =
+    buddy.value?.gender === "FEMALE" ||
+    buddy.value?.username?.includes("rina") ||
+    buddy.value?.username?.includes("putri") ||
+    buddy.value?.fullName?.toLowerCase().includes("rina") ||
+    buddy.value?.fullName?.toLowerCase().includes("putri") ||
+    buddy.value?.fullName?.toLowerCase().includes("sari");
+  return isFemale ? "/character-cewek-avatar.png" : "/character-cowok-avatar.png";
+});
 
 const activeCategory = ref("leadership");
 const selectedSlotIndex = ref(0);
@@ -772,15 +784,25 @@ async function fetchBuddyDetail() {
     const data = res?.data !== undefined ? res.data : res;
     if (data && (data.id || data.username)) {
       buddy.value = data;
-    } else {
-      buddy.value = null;
+      loading.value = false;
+      return;
     }
   } catch (err: any) {
-    console.error("Failed to fetch buddy detail:", err);
-    buddy.value = null;
-  } finally {
-    loading.value = false;
+    console.warn("API buddy fetch failed, falling back to mockDb:", err?.message || err);
   }
+
+  // Fallback to mockDb
+  const mock = mockDb.getBuddies().find(
+    (b) => b.id === buddyId.value || b.username === buddyId.value
+  );
+  if (mock) {
+    buddy.value = mock;
+  } else {
+    // Fallback to first buddy
+    const fallbackBuddy = mockDb.getBuddies()[0];
+    buddy.value = fallbackBuddy || null;
+  }
+  loading.value = false;
 }
 
 // Load Teams List for assignment
@@ -788,12 +810,14 @@ async function fetchTeams() {
   try {
     const res: any = await api.get("/api/teams?pageSize=100");
     const data = res?.data !== undefined ? res.data : res;
-    if (Array.isArray(data)) {
+    if (Array.isArray(data) && data.length > 0) {
       teamsList.value = data;
+      return;
     }
   } catch (err) {
-    console.error("Failed to load teams list:", err);
+    console.warn("Teams fetch failed, falling back to mockDb:", err);
   }
+  teamsList.value = mockDb.getTeams();
 }
 
 onMounted(async () => {

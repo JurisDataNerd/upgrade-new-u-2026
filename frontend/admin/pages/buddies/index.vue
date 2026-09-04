@@ -121,8 +121,13 @@
             <!-- Header -->
             <div class="flex items-start justify-between gap-2">
               <NuxtLink :to="'/buddies/' + b.id" class="flex items-center gap-2.5 cursor-pointer group">
-                <div class="h-9 w-9 border-2 border-[#0284c7] bg-[#16222f] flex items-center justify-center font-pixel text-xs text-[#38bdf8] shrink-0 group-hover:scale-105 transition-transform shadow-[0_0_8px_rgba(56,189,248,0.3)]">
-                  {{ getInitials(b.fullName) }}
+                <div class="h-9 w-9 border-2 border-[#0284c7] bg-[#16222f] overflow-hidden flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-[0_0_8px_rgba(56,189,248,0.3)]">
+                  <img
+                    :src="getBuddyAvatar(b)"
+                    :alt="b.fullName"
+                    class="h-full w-full object-cover"
+                    style="image-rendering: pixelated;"
+                  />
                 </div>
                 <div>
                   <div class="font-bold text-foreground text-xs leading-tight group-hover:text-[#38bdf8] transition-colors">
@@ -269,8 +274,13 @@
             >
               <td class="p-3">
                 <NuxtLink :to="'/buddies/' + b.id" class="flex items-center gap-2.5 cursor-pointer group">
-                  <div class="h-7 w-7 border border-[#0284c7]/50 bg-[#16222f] flex items-center justify-center font-pixel text-[9px] text-[#38bdf8] shrink-0 group-hover:scale-105 transition-transform shadow-[0_0_8px_rgba(56,189,248,0.3)]">
-                    {{ getInitials(b.fullName) }}
+                  <div class="h-7 w-7 border border-[#0284c7]/50 bg-[#16222f] overflow-hidden flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-[0_0_8px_rgba(56,189,248,0.3)]">
+                    <img
+                      :src="getBuddyAvatar(b)"
+                      :alt="b.fullName"
+                      class="h-full w-full object-cover"
+                      style="image-rendering: pixelated;"
+                    />
                   </div>
                   <div>
                     <div class="font-sans font-semibold text-foreground text-xs leading-tight group-hover:text-[#38bdf8] transition-colors">
@@ -837,6 +847,18 @@ function getInitials(name: string) {
   const parts = name.trim().split(" ");
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
+function getBuddyAvatar(b: any) {
+  if (b.avatarUrl) return b.avatarUrl;
+  const isFemale =
+    b.gender === "FEMALE" ||
+    b.username?.includes("rina") ||
+    b.username?.includes("putri") ||
+    b.fullName?.toLowerCase().includes("rina") ||
+    b.fullName?.toLowerCase().includes("putri") ||
+    b.fullName?.toLowerCase().includes("sari");
+  return isFemale ? "/character-cewek-avatar.png" : "/character-cowok-avatar.png";
 }
 
 function formatDate(iso: string) {

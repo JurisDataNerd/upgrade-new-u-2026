@@ -313,7 +313,7 @@ Merekam bukti valid kelulusan tantangan pos game oleh mahasiswa.
   "xpReward": 75,
   "badgeIcon": "Shield",
   "badgeColor": "#16a34a",
-  "contactPerson": "Kak Zaki (+6281399887766)",
+  "contactPerson": "Zaki (+6281399887766)",
   "instagram": "@silat_unujogja",
   "totalVisitors": 142,
   "isActive": true

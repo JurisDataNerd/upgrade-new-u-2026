@@ -617,11 +617,11 @@ async function seed() {
   }
 
   // 8. Seed Sample Team & Member Assignment
-  console.log("Creating Sample Team 'Garuda Sakti'...");
+  console.log("Creating Sample Team 'Genius 01'...");
   const [existingTeam] = await db
     .select()
     .from(teams)
-    .where(eq(teams.code, "TEAM-GARUDA"))
+    .where(eq(teams.code, "GENIUS-01"))
     .limit(1);
 
   let sampleTeam = existingTeam;
@@ -629,8 +629,8 @@ async function seed() {
     [sampleTeam] = await db
       .insert(teams)
       .values({
-        name: "Team Garuda Sakti",
-        code: "TEAM-GARUDA",
+        name: "Genius 01",
+        code: "GENIUS-01",
         status: "ACTIVE",
       })
       .returning();
@@ -651,7 +651,7 @@ async function seed() {
         userId: p.id,
       });
     }
-    console.log("  ✅ Team 'Garuda Sakti' with 1 Buddy and 5 Participants created");
+    console.log("  ✅ Team 'Genius 01' with 1 Buddy and 5 Participants created");
   }
 
   // 9. Seed Sample Ormawa Booths (Expo Hari 3)
@@ -668,7 +668,7 @@ async function seed() {
       xpReward: 75,
       badgeIcon: "Shield",
       badgeColor: "#16a34a",
-      contactPerson: "Kak Zaki (+6281399887766)",
+      contactPerson: "Zaki (+6281399887766)",
       instagram: "@silat_unujogja",
     },
     {
@@ -682,7 +682,7 @@ async function seed() {
       xpReward: 75,
       badgeIcon: "Cpu",
       badgeColor: "#38bdf8",
-      contactPerson: "Kak Farhan (+6281234567891)",
+      contactPerson: "Farhan (+6281234567891)",
       instagram: "@robotika_unujogja",
     },
     {
@@ -696,7 +696,7 @@ async function seed() {
       xpReward: 75,
       badgeIcon: "MusicNotes",
       badgeColor: "#ec4899",
-      contactPerson: "Kak Nabila (+6281298765432)",
+      contactPerson: "Nabila (+6281298765432)",
       instagram: "@psm_unujogja",
     },
     {
@@ -710,7 +710,7 @@ async function seed() {
       xpReward: 75,
       badgeIcon: "MasksTheater",
       badgeColor: "#a855f7",
-      contactPerson: "Kak Danang (+6285612345678)",
+      contactPerson: "Danang (+6285612345678)",
       instagram: "@teater_unujogja",
     },
     {
@@ -724,7 +724,7 @@ async function seed() {
       xpReward: 75,
       badgeIcon: "FirstAidKit",
       badgeColor: "#ef4444",
-      contactPerson: "Kak Rina (+6287711223344)",
+      contactPerson: "Rina (+6287711223344)",
       instagram: "@ksrpmi_unujogja",
     },
   ];

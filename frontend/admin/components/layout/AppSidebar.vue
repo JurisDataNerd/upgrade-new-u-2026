@@ -1,16 +1,16 @@
 <template>
   <aside
     :class="[
-      'sticky top-0 h-screen hidden lg:flex flex-col border-r-2 border-[#4a3624] bg-[#1a140f] transition-all duration-300 ease-in-out select-none shrink-0 z-30',
+      'sticky top-0 h-screen hidden lg:flex flex-col border-r-2 border-[#5a3a18] bg-[#24170e] transition-all duration-300 ease-in-out select-none shrink-0 z-30',
       sidebarCollapsed ? 'w-[74px]' : 'w-[264px]',
     ]"
   >
     <!-- 1. Brand Header with Floating Collapse/Expand Button at Top -->
-    <div class="relative flex h-16 shrink-0 items-center justify-between border-b-2 border-[#4a3624] px-3.5 bg-[#15100c]">
+    <div class="relative flex h-16 shrink-0 items-center justify-between border-b-2 border-[#5a3a18] px-3.5 bg-[#1e130a]">
       <!-- Brand Logo & Title -->
       <NuxtLink to="/" class="flex items-center gap-2.5 overflow-hidden group">
         <div
-          class="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-[#f59e0b] bg-[#271d15] p-1 shadow-[0_0_8px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform"
+          class="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-[#f59e0b] bg-[#2d1b0e] p-1 shadow-[0_0_8px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform"
         >
           <img src="/unu.png" alt="UNU Logo" class="h-full w-auto object-contain" />
         </div>
@@ -113,20 +113,22 @@
     </nav>
 
     <!-- 3. Bottom User Profile Card & Actions (Sticky at bottom) -->
-    <div class="relative shrink-0 border-t-2 border-[#4a3624] bg-[#15100c] p-2.5">
+    <div class="relative shrink-0 border-t-2 border-[#5a3a18] bg-[#1e130a] p-2.5">
       <!-- Expanded State User Card -->
       <div
         v-if="!sidebarCollapsed"
-        class="flex items-center gap-2.5 rounded border border-[#4a3624] bg-[#221812] p-2 pr-6 hover:border-[#ca8a04]/60 transition-colors min-w-0"
+        class="flex items-center gap-2.5 rounded border border-[#5a3a18] bg-[#2d1b0e] p-2 pr-6 hover:border-[#ca8a04]/60 transition-colors min-w-0"
       >
         <!-- User Avatar & Identity -->
         <div class="flex items-center gap-2.5 min-w-0">
           <div class="relative shrink-0">
-            <Avatar class="h-9 w-9 border-2 border-[#f59e0b] bg-[#271d15]">
-              <AvatarFallback class="bg-[#271d15] font-mono text-xs font-bold text-[#f59e0b]">
-                {{ userInitials }}
-              </AvatarFallback>
-            </Avatar>
+            <div class="h-9 w-9 rounded border-2 border-[#f59e0b] bg-[#3d2b1e] overflow-hidden flex items-center justify-center p-1">
+              <img
+                :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.username === 'buddy03' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png')"
+                alt="Admin Avatar"
+                class="h-full w-full object-contain"
+              />
+            </div>
             <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-[#1a140f] bg-[#22c55e]" />
           </div>
 
@@ -154,11 +156,13 @@
           <Tooltip>
             <TooltipTrigger as-child>
               <div class="relative cursor-pointer">
-                <Avatar class="h-9 w-9 border-2 border-[#f59e0b] bg-[#271d15] hover:scale-105 transition-transform shadow-[0_0_8px_rgba(245,158,11,0.25)]">
-                  <AvatarFallback class="bg-[#271d15] font-mono text-xs font-bold text-[#f59e0b]">
-                    {{ userInitials }}
-                  </AvatarFallback>
-                </Avatar>
+                <div class="h-9 w-9 rounded border-2 border-[#f59e0b] bg-[#271d15] overflow-hidden hover:scale-105 transition-transform shadow-[0_0_8px_rgba(245,158,11,0.25)] flex items-center justify-center p-1">
+                  <img
+                    :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.username === 'buddy03' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png')"
+                    alt="Admin Avatar"
+                    class="h-full w-full object-contain"
+                  />
+                </div>
                 <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-[#1a140f] bg-[#22c55e]" />
               </div>
             </TooltipTrigger>
@@ -205,6 +209,7 @@ import {
   Users,
   GraduationCap,
   UserCheck,
+  CalendarCheck,
   UserCog,
   Sparkles,
   Award,
@@ -244,6 +249,8 @@ const navGroups = [
   {
     label: "Organisasi Tim",
     items: [
+      { label: "Presensi Harian", to: "/attendance", icon: CalendarCheck, badge: "GATE" },
+      { label: "Portal Buddy", to: "/buddy", icon: UserCheck, badge: "FIELD" },
       { label: "Peserta RPG", to: "/participants", icon: GraduationCap },
       { label: "Buddy (GM)", to: "/buddies", icon: UserCheck },
       { label: "Tim Petualang", to: "/teams", icon: Users },

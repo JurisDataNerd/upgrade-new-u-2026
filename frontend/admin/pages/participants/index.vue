@@ -250,14 +250,11 @@
                     }"
                   >
                     <img
-                      v-if="p.avatarUrl"
-                      :src="p.avatarUrl"
-                      alt="Avatar"
+                      :src="p.avatarUrl || (p.gender === 'FEMALE' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png')"
+                      :alt="p.fullName"
                       class="h-full w-full object-cover"
+                      style="image-rendering: pixelated;"
                     />
-                    <span v-else class="font-pixel text-[10px] text-[#facc15]">
-                      {{ getInitials(p.fullName) }}
-                    </span>
                   </div>
                   <div>
                     <div class="font-sans font-semibold text-foreground text-xs leading-tight group-hover:text-[#f59e0b] transition-colors flex items-center gap-1">
@@ -445,14 +442,11 @@
                     }"
                   >
                     <img
-                      v-if="p.avatarUrl"
-                      :src="p.avatarUrl"
-                      alt="Avatar"
+                      :src="p.avatarUrl || (p.gender === 'FEMALE' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png')"
+                      :alt="p.fullName"
                       class="h-full w-full object-cover"
+                      style="image-rendering: pixelated;"
                     />
-                    <span v-else class="font-pixel text-xs text-[#facc15]">
-                      {{ getInitials(p.fullName) }}
-                    </span>
                   </div>
                   <span
                     class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full flex items-center justify-center text-[9px] font-bold border border-[#080C14]"
@@ -905,7 +899,7 @@
             <textarea
               v-model="csvRawText"
               rows="4"
-              placeholder="240101001,Ahmad Dahlan,genius2026,TEAM-GARUDA,MALE,CYBER_KNIGHT,Novice Adventurer,1&#10;240101002,Fatimah Zahra,genius2026,TEAM-GARUDA,FEMALE,TECH_MAGE,Master Kuis Cepat,2"
+              placeholder="240101001,Ahmad Dahlan,genius2026,GENIUS-01,MALE,CYBER_KNIGHT,Novice Adventurer,1&#10;240101002,Fatimah Zahra,genius2026,GENIUS-01,FEMALE,TECH_MAGE,Master Kuis Cepat,2"
               class="w-full bg-[#15100c] border border-[#523e2b] p-2 text-[11px] font-mono focus:outline-none focus:border-[#4ade80]"
               @input="parseRawCsv"
             ></textarea>
@@ -1484,7 +1478,7 @@ async function executeImport() {
 }
 
 function downloadCsvTemplate() {
-  const csvContent = "username,fullName,password,teamCode,gender,characterClass,characterTitle,characterTier\n240101001,Ahmad Dahlan,genius2026,TEAM-GARUDA,MALE,CYBER_KNIGHT,Novice Adventurer,1\n240101002,Fatimah Azzahra,genius2026,TEAM-GARUDA,FEMALE,TECH_MAGE,Master Kuis Cepat,2";
+  const csvContent = "username,fullName,password,teamCode,gender,characterClass,characterTitle,characterTier\n240101001,Ahmad Dahlan,genius2026,GENIUS-01,MALE,CYBER_KNIGHT,Novice Adventurer,1\n240101002,Fatimah Azzahra,genius2026,GENIUS-01,FEMALE,TECH_MAGE,Master Kuis Cepat,2";
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");

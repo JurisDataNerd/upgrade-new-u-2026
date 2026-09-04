@@ -16,6 +16,9 @@ import {
   PhGenderFemale,
   PhCrown,
   PhTrophy,
+  PhCalendarCheck,
+  PhQrCode,
+  PhStorefront,
 } from '@phosphor-icons/vue';
 import { useGameStore } from '@/store/gameStore';
 import { AVATAR_OPTIONS, UNU_FACULTIES } from '@/data/mockData';
@@ -26,38 +29,35 @@ const gameStore = useGameStore();
 const completedFloors = computed(() => gameStore.getCompletedFloorsCount());
 const totalStamps = computed(() => gameStore.getTotalStampsCount());
 const currentLevel = computed(() => gameStore.getCurrentLevel());
+const isCheckedInToday = computed(() => gameStore.isDayCheckedIn(gameStore.activeDay || 1));
 
-const isProfileModalOpen = ref(false);
-const tempName = ref(gameStore.participant.name);
-const tempNim = ref(gameStore.participant.nim);
-const tempFaculty = ref(gameStore.participant.faculty || UNU_FACULTIES[1].name);
-const tempProdi = ref(gameStore.participant.prodi || 'Informatika');
-const tempAvatar = ref(gameStore.participant.avatar);
+import MabaAuthModal from '@/components/auth/MabaAuthModal.vue';
 
-const handleSaveProfile = (e: Event) => {
-  e.preventDefault();
-  gameStore.setParticipantInfo({
-    name: tempName.value,
-    nim: tempNim.value,
-    faculty: tempFaculty.value,
-    prodi: tempProdi.value,
-    avatar: tempAvatar.value,
-  });
-  if (gameStore.soundEnabled) soundEngine.playCorrect();
-  isProfileModalOpen.value = false;
+// Auth / Profile Onboarding Modal State
+const isAuthModalOpen = ref(
+  !gameStore.isLoggedIn || !gameStore.participant.isRegistered || !gameStore.participant.name
+);
+const authInitialStep = ref<'login' | 'profile'>(
+  gameStore.isLoggedIn ? 'profile' : 'login'
+);
+
+const openLoginModal = () => {
+  if (gameStore.soundEnabled) soundEngine.playClick();
+  authInitialStep.value = 'login';
+  isAuthModalOpen.value = true;
 };
 
-const handleFacultyChange = (event: Event) => {
-  const newFac = (event.target as HTMLSelectElement).value;
-  tempFaculty.value = newFac;
-  const facObj = UNU_FACULTIES.find((f) => f.name === newFac);
-  if (facObj && facObj.prodi.length > 0) {
-    tempProdi.value = facObj.prodi[0];
-  }
+const openProfileModal = () => {
+  if (gameStore.soundEnabled) soundEngine.playClick();
+  authInitialStep.value = 'profile';
+  isAuthModalOpen.value = true;
+};
+
+const handleAuthComplete = () => {
+  isAuthModalOpen.value = false;
 };
 
 const handleSelectQuickAvatar = (avatarId: string) => {
-  tempAvatar.value = avatarId;
   gameStore.setParticipantInfo({ avatar: avatarId });
   if (gameStore.soundEnabled) soundEngine.playSelect();
 };
@@ -99,8 +99,39 @@ const handleSelectQuickAvatar = (avatarId: string) => {
         </div>
       </div>
 
-      <!-- Top Right Quick Controls -->
+      <!-- Top Right Quick Controls & Student Profile -->
       <div class="flex items-center gap-1.5 sm:gap-2">
+        <!-- Student Identity Pill (Click to edit profile) -->
+        <button
+          type="button"
+          @click="openProfileModal"
+          class="backdrop-blur-md bg-[#140e0a]/85 border border-[#8b6f4e] hover:border-[#f0d060] rounded-full px-2 sm:px-3 py-1 flex items-center gap-1.5 shadow-md cursor-pointer active:scale-95 transition-all"
+          title="Lihat & Ubah Profil Mahasiswa"
+        >
+          <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-[#f0d060] overflow-hidden bg-black/40 shrink-0">
+            <img
+              :src="gameStore.participant.avatar === 'character_cewek' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png'"
+              alt="Avatar"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="text-left leading-tight hidden xs:block">
+            <span class="font-pixel text-[7.5px] sm:text-[8.5px] text-[#fef08a] block truncate max-w-[100px]">
+              {{ gameStore.participant.name || 'Mahasiswa' }}
+            </span>
+          </div>
+        </button>
+
+        <!-- Switch Account / Re-login Button -->
+        <button
+          type="button"
+          @click="openLoginModal"
+          class="px-2 py-1.5 bg-[#2d1b0e]/90 border border-[#8b6f4e] hover:border-[#f0d060] text-[#f0d060] rounded-lg text-[8px] sm:text-[8.5px] font-pixel transition-all shadow-md active:scale-95 cursor-pointer"
+          title="Ganti Akun Maba / Masuk Kembali"
+        >
+          GANTI
+        </button>
+
         <button
           type="button"
           @click="gameStore.toggleSound"
@@ -168,18 +199,20 @@ const handleSelectQuickAvatar = (avatarId: string) => {
       <!-- Character Quick-Select Bar -->
       <div class="backdrop-blur-md bg-[#19120c]/90 border border-[#8b6f4e] rounded-xl p-2 mb-2.5 sm:mb-3 max-w-sm w-full shadow-md">
         <div class="flex items-center justify-between gap-2 px-1 mb-1.5">
-          <span class="font-pixel text-[8px] text-[#f0d060] uppercase">
-            Karakter Utama:
-          </span>
+          <div class="min-w-0 text-left">
+            <span class="font-pixel text-[8px] text-[#f0d060] uppercase block">
+              Karakter Petualang:
+            </span>
+            <span class="text-[9.5px] text-[#86efac] font-bold truncate block">
+              {{ gameStore.participant.name || 'Mahasiswa Baru' }}
+            </span>
+          </div>
           <button
             type="button"
-            @click="() => {
-              if (gameStore.soundEnabled) soundEngine.playClick();
-              isProfileModalOpen = true;
-            }"
-            class="text-[9px] font-sans text-[#c4956a] hover:text-[#f0d060] underline cursor-pointer"
+            @click="openProfileModal"
+            class="text-[8.5px] font-pixel text-[#f0d060] hover:text-white bg-[#3d2b1e] border border-[#8b6f4e] hover:border-[#f0d060] px-2 py-0.5 rounded cursor-pointer transition-colors shrink-0"
           >
-            Ubah Data Diri
+            UBAH PROFIL
           </button>
         </div>
 
@@ -231,17 +264,46 @@ const handleSelectQuickAvatar = (avatarId: string) => {
           </button>
         </RouterLink>
 
-        <!-- Secondary 2 Buttons in 1 Row -->
-        <div class="grid grid-cols-2 gap-2 w-full">
+        <!-- Secondary Buttons Grid: Presensi, Ormawa, Paspor & Leaderboard -->
+        <div class="grid grid-cols-4 gap-1.5 w-full">
+          <!-- Presensi Button -->
+          <RouterLink to="/presensi" class="w-full">
+            <button
+              type="button"
+              @click="() => gameStore.soundEnabled && soundEngine.playClick()"
+              :class="[
+                'w-full py-2 px-1 text-[8px] sm:text-[9px] font-pixel font-bold uppercase tracking-wider rounded-lg border-2 flex flex-col items-center justify-center gap-1 shadow transition-all active:scale-95 cursor-pointer',
+                isCheckedInToday
+                  ? 'bg-[#183915] border-[#22c55e] text-[#86efac]'
+                  : 'bg-[#b45309] border-[#f59e0b] text-white hover:bg-[#d97706]'
+              ]"
+            >
+              <PhCalendarCheck :size="15" weight="fill" :class="isCheckedInToday ? 'text-[#86efac]' : 'text-[#fef08a]'" />
+              <span>{{ isCheckedInToday ? 'HADIR' : 'PRESENSI' }}</span>
+            </button>
+          </RouterLink>
+
+          <!-- Ormawa Expo Button -->
+          <RouterLink to="/ormawa" class="w-full">
+            <button
+              type="button"
+              @click="() => gameStore.soundEnabled && soundEngine.playClick()"
+              class="w-full py-2 px-1 text-[8px] sm:text-[9px] font-pixel font-bold uppercase tracking-wider bg-[#1f1629] border-2 border-[#a855f7] hover:border-[#c084fc] rounded-lg text-[#e9d5ff] flex flex-col items-center justify-center gap-1 shadow transition-all active:scale-95 cursor-pointer"
+            >
+              <PhStorefront :size="15" weight="fill" class="text-[#c084fc]" />
+              <span>ORMAWA</span>
+            </button>
+          </RouterLink>
+
           <!-- Paspor Digital Button -->
           <RouterLink to="/paspor" class="w-full">
             <button
               type="button"
               @click="() => gameStore.soundEnabled && soundEngine.playClick()"
-              class="w-full py-2 sm:py-2.5 px-2 text-[10px] sm:text-xs font-pixel font-bold uppercase tracking-wider rpg-btn-wood flex items-center justify-center gap-1.5 shadow"
+              class="w-full py-2 px-1 text-[8px] sm:text-[9px] font-pixel font-bold uppercase tracking-wider rpg-btn-wood flex flex-col items-center justify-center gap-1 shadow active:scale-95 cursor-pointer"
             >
-              <PhIdentificationBadge :size="16" weight="bold" />
-              <span>PASPOR ({{ totalStamps }}/18)</span>
+              <PhIdentificationBadge :size="15" weight="bold" class="text-[#facc15]" />
+              <span>PASPOR</span>
             </button>
           </RouterLink>
 
@@ -250,9 +312,9 @@ const handleSelectQuickAvatar = (avatarId: string) => {
             <button
               type="button"
               @click="() => gameStore.soundEnabled && soundEngine.playClick()"
-              class="w-full py-2 sm:py-2.5 px-2 text-[10px] sm:text-xs font-pixel font-bold uppercase tracking-wider bg-[#2d1b0e]/90 border-2 border-[#5a3a18] rounded-lg text-[#f0d060] hover:border-[#f0d060] flex items-center justify-center gap-1.5 shadow"
+              class="w-full py-2 px-1 text-[8px] sm:text-[9px] font-pixel font-bold uppercase tracking-wider bg-[#2d1b0e]/90 border-2 border-[#5a3a18] rounded-lg text-[#f0d060] hover:border-[#f0d060] flex flex-col items-center justify-center gap-1 shadow active:scale-95 cursor-pointer"
             >
-              <PhTrophy :size="15" weight="fill" />
+              <PhTrophy :size="15" weight="fill" class="text-[#facc15]" />
               <span>PERINGKAT</span>
             </button>
           </RouterLink>
@@ -292,154 +354,12 @@ const handleSelectQuickAvatar = (avatarId: string) => {
       </div>
     </div>
 
-    <!-- Character Selector & Profile RPG Dialogue Modal -->
-    <div
-      v-if="isProfileModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#0a0604]/85 backdrop-blur-md animate-in fade-in duration-200"
-    >
-      <div class="w-full max-w-md max-h-[92dvh] overflow-y-auto bg-gradient-to-b from-[#2d1b0e] to-[#1a1008] border-[3px] border-[#f0d060] rounded-2xl p-4 sm:p-6 shadow-[inset_0_0_0_2px_#6b4f2e,0_16px_40px_rgba(0,0,0,0.8),0_0_25px_rgba(240,208,96,0.25)] relative">
-        <button
-          type="button"
-          @click="isProfileModalOpen = false"
-          class="absolute top-3 right-3 text-[#f0d060] hover:text-white bg-[#3d2b1e] border border-[#8b6f4e] hover:border-[#f0d060] rounded-md w-7 h-7 flex items-center justify-center transition-transform hover:scale-105 cursor-pointer font-pixel text-xs"
-        >
-          <PhX :size="14" weight="bold" />
-        </button>
-
-        <!-- Modal Header -->
-        <div class="text-center space-y-1 mb-3">
-          <div class="inline-block bg-[#14230f] border border-[#7ec850] text-[#7ec850] font-pixel text-[8px] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-            KARTU KARAKTER PETUALANG
-          </div>
-          <h2 class="font-pixel text-xs sm:text-sm text-[#f0d060] tracking-wide">
-            PROFIL MAHASISWA BARU
-          </h2>
-        </div>
-
-        <form @submit="handleSaveProfile" class="space-y-3">
-          <!-- Avatar Pickers -->
-          <div>
-            <label class="block font-pixel text-[9px] text-[#f0d060] mb-1.5 uppercase">
-              Pilih Karakter (Cowok / Cewek):
-            </label>
-            <div class="grid grid-cols-2 gap-2">
-              <button
-                v-for="av in AVATAR_OPTIONS"
-                :key="av.id"
-                type="button"
-                @click="() => {
-                  tempAvatar = av.id;
-                  if (gameStore.soundEnabled) soundEngine.playSelect();
-                }"
-                :class="[
-                  'p-2 rounded-xl border-2 text-left transition-all flex flex-col items-center gap-1.5 cursor-pointer',
-                  tempAvatar === av.id
-                    ? 'bg-gradient-to-b from-[#3d7828] to-[#255018] border-[#f0d060] shadow-[0_0_12px_rgba(126,200,80,0.4)] scale-[1.01]'
-                    : 'bg-[#170f07] border-[#5a3a18] hover:border-[#8b6f4e]'
-                ]"
-              >
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden bg-[#170f07] border border-[#f0d060] shrink-0 relative shadow-inner">
-                  <img
-                    :src="av.avatarImage"
-                    :alt="av.name"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-                <div class="text-center w-full">
-                  <div class="font-pixel text-[9px] text-white font-bold flex items-center justify-center gap-1">
-                    <span>{{ av.gender === 'pria' ? 'Cowok' : 'Cewek' }}</span>
-                    <PhGenderMale v-if="av.gender === 'pria'" :size="11" weight="bold" class="text-[#60a8d8]" />
-                    <PhGenderFemale v-else :size="11" weight="bold" class="text-[#ff8080]" />
-                  </div>
-                  <div class="font-sans text-[9px] text-[#c4956a]">
-                    {{ av.desc }}
-                  </div>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <!-- Form Input Fields -->
-          <div class="space-y-2">
-            <div>
-              <label class="block font-pixel text-[8px] text-[#c4956a] mb-0.5 uppercase">
-                Nama Lengkap Mahasiswa
-              </label>
-              <input
-                type="text"
-                v-model="tempName"
-                required
-                class="w-full bg-[#170f07] border border-[#5a3a18] focus:border-[#f0d060] rounded-md px-2.5 py-1.5 text-xs text-white font-sans outline-none"
-              />
-            </div>
-
-            <div>
-              <label class="block font-pixel text-[8px] text-[#c4956a] mb-0.5 uppercase">
-                NIM (Format: 26111xx)
-              </label>
-              <input
-                type="text"
-                v-model="tempNim"
-                required
-                placeholder="2611101"
-                class="w-full bg-[#170f07] border border-[#5a3a18] focus:border-[#f0d060] rounded-md px-2.5 py-1.5 text-xs text-white font-mono outline-none"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block font-pixel text-[8px] text-[#c4956a] mb-0.5 uppercase">
-                  Fakultas
-                </label>
-                <select
-                  :value="tempFaculty"
-                  @change="handleFacultyChange"
-                  class="w-full bg-[#170f07] border border-[#5a3a18] focus:border-[#f0d060] rounded-md px-2 py-1.5 text-[11px] text-white outline-none"
-                >
-                  <option v-for="fac in UNU_FACULTIES" :key="fac.name" :value="fac.name">
-                    {{ fac.name }}
-                  </option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block font-pixel text-[8px] text-[#c4956a] mb-0.5 uppercase">
-                  Program Studi
-                </label>
-                <select
-                  v-model="tempProdi"
-                  class="w-full bg-[#170f07] border border-[#5a3a18] focus:border-[#f0d060] rounded-md px-2 py-1.5 text-[11px] text-white outline-none"
-                >
-                  <option
-                    v-for="p in (UNU_FACULTIES.find((f) => f.name === tempFaculty)?.prodi || [])"
-                    :key="p"
-                    :value="p"
-                  >
-                    {{ p }}
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="flex gap-2 pt-1">
-            <button
-              type="submit"
-              class="flex-1 py-2.5 px-3 text-xs font-pixel font-bold uppercase rpg-btn-primary"
-            >
-              SIMPAN KARAKTER
-            </button>
-            <button
-              type="button"
-              @click="isProfileModalOpen = false"
-              class="py-2.5 px-4 text-xs font-pixel font-bold uppercase rpg-btn-wood"
-            >
-              BATAL
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <!-- Modal Login & Profile Setup Mahasiswa Baru (Onboarding Flow) -->
+    <MabaAuthModal
+      :isOpen="isAuthModalOpen"
+      :initialStep="authInitialStep"
+      @close="isAuthModalOpen = false"
+      @complete="handleAuthComplete"
+    />
   </div>
 </template>

@@ -10,20 +10,52 @@ import {
   PhArrowRight,
   PhPrinter,
   PhArrowCounterClockwise,
+  PhStorefront,
+  PhMedal,
+  PhQrCode,
+  PhCheck,
 } from '@phosphor-icons/vue';
 import { FLOORS_DATA, BOOTHS_DATA, LEVEL_CONFIG, AVATAR_OPTIONS } from '@/data/mockData';
+import { ORMAWA_STANDS } from '@/data/ormawaData';
 import { useGameStore } from '@/store/gameStore';
 import PixelBadge from '@/components/ui/PixelBadge.vue';
 import PixelProgress from '@/components/ui/PixelProgress.vue';
 import StampIcon from '@/components/ui/StampIcon.vue';
 import Navbar from '@/components/layout/Navbar.vue';
 import CrtScanlines from '@/components/layout/CrtScanlines.vue';
+import QrScannerModal from '@/components/common/QrScannerModal.vue';
 import { soundEngine } from '@/lib/sound';
 
 const gameStore = useGameStore();
 
 const showCertificate = ref(false);
 const selectedStampPreview = ref<string | null>(null);
+const showOrmawaScanner = ref(false);
+const ormawaScanToast = ref<{ message: string; success: boolean } | null>(null);
+
+const ormawaPresets = computed(() => {
+  return ORMAWA_STANDS.map((s) => ({
+    label: `${s.shortName} (Lt ${s.floor})`,
+    code: s.qrToken,
+    description: s.name,
+  }));
+});
+
+const handleOrmawaScanSuccess = (code: string) => {
+  showOrmawaScanner.value = false;
+  const res = gameStore.scanOrmawa(code);
+  ormawaScanToast.value = {
+    message: res.message,
+    success: res.success,
+  };
+  setTimeout(() => {
+    ormawaScanToast.value = null;
+  }, 4500);
+};
+
+const visitedOrmawaStands = computed(() =>
+  ORMAWA_STANDS.filter((s) => gameStore.isStandVisited(s.id))
+);
 
 const completedFloors = computed(() => gameStore.getCompletedFloorsCount());
 const currentLevel = computed(() => gameStore.getCurrentLevel());
@@ -415,6 +447,107 @@ const handleResetConfirm = () => {
           </div>
         </div>
       </div>
+
+      <!-- LEMBAR KOLEKSI ORMAWA EXPO (HARI KE-3) -->
+      <div class="space-y-3 pt-4 border-t-2 border-[#5a3a18]">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+          <div>
+            <h3 class="font-pixel text-xs sm:text-sm font-bold text-[#f0d060] flex items-center gap-2">
+              <PhStorefront :size="16" class="text-[#facc15]" />
+              <span>LEMBAR STEMPEL ORMAWA EXPO (HARI KE-3)</span>
+            </h3>
+            <p class="font-sans text-xs text-[#c4956a]">
+              Selasar Lantai 3, 4, dan 5 UNU Yogyakarta &bull; Perolehan: <strong>{{ gameStore.visitedOrmawaCount }}/10 Stan Terhitung (+{{ gameStore.ormawaXpEarned }} XP)</strong>
+            </p>
+          </div>
+
+          <button
+            type="button"
+            @click="() => {
+              if (gameStore.soundEnabled) soundEngine.playClick();
+              showOrmawaScanner = true;
+            }"
+            class="rpg-btn-primary py-2 px-3 text-xs font-pixel font-bold flex items-center gap-1.5 cursor-pointer shadow-md active:scale-95"
+          >
+            <PhQrCode :size="15" weight="bold" />
+            <span>PINDAI QR MEJA STAN</span>
+          </button>
+        </div>
+
+        <!-- Scan Feedback Alert -->
+        <div
+          v-if="ormawaScanToast"
+          :class="[
+            'p-2.5 rounded-lg border-2 flex items-center justify-between gap-3 text-xs font-mono shadow-md transition-all',
+            ormawaScanToast.success
+              ? 'bg-[#142314] border-[#22c55e] text-[#86efac]'
+              : 'bg-[#291717] border-[#ef4444] text-[#fca5a5]'
+          ]"
+        >
+          <div class="flex items-center gap-2">
+            <PhCheckCircle v-if="ormawaScanToast.success" :size="16" weight="fill" class="text-[#4ade80]" />
+            <span>{{ ormawaScanToast.message }}</span>
+          </div>
+          <button
+            type="button"
+            @click="ormawaScanToast = null"
+            class="text-gray-400 hover:text-white px-1"
+          >
+            &times;
+          </button>
+        </div>
+
+        <!-- Visited Ormawa Badges Grid -->
+        <div v-if="visitedOrmawaStands.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+          <div
+            v-for="stand in visitedOrmawaStands"
+            :key="stand.id"
+            class="p-2.5 rounded-xl border-2 border-[#7ec850] bg-gradient-to-b from-[#1c2e1c] to-[#121c12] text-center space-y-1 shadow flex flex-col justify-between"
+          >
+            <div class="w-8 h-8 mx-auto rounded-full bg-[#274b24] border border-[#7ec850] flex items-center justify-center text-[#f0d060] shrink-0">
+              <PhMedal :size="16" weight="fill" />
+            </div>
+            <div>
+              <span class="font-pixel text-[8px] text-[#86efac] block uppercase tracking-wider">
+                {{ stand.badgeTitle }}
+              </span>
+              <h4 class="font-sans text-[11px] font-bold text-white line-clamp-1 mt-0.5">
+                {{ stand.shortName }}
+              </h4>
+              <span class="text-[9px] text-[#a08060] font-mono block">
+                Lt {{ stand.floor }}
+              </span>
+            </div>
+            <div class="pt-1">
+              <span class="inline-flex items-center gap-1 text-[8px] font-pixel text-[#86efac] bg-[#142314] px-1.5 py-0.5 rounded border border-[#22c55e]/40">
+                <PhCheckCircle :size="9" weight="fill" />
+                TERCATAT
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty Ormawa State -->
+        <div
+          v-else
+          class="p-5 text-center bg-[#1c1209] border-2 border-dashed border-[#5a3a18] rounded-xl space-y-2 font-mono"
+        >
+          <PhStorefront :size="28" class="text-amber-400 mx-auto opacity-40" />
+          <p class="text-xs text-amber-200">Belum ada lencana stan ormawa yang terkumpul.</p>
+          <p class="text-[10px] text-gray-400 max-w-md mx-auto font-sans">
+            Kunjungi selasar lantai 3, 4, dan 5 saat acara Ormawa Expo Hari ke-3 dan pindai QR di stan UKM untuk mengoleksi lencana paspor dan tambahan poin XP.
+          </p>
+          <RouterLink to="/ormawa">
+            <button
+              type="button"
+              @click="() => gameStore.soundEnabled && soundEngine.playClick()"
+              class="rpg-btn-wood py-1.5 px-3 text-[10px] font-pixel text-[#f0d060] mt-1 cursor-pointer"
+            >
+              Buka Katalog Ormawa
+            </button>
+          </RouterLink>
+        </div>
+      </div>
     </main>
 
     <!-- Stamp Detail Modal -->
@@ -563,5 +696,16 @@ const handleResetConfirm = () => {
         </div>
       </div>
     </div>
+
+    <!-- Scanner Modal for Physical Ormawa Stand QR -->
+    <QrScannerModal
+      :is-open="showOrmawaScanner"
+      title="SCAN QR FISIK STAN ORMAWA"
+      subtitle="Arahkan kamera ke lembar QR fisik di meja stan UKM (Selasar Lantai 3-5)"
+      expected-pattern="UNU-ORMAWA"
+      :preset-codes="ormawaPresets"
+      @close="showOrmawaScanner = false"
+      @scan-success="handleOrmawaScanSuccess"
+    />
   </div>
 </template>
