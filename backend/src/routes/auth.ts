@@ -3,7 +3,7 @@ import { db } from "../db";
 import { users, teams, teamMembers } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { signToken } from "../lib/jwt";
-import { verifyPassword } from "../lib/password";
+import { hashPassword, verifyPassword } from "../lib/password";
 import { authMiddleware, requireUser } from "../middleware/auth";
 
 export const authRoutes = new Elysia({
@@ -106,6 +106,282 @@ export const authRoutes = new Elysia({
       body: t.Object({
         username: t.String({ minLength: 1 }),
         password: t.String({ minLength: 1 }),
+      }),
+    }
+  )
+
+  // POST /api/auth/register-maba — Onboarding Registrasi Mahasiswa Baru (Hari 1)
+  .post(
+    "/register-maba",
+    async ({ body, set, cookie }) => {
+      const nim = (body.nim || body.username || "").trim();
+      if (!nim) {
+        set.status = 400;
+        return { success: false, error: { code: "VALIDATION_ERROR", message: "NIM wajib diisi" } };
+      }
+
+      // Check if user already exists
+      const [existing] = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, nim))
+        .limit(1);
+
+      if (existing) {
+        const token = await signToken({
+          userId: existing.id,
+          username: existing.username,
+          role: existing.role,
+        });
+        return {
+          success: true,
+          message: "Akun mahasiswa sudah terdaftar, login otomatis!",
+          data: {
+            token,
+            user: {
+              id: existing.id,
+              nim: existing.username,
+              username: existing.username,
+              fullName: existing.fullName,
+              characterClass: existing.characterClass,
+              characterTitle: existing.characterTitle,
+              characterTier: existing.characterTier,
+              avatarUrl: existing.avatarUrl,
+            },
+          },
+        };
+      }
+
+      const passwordHash = await hashPassword(body.password || "genius2026");
+      const fullName = (body.name || body.fullName || `Mahasiswa ${nim}`).trim();
+      const characterClass = body.characterClass || "CYBER_KNIGHT";
+      const avatarUrl = body.avatar || body.avatarUrl || null;
+
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          username: nim,
+          passwordHash,
+          fullName,
+          role: "PARTICIPANT",
+          status: "ACTIVE",
+          gender: body.gender || "MALE",
+          characterClass,
+          characterTitle: "Novice Adventurer",
+          characterTier: 1,
+          unlockedTitles: ["Novice Adventurer"],
+          avatarUrl,
+        })
+        .returning();
+
+      // Assign to team if specified or default team
+      let targetTeamId = body.groupId || body.teamId;
+      if (targetTeamId) {
+        const [teamExists] = await db.select().from(teams).where(eq(teams.id, targetTeamId)).limit(1);
+        if (teamExists) {
+          await db.insert(teamMembers).values({
+            teamId: targetTeamId,
+            userId: newUser.id,
+            isCaptain: false,
+          });
+        }
+      } else {
+        const [defaultTeam] = await db.select().from(teams).limit(1);
+        if (defaultTeam) {
+          targetTeamId = defaultTeam.id;
+          await db.insert(teamMembers).values({
+            teamId: defaultTeam.id,
+            userId: newUser.id,
+            isCaptain: false,
+          });
+        }
+      }
+
+      const token = await signToken({
+        userId: newUser.id,
+        username: newUser.username,
+        role: newUser.role,
+        teamId: targetTeamId || undefined,
+      });
+
+      if (cookie && cookie.auth_token) {
+        cookie.auth_token.set({
+          value: token,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 86400 * 3,
+        });
+      }
+
+      return {
+        success: true,
+        message: "Pendaftaran berhasil, profil karakter RPG aktif!",
+        data: {
+          token,
+          user: {
+            id: newUser.id,
+            nim: newUser.username,
+            username: newUser.username,
+            fullName: newUser.fullName,
+            role: newUser.role,
+            characterClass: newUser.characterClass,
+            characterTitle: newUser.characterTitle,
+            characterTier: newUser.characterTier,
+            avatarUrl: newUser.avatarUrl,
+            teamId: targetTeamId,
+          },
+        },
+      };
+    },
+    {
+      detail: {
+        summary: "Registrasi onboarding Mahasiswa Baru (Hari 1)",
+        description: "Mendaftarkan mahasiswa baru secara instan, mengaktifkan profil karakter RPG, dan mengembalikan token sesi JWT.",
+      },
+      body: t.Object({
+        nim: t.Optional(t.String()),
+        username: t.Optional(t.String()),
+        name: t.Optional(t.String()),
+        fullName: t.Optional(t.String()),
+        email: t.Optional(t.String()),
+        prodi: t.Optional(t.String()),
+        faculty: t.Optional(t.String()),
+        password: t.Optional(t.String()),
+        gender: t.Optional(t.String()),
+        characterClass: t.Optional(t.String()),
+        avatar: t.Optional(t.Nullable(t.String())),
+        avatarUrl: t.Optional(t.Nullable(t.String())),
+        groupId: t.Optional(t.String()),
+        teamId: t.Optional(t.String()),
+      }),
+    }
+  )
+
+  // POST /api/auth/login-maba — Login Mahasiswa Baru via NIM
+  .post(
+    "/login-maba",
+    async ({ body, set }) => {
+      const nim = (body.nim || body.username || "").trim();
+      const password = body.password || "genius2026";
+
+      const [user] = await db
+        .select({
+          id: users.id,
+          username: users.username,
+          passwordHash: users.passwordHash,
+          fullName: users.fullName,
+          role: users.role,
+          status: users.status,
+          gender: users.gender,
+          characterClass: users.characterClass,
+          characterTitle: users.characterTitle,
+          characterTier: users.characterTier,
+          avatarUrl: users.avatarUrl,
+          teamId: teams.id,
+          teamName: teams.name,
+          teamCode: teams.code,
+        })
+        .from(users)
+        .leftJoin(teamMembers, eq(users.id, teamMembers.userId))
+        .leftJoin(teams, eq(teamMembers.teamId, teams.id))
+        .where(eq(users.username, nim))
+        .limit(1);
+
+      if (!user) {
+        set.status = 401;
+        return { success: false, error: { code: "INVALID_CREDENTIALS", message: "NIM tidak ditemukan. Silakan registrasi terlebih dahulu." } };
+      }
+
+      const valid = await verifyPassword(password, user.passwordHash);
+      if (!valid) {
+        set.status = 401;
+        return { success: false, error: { code: "INVALID_CREDENTIALS", message: "Password salah" } };
+      }
+
+      const token = await signToken({
+        userId: user.id,
+        username: user.username,
+        role: user.role,
+        teamId: user.teamId || undefined,
+      });
+
+      return {
+        success: true,
+        message: "Login MABA berhasil!",
+        data: {
+          token,
+          user,
+        },
+      };
+    },
+    {
+      detail: {
+        summary: "Login Mahasiswa Baru berbasis NIM",
+      },
+      body: t.Object({
+        nim: t.Optional(t.String()),
+        username: t.Optional(t.String()),
+        password: t.Optional(t.String()),
+      }),
+    }
+  )
+
+  // POST /api/auth/login-admin — Login Panitia (Admin & Buddy)
+  .post(
+    "/login-admin",
+    async ({ body, set }) => {
+      const username = body.username.trim();
+      const password = body.passcode || body.password || "";
+
+      const [user] = await db
+        .select({
+          id: users.id,
+          username: users.username,
+          passwordHash: users.passwordHash,
+          fullName: users.fullName,
+          role: users.role,
+          status: users.status,
+        })
+        .from(users)
+        .where(eq(users.username, username))
+        .limit(1);
+
+      if (!user || (user.role !== "ADMIN" && user.role !== "BUDDY")) {
+        set.status = 401;
+        return { success: false, error: { code: "INVALID_CREDENTIALS", message: "Akun panitia tidak ditemukan" } };
+      }
+
+      const valid = await verifyPassword(password, user.passwordHash);
+      if (!valid) {
+        set.status = 401;
+        return { success: false, error: { code: "INVALID_CREDENTIALS", message: "Password atau passcode salah" } };
+      }
+
+      const token = await signToken({
+        userId: user.id,
+        username: user.username,
+        role: user.role,
+      });
+
+      return {
+        success: true,
+        message: "Login Panitia berhasil!",
+        data: {
+          token,
+          user,
+        },
+      };
+    },
+    {
+      detail: {
+        summary: "Login Admin & Buddy Panitia",
+      },
+      body: t.Object({
+        username: t.String(),
+        passcode: t.Optional(t.String()),
+        password: t.Optional(t.String()),
       }),
     }
   )
