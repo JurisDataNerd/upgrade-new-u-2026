@@ -30,3 +30,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.pem
+
+# Database backups
+backups/*.sql
+!backups/.gitkeep

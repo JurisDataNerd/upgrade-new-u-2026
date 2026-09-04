@@ -18,8 +18,8 @@ Berikut adalah daftar tugas terstruktur (*actionable tasks*) untuk menyelesaikan
 | **TASK-002** | Integrasi Frontend User (MABA) dengan Live Auth & State Persistence | Frontend User | 🚀 Siap Dikerjakan | [`002_frontend_user_live_integration.md`](./002_frontend_user_live_integration.md) |
 | **TASK-003** | UI Presensi QR Gate & Penjelajah Stand Ormawa Expo di Frontend User | Frontend User | ⏳ Menunggu 002 | [`003_frontend_user_attendance_and_ormawa_features.md`](./003_frontend_user_attendance_and_ormawa_features.md) |
 | **TASK-004** | Form Penilaian FGD Buddy & Penyempurnaan QR Center di Frontend Admin | Frontend Admin | 🚀 Siap Dikerjakan | [`004_frontend_admin_fgd_and_qr_integration.md`](./004_frontend_admin_fgd_and_qr_integration.md) |
-| **TASK-005** | Sinkronisasi Real-Time WebSocket & Projector Mode Layar Panggung | Fullstack / Realtime | ⏳ Menunggu 002 & 004 | [`005_realtime_websocket_and_leaderboard_projector.md`](./005_realtime_websocket_and_leaderboard_projector.md) |
-| **TASK-006** | Simulasi End-to-End Rundown 3 Hari & Stress Test Kesiapan Hari H | QA & Testing | ⏳ Tahap Akhir | [`006_end_to_end_testing_and_readiness.md`](./006_end_to_end_testing_and_readiness.md) |
+| **TASK-005** | Sinkronisasi Real-Time WebSocket & Projector Mode Layar Panggung | Fullstack / Realtime | 🟢 Backend Siap / UI Panggung Pending | [`005_realtime_websocket_and_leaderboard_projector.md`](./005_realtime_websocket_and_leaderboard_projector.md) |
+| **TASK-006** | Simulasi End-to-End Rundown 3 Hari & Database Backup SOP | Backend & QA | ✅ Selesai 100% (Simulasi Lulus) | [`006_end_to_end_testing_and_readiness.md`](./006_end_to_end_testing_and_readiness.md) |
 
 ---
 

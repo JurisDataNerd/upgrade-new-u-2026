@@ -2,7 +2,7 @@ import { Elysia, t } from "elysia";
 import { db } from "../db";
 import { scoreTransactions, users, teams, stages, teamMembers } from "../db/schema";
 import { eq, sql, desc, and, inArray } from "drizzle-orm";
-import { authMiddleware, requireBuddyOrAdmin, requireAdmin } from "../middleware/auth";
+import { authMiddleware, requireUser, requireAdmin } from "../middleware/auth";
 import { logAudit } from "../lib/audit";
 import { broadcastLeaderboardUpdate, broadcastAdminEvent } from "../realtime";
 
@@ -16,7 +16,85 @@ export const scoreRoutes = new Elysia({
   },
 })
   .use(authMiddleware)
-  .use(requireBuddyOrAdmin)
+  .use(requireUser)
+
+  // POST /api/scores — Submit game or activity score
+  .post(
+    "/",
+    async ({ body, user, set }) => {
+      if (!user) {
+        set.status = 401;
+        return { success: false, error: { code: "UNAUTHORIZED", message: "Not authenticated" } };
+      }
+
+      const participantId = body.participantId || user.userId;
+
+      // Ensure participant exists
+      const [participant] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.id, participantId))
+        .limit(1);
+
+      if (!participant) {
+        set.status = 404;
+        return { success: false, error: { code: "PARTICIPANT_NOT_FOUND", message: "Peserta tidak ditemukan" } };
+      }
+
+      // Determine teamId
+      let targetTeamId = body.teamId;
+      if (!targetTeamId) {
+        const [membership] = await db
+          .select({ teamId: teamMembers.teamId })
+          .from(teamMembers)
+          .where(eq(teamMembers.userId, participantId))
+          .limit(1);
+        targetTeamId = membership?.teamId;
+      }
+
+      if (!targetTeamId) {
+        const [defaultTeam] = await db.select({ id: teams.id }).from(teams).limit(1);
+        targetTeamId = defaultTeam?.id;
+      }
+
+      const [tx] = await db
+        .insert(scoreTransactions)
+        .values({
+          participantId,
+          teamId: targetTeamId,
+          amount: Math.round(Number(body.amount)),
+          sourceType: (body.sourceType as any) || "GAME",
+          reason: body.reason ? body.reason.trim() : "Penyelesaian Game Pos",
+          stageId: body.stageId || null,
+          gameSessionId: body.gameSessionId || null,
+          createdBy: user.userId,
+        })
+        .returning();
+
+      broadcastLeaderboardUpdate({ type: "SCORE_SUBMITTED", teamId: targetTeamId, participantId, amount: tx.amount });
+
+      return {
+        success: true,
+        message: `Skor sebesar +${tx.amount} XP berhasil dicatat!`,
+        data: tx,
+      };
+    },
+    {
+      detail: {
+        summary: "Submisi perolehan skor game atau aktivitas",
+        description: "Mencatat transaksi skor baru ke dalam ledger dan memicu siaran real-time leaderboard.",
+      },
+      body: t.Object({
+        participantId: t.Optional(t.String()),
+        teamId: t.Optional(t.String()),
+        amount: t.Number({ minimum: 1 }),
+        sourceType: t.Optional(t.String()),
+        reason: t.Optional(t.String()),
+        stageId: t.Optional(t.String()),
+        gameSessionId: t.Optional(t.String()),
+      }),
+    }
+  )
 
   // GET /api/scores/transactions — Audit trail of score ledger
   .get("/transactions", async ({ query }) => {
