@@ -223,3 +223,206 @@ playFail();    // Saat jawaban salah
 3. **Kondisi Belum Lulus (Need Retry):**
    * Mahasiswa diberikan ulasan jawaban yang keliru dan tombol **"Coba Lagi"** (*Retry*).
    * Nilai tertinggi yang akan dicatat oleh sistem.
+
+---
+
+## ⚡ Arsitektur Game 2-Jalur: Client-Evaluated vs Server-Authoritative
+
+Di ekosistem GENIUS UNU 2026, modul game diklasifikasikan ke dalam **2 Jalur Utama**:
+
+```
+                              ┌─────────────────────────────────────────┐
+                              │           MODUL GAME GENIUS             │
+                              └────────────────────┬────────────────────┘
+                                                   │
+                  ┌────────────────────────────────┴────────────────────────────────┐
+                  ▼                                                                 ▼
+      [JALUR A: CLIENT-EVALUATED]                                      [JALUR B: SERVER-AUTHORITATIVE]
+   * Contoh: TTS, Tebak Kata, Kuis Cepat                           * Contoh: Reaction Speed, Memory Match, AI Drawing
+   * Logika & evaluasi di browser Vue                              * Logika, timer anti-cheat, & scoring di Server
+   * Selesai ➔ emit('complete', score, total)                      * Komunikasi via REST API + WebSocket (/ws)
+   * Mengirim skor via:                                            * Siklus sesi:
+     POST /api/scores (Langsung ke Ledger)                           1. POST /api/game-sessions/create
+                                                                     2. POST /api/game-sessions/:id/start
+                                                                     3. WS /ws (Sync State & Action)
+                                                                     4. POST /api/game-sessions/:id/complete
+```
+
+---
+
+## 🛠️ Panduan Standar Membuat API Game Khusus & Server-Authoritative (Jalur B)
+
+Jika game yang Anda kembangkan membutuhkan logika server khusus (misal: anti-cheat timer, verifikasi AI, atau sinkronisasi multiplayer turn-based), ikuti aturan berikut agar modul tetap **terisolasi (*zero side-effect*)**:
+
+### Aturan 1: Lokasi & Penamaan File API Backend
+Setiap game khusus wajib memiliki modul rutenya sendiri di backend:
+* 📂 Lokasi rute khusus: `backend/src/routes/games/[nama-game].ts` (atau langsung extend di `backend/src/engine/index.ts` untuk varian mini-game).
+* Contoh:
+  * Game AI Drawing ➔ `backend/src/routes/ai.ts` & `backend/src/engine/aiDrawing.ts`
+  * Game Incubation Profiling ➔ `backend/src/routes/incubation.ts` & `backend/src/engine/incubation.ts`
+  * Game Kecepatan / Kuis Khusus ➔ `backend/src/routes/game-sessions.ts` (menggunakan `GameEngine`)
+
+### Aturan 2: Standar URL Prefix & Schema Validation
+* Gunakan prefix yang terisolasi:
+  ```typescript
+  export const customGameRoutes = new Elysia({
+    prefix: "/api/games/[nama-game]",
+    detail: {
+      tags: ["Game: [Nama Game]"],
+    },
+  })
+    .use(authMiddleware)
+    .use(requireUser)
+  ```
+* Wajib menggunakan validasi skema Elysia `t.Object({...})` untuk setiap request body dan query parameter guna mencegah input injection.
+
+### Aturan 3: Aturan Mutlak Penulisan Nilai ke Database (Ledger-Based Scoring)
+> [!CAUTION]
+> **DILARANG KERAS** melakukan direct increment pada profil user seperti `UPDATE users SET xp = xp + 100`!
+
+Seluruh penambahan skor dan stempel wajib melalui **Double-Entry Point Ledger (`scoreTransactions`)**:
+```typescript
+import { db } from "../db";
+import { scoreTransactions } from "../db/schema";
+
+await db.insert(scoreTransactions).values({
+  participantId: user.userId,
+  teamId: targetTeamId,
+  amount: Math.round(finalCalculatedScore),
+  sourceType: "GAME",                  // atau "BONUS"
+  reason: `Penyelesaian Misi Game [Nama Game] (${accuracy}% akurasi)`,
+  stageId: stageId || null,
+  gameSessionId: sessionId || null,
+  createdBy: user.userId,
+});
+```
+**Mengapa aturan ini wajib dipatuhi?**
+1. **Audit Trail:** Panitia dapat melacak riwayat perolehan poin setiap mahasiswa per detik.
+2. **Freeze Leaderboard Safety:** Sistem dapat memfilter skor mana yang masuk sebelum vs sesudah jam freeze panggung penutupan.
+3. **Pencegahan Fraud & Duplikasi:** Mudah dideteksi jika terjadi request spam ganda.
+
+### Aturan 4: Sinkronisasi Real-Time WebSocket (`/ws`)
+Setiap kali terjadi perubahan status game atau pencatatan poin baru, backend wajib memicu fungsi siaran terpusat:
+
+```typescript
+import { broadcastGameSessionEvent, broadcastLeaderboardUpdate } from "../realtime";
+
+// 1. Siarkan event khusus ke pemain di dalam room sesi game:
+broadcastGameSessionEvent(sessionId, "GAME_ACTION", {
+  participantId: user.userId,
+  action: "CARD_FLIPPED",
+  cardIndex: 4,
+});
+
+// 2. Siarkan pembaruan peringkat ke proyektor panggung utama dan leaderboard HP:
+broadcastLeaderboardUpdate({
+  type: "SCORE_SUBMITTED",
+  participantId: user.userId,
+  teamId: targetTeamId,
+  amount: finalCalculatedScore,
+});
+```
+
+---
+
+## 📑 Template Kode Referensi: Backend Custom Game Route
+
+Berikut adalah template standar siap pakai jika Anda ingin membuat API mandiri untuk game baru:
+
+```typescript
+// backend/src/routes/games/reaction-speed.ts
+import { Elysia, t } from "elysia";
+import { db } from "../../db";
+import { scoreTransactions, users } from "../../db/schema";
+import { authMiddleware, requireUser } from "../../middleware/auth";
+import { broadcastLeaderboardUpdate, broadcastGameSessionEvent } from "../../realtime";
+
+export const reactionSpeedRoutes = new Elysia({
+  prefix: "/api/games/reaction-speed",
+  detail: {
+    tags: ["Game: Reaction Speed"],
+  },
+})
+  .use(authMiddleware)
+  .use(requireUser)
+
+  // 1. Inisialisasi Tantangan dari Server (Anti-Bocoran)
+  .post("/init", async ({ user }) => {
+    const delayMs = Math.floor(Math.random() * 3000) + 2000; // 2 - 5 detik
+    const serverToken = crypto.randomUUID();
+    
+    return {
+      success: true,
+      data: {
+        serverToken,
+        delayMs,
+        targetRounds: 3,
+      },
+    };
+  })
+
+  // 2. Submisi Hasil & Perhitungan Skor di Server
+  .post(
+    "/submit",
+    async ({ body, user, set }) => {
+      const { reactionTimeMs, serverToken } = body;
+
+      // Logika scoring berbobot kecepatan:
+      // Di bawah 250ms = 100 XP, 250-400ms = 85 XP, > 400ms = 70 XP
+      let awardedXp = 70;
+      if (reactionTimeMs < 250) awardedXp = 100;
+      else if (reactionTimeMs < 400) awardedXp = 85;
+
+      // Catat ke Database Ledger
+      const [tx] = await db.insert(scoreTransactions).values({
+        participantId: user!.userId,
+        amount: awardedXp,
+        sourceType: "GAME",
+        reason: `Reaction Speed Challenge (${reactionTimeMs}ms)`,
+        createdBy: user!.userId,
+      }).returning();
+
+      // Siarkan pembaruan real-time ke panggung & peserta lain
+      broadcastLeaderboardUpdate({
+        type: "SCORE_SUBMITTED",
+        participantId: user!.userId,
+        amount: awardedXp,
+      });
+
+      return {
+        success: true,
+        message: `Hebat! Refleks kilat Anda menghasilkan +${awardedXp} XP.`,
+        data: { xpEarned: awardedXp, reactionTimeMs },
+      };
+    },
+    {
+      body: t.Object({
+        serverToken: t.String(),
+        reactionTimeMs: t.Number({ minimum: 50, maximum: 5000 }),
+      }),
+    }
+  );
+```
+
+### Cara Mendaftarkan Route Baru di Backend:
+Cukup buka `backend/src/index.ts` dan tambahkan satu baris:
+```typescript
+import { reactionSpeedRoutes } from "./routes/games/reaction-speed";
+
+// Di dalam instance app:
+app.use(reactionSpeedRoutes);
+```
+
+---
+
+## 📋 Checklist Sebelum Menyerahkan Modul Game Baru (*Definition of Done*)
+
+Sebelum fitur game baru dinyatakan siap di-merge ke branch utama:
+- [ ] Komponen Frontend Vue menerima `props: { content, isCompleted }` dan meng-emit `@complete(score, total)`.
+- [ ] Desain antarmuka mematuhi tema **Stardew Valley Retro RPG** (palet kayu, kertas perkamen, tombol 3D pixel, font retro).
+- [ ] Tersedia efek suara interaktif menggunakan `useAudio()`.
+- [ ] Penambahan skor tersambung ke `scoreTransactions` (tidak melakukan manipulasi langsung ke tabel user).
+- [ ] Jika menggunakan WebSocket, event diberi namespace unik dan memicu `broadcastLeaderboardUpdate()`.
+- [ ] Perintah `bun run typecheck` lolos dengan **0 error** di seluruh workspace.
+- [ ] Perintah `bun run build` sukses 100%.
+
