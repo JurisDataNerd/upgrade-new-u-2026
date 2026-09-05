@@ -1,5 +1,6 @@
 import { ref, computed } from "vue";
 import { navigateTo } from "#app";
+import { OFFICIAL_BUDDIES, findBuddyByQuery, type OfficialBuddy } from "@/lib/officialBuddies";
 
 export interface User {
   id: string;
@@ -9,6 +10,10 @@ export interface User {
   teamId?: string;
   teamName?: string;
   assignedFloor?: number;
+  prodi?: string;
+  faculty?: string;
+  gender?: "MALE" | "FEMALE";
+  avatarUrl?: string;
 }
 
 export const defaultAdmin: User = {
@@ -16,36 +21,78 @@ export const defaultAdmin: User = {
   username: "admin",
   fullName: "Super Admin GENIUS 2026",
   role: "ADMIN",
+  avatarUrl: "/unu.png",
 };
 
+// Official Buddies Presets
 export const defaultBuddy01: User = {
-  id: "usr-buddy-budi",
-  username: "buddy01",
-  fullName: "Budi Santoso",
+  id: OFFICIAL_BUDDIES[0].id,
+  username: OFFICIAL_BUDDIES[0].username,
+  fullName: OFFICIAL_BUDDIES[0].fullName,
   role: "BUDDY",
-  teamId: "group-01",
-  teamName: "Genius 01",
-  assignedFloor: 3,
+  teamId: OFFICIAL_BUDDIES[0].teamId,
+  teamName: OFFICIAL_BUDDIES[0].teamName,
+  assignedFloor: OFFICIAL_BUDDIES[0].assignedFloor,
+  prodi: OFFICIAL_BUDDIES[0].prodi,
+  faculty: OFFICIAL_BUDDIES[0].faculty,
+  gender: OFFICIAL_BUDDIES[0].gender,
+  avatarUrl: OFFICIAL_BUDDIES[0].avatarUrl,
+};
+
+export const defaultBuddy02: User = {
+  id: OFFICIAL_BUDDIES[1].id,
+  username: OFFICIAL_BUDDIES[1].username,
+  fullName: OFFICIAL_BUDDIES[1].fullName,
+  role: "BUDDY",
+  teamId: OFFICIAL_BUDDIES[1].teamId,
+  teamName: OFFICIAL_BUDDIES[1].teamName,
+  assignedFloor: OFFICIAL_BUDDIES[1].assignedFloor,
+  prodi: OFFICIAL_BUDDIES[1].prodi,
+  faculty: OFFICIAL_BUDDIES[1].faculty,
+  gender: OFFICIAL_BUDDIES[1].gender,
+  avatarUrl: OFFICIAL_BUDDIES[1].avatarUrl,
 };
 
 export const defaultBuddy03: User = {
-  id: "usr-buddy-dewi",
-  username: "buddy03",
-  fullName: "Dewi Lestari",
+  id: OFFICIAL_BUDDIES[2].id,
+  username: OFFICIAL_BUDDIES[2].username,
+  fullName: OFFICIAL_BUDDIES[2].fullName,
   role: "BUDDY",
-  teamId: "group-03",
-  teamName: "Genius 03",
-  assignedFloor: 5,
+  teamId: OFFICIAL_BUDDIES[2].teamId,
+  teamName: OFFICIAL_BUDDIES[2].teamName,
+  assignedFloor: OFFICIAL_BUDDIES[2].assignedFloor,
+  prodi: OFFICIAL_BUDDIES[2].prodi,
+  faculty: OFFICIAL_BUDDIES[2].faculty,
+  gender: OFFICIAL_BUDDIES[2].gender,
+  avatarUrl: OFFICIAL_BUDDIES[2].avatarUrl,
 };
 
 export const defaultBuddy07: User = {
-  id: "usr-buddy-farhan",
-  username: "buddy07",
-  fullName: "Farhan Hakim",
+  id: OFFICIAL_BUDDIES[6].id,
+  username: OFFICIAL_BUDDIES[6].username,
+  fullName: OFFICIAL_BUDDIES[6].fullName,
   role: "BUDDY",
-  teamId: "group-07",
-  teamName: "Genius 07",
-  assignedFloor: 7,
+  teamId: OFFICIAL_BUDDIES[6].teamId,
+  teamName: OFFICIAL_BUDDIES[6].teamName,
+  assignedFloor: OFFICIAL_BUDDIES[6].assignedFloor,
+  prodi: OFFICIAL_BUDDIES[6].prodi,
+  faculty: OFFICIAL_BUDDIES[6].faculty,
+  gender: OFFICIAL_BUDDIES[6].gender,
+  avatarUrl: OFFICIAL_BUDDIES[6].avatarUrl,
+};
+
+export const defaultBuddy22: User = {
+  id: OFFICIAL_BUDDIES[21].id,
+  username: OFFICIAL_BUDDIES[21].username,
+  fullName: OFFICIAL_BUDDIES[21].fullName,
+  role: "BUDDY",
+  teamId: OFFICIAL_BUDDIES[21].teamId,
+  teamName: OFFICIAL_BUDDIES[21].teamName,
+  assignedFloor: OFFICIAL_BUDDIES[21].assignedFloor,
+  prodi: OFFICIAL_BUDDIES[21].prodi,
+  faculty: OFFICIAL_BUDDIES[21].faculty,
+  gender: OFFICIAL_BUDDIES[21].gender,
+  avatarUrl: OFFICIAL_BUDDIES[21].avatarUrl,
 };
 
 export const defaultBuddy: User = defaultBuddy01;
@@ -58,27 +105,25 @@ export const DUMMY_ACCOUNTS = [
     label: "Super Admin (Full Control Center)",
     user: defaultAdmin,
   },
-  {
+  ...OFFICIAL_BUDDIES.map((b) => ({
     role: "BUDDY" as const,
-    username: "buddy01",
+    username: b.username,
     password: "buddy2026",
-    label: "Budi Santoso (Genius 01)",
-    user: defaultBuddy01,
-  },
-  {
-    role: "BUDDY" as const,
-    username: "buddy03",
-    password: "buddy2026",
-    label: "Dewi Lestari (Genius 03)",
-    user: defaultBuddy03,
-  },
-  {
-    role: "BUDDY" as const,
-    username: "buddy07",
-    password: "buddy2026",
-    label: "Farhan Hakim (Genius 07)",
-    user: defaultBuddy07,
-  },
+    label: `${b.fullName} (${b.teamName} - ${b.prodi})`,
+    user: {
+      id: b.id,
+      username: b.username,
+      fullName: b.fullName,
+      role: "BUDDY" as const,
+      teamId: b.teamId,
+      teamName: b.teamName,
+      assignedFloor: b.assignedFloor,
+      prodi: b.prodi,
+      faculty: b.faculty,
+      gender: b.gender,
+      avatarUrl: b.avatarUrl,
+    },
+  })),
 ];
 
 const token = ref<string | null>("mock-static-token");
@@ -99,18 +144,23 @@ if (typeof window !== "undefined") {
         parsed.fullName = parsed.fullName.replace(/^Kak(ak)?\s+/i, "").trim();
       }
 
-      if (parsed.username === "buddy01" || (parsed.teamName && /Garuda/i.test(parsed.teamName))) {
-        parsed.fullName = "Budi Santoso";
-        parsed.teamName = "Genius 01";
-        parsed.teamId = "group-01";
-      } else if (parsed.username === "buddy03" || (parsed.teamName && /Khawarizmi/i.test(parsed.teamName))) {
-        parsed.fullName = "Dewi Lestari";
-        parsed.teamName = "Genius 03";
-        parsed.teamId = "group-03";
-      } else if (parsed.username === "buddy07" || (parsed.teamName && /Ibnu\s*Sina/i.test(parsed.teamName))) {
-        parsed.fullName = "Farhan Hakim";
-        parsed.teamName = "Genius 07";
-        parsed.teamId = "group-07";
+      // Check if user is a buddy and map to official roster
+      const matchedBuddy =
+        findBuddyByQuery(parsed.username || "") ||
+        findBuddyByQuery(parsed.fullName || "") ||
+        (parsed.role === "BUDDY" && parsed.teamName ? findBuddyByQuery(parsed.teamName) : undefined);
+
+      if (matchedBuddy) {
+        parsed.id = matchedBuddy.id;
+        parsed.username = matchedBuddy.username;
+        parsed.fullName = matchedBuddy.fullName;
+        parsed.teamName = matchedBuddy.teamName;
+        parsed.teamId = matchedBuddy.teamId;
+        parsed.assignedFloor = matchedBuddy.assignedFloor;
+        parsed.prodi = matchedBuddy.prodi;
+        parsed.faculty = matchedBuddy.faculty;
+        parsed.gender = matchedBuddy.gender;
+        parsed.avatarUrl = matchedBuddy.avatarUrl;
       } else if (parsed.teamName) {
         parsed.teamName = parsed.teamName.replace(/^Team\s+/i, "").trim();
       }
@@ -151,36 +201,47 @@ export function useAuth() {
 
     const cleanUser = usernameInput.trim().toLowerCase();
 
-    // Match with predefined dummy accounts
-    const matched = DUMMY_ACCOUNTS.find(
-      (a) => a.username.toLowerCase() === cleanUser || a.label.toLowerCase().includes(cleanUser)
-    );
-
     let activeUser: User;
-    if (matched) {
-      activeUser = { ...matched.user };
-    } else if (cleanUser.includes("budi") || cleanUser === "buddy01" || cleanUser === "1") {
-      activeUser = { ...defaultBuddy01 };
-    } else if (cleanUser.includes("dewi") || cleanUser === "buddy03" || cleanUser === "3") {
-      activeUser = { ...defaultBuddy03 };
-    } else if (cleanUser.includes("farhan") || cleanUser === "buddy07" || cleanUser === "7") {
-      activeUser = { ...defaultBuddy07 };
-    } else if (cleanUser.includes("buddy")) {
-      activeUser = {
-        id: `usr-${cleanUser}`,
-        username: cleanUser,
-        fullName: `Buddy (${cleanUser})`,
-        role: "BUDDY",
-        teamId: "group-01",
-        teamName: "Genius 01",
-      };
+    if (cleanUser === "admin" || cleanUser.includes("super")) {
+      activeUser = { ...defaultAdmin };
     } else {
-      activeUser = {
-        id: "usr-admin",
-        username: cleanUser || "admin",
-        fullName: cleanUser === "admin" ? "Super Admin GENIUS 2026" : `Admin (${cleanUser})`,
-        role: "ADMIN",
-      };
+      // Find in official buddies roster
+      const buddyMatch = findBuddyByQuery(cleanUser);
+      if (buddyMatch) {
+        activeUser = {
+          id: buddyMatch.id,
+          username: buddyMatch.username,
+          fullName: buddyMatch.fullName,
+          role: "BUDDY",
+          teamId: buddyMatch.teamId,
+          teamName: buddyMatch.teamName,
+          assignedFloor: buddyMatch.assignedFloor,
+          prodi: buddyMatch.prodi,
+          faculty: buddyMatch.faculty,
+          gender: buddyMatch.gender,
+          avatarUrl: buddyMatch.avatarUrl,
+        };
+      } else if (cleanUser.includes("buddy")) {
+        activeUser = {
+          id: `usr-${cleanUser}`,
+          username: cleanUser,
+          fullName: `Buddy (${cleanUser})`,
+          role: "BUDDY",
+          teamId: "team-1",
+          teamName: "Genius 01",
+          assignedFloor: 1,
+          gender: "MALE",
+          avatarUrl: "/character-cowok-avatar.png",
+        };
+      } else {
+        activeUser = {
+          id: "usr-admin",
+          username: cleanUser || "admin",
+          fullName: cleanUser === "admin" ? "Super Admin GENIUS 2026" : `Admin (${cleanUser})`,
+          role: "ADMIN",
+          avatarUrl: "/unu.png",
+        };
+      }
     }
 
     token.value = "mock-static-token";

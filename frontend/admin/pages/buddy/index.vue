@@ -208,42 +208,35 @@ const membersTeam07: BuddyMember[] = [
 const activeMembers = ref<BuddyMember[]>(membersTeam01);
 
 const cleanBuddyName = computed(() => {
-  const raw = user.value?.fullName || "Budi";
+  const raw = user.value?.fullName || "Agnes Anggraini Risdiyanto";
   return raw.replace(/^Kak(ak)?\s+/i, "").trim();
 });
 
 const currentTeamInfo = computed(() => {
-  if (user.value?.teamId === "group-03" || user.value?.username === "buddy03") {
-    return {
-      name: "Genius 03",
-      startFloor: "Lantai 5",
-    };
-  }
-  if (user.value?.teamId === "group-07" || user.value?.username === "buddy07") {
-    return {
-      name: "Genius 07",
-      startFloor: "Lantai 7",
-    };
-  }
-  let teamName = user.value?.teamName || "Genius 01";
-  if (/Garuda/i.test(teamName)) teamName = "Genius 01";
-  if (/Khawarizmi/i.test(teamName)) teamName = "Genius 03";
-  if (/Ibnu\s*Sina/i.test(teamName)) teamName = "Genius 07";
+  const teamName = user.value?.teamName || "Genius 01";
+  const floor = user.value?.assignedFloor ? `Lantai ${user.value.assignedFloor}` : "Lantai 1";
   return {
-    name: teamName.replace(/^Team\s+/i, ""),
-    startFloor: "Lantai 3",
+    name: teamName.replace(/^Team\s+/i, "").trim(),
+    startFloor: floor,
   };
 });
 
 const currentTeamScore = computed(() => {
-  if (user.value?.teamId === "group-03" || user.value?.username === "buddy03") return "2.620";
-  if (user.value?.teamId === "group-07" || user.value?.username === "buddy07") return "2.410";
+  if (user.value?.teamId) {
+    const num = parseInt(user.value.teamId.replace(/\D/g, ""), 10);
+    if (!isNaN(num)) {
+      const score = Math.max(1850, 2850 - (num - 1) * 20);
+      return score.toLocaleString();
+    }
+  }
   return "2.850";
 });
 
 const currentTeamRank = computed(() => {
-  if (user.value?.teamId === "group-03" || user.value?.username === "buddy03") return 2;
-  if (user.value?.teamId === "group-07" || user.value?.username === "buddy07") return 3;
+  if (user.value?.teamId) {
+    const num = parseInt(user.value.teamId.replace(/\D/g, ""), 10);
+    if (!isNaN(num) && num > 0) return num;
+  }
   return 1;
 });
 

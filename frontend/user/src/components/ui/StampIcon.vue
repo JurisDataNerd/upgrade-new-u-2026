@@ -19,6 +19,8 @@ import {
   PhFlagBanner,
   PhCrown,
   PhTrophy,
+  PhImages,
+  PhFlagCheckered,
 } from '@phosphor-icons/vue';
 
 interface Props {
@@ -56,6 +58,8 @@ const props = withDefaults(defineProps<Props>(), {
       props.name === 'FlagBanner' || props.name === 'flag_banner' ? PhFlagBanner :
       props.name === 'Crown' || props.name === 'CrownSimple' || props.name === 'crown' ? PhCrown :
       props.name === 'Trophy' || props.name === 'trophy' ? PhTrophy :
+      props.name === 'Images' || props.name === 'images' ? PhImages :
+      props.name === 'FlagCheckered' || props.name === 'flag_checkered' ? PhFlagCheckered :
       PhSparkle
     "
     :size="props.size"

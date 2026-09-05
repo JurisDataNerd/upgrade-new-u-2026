@@ -7,6 +7,8 @@ import TebakPosisiGame from './TebakPosisiGame.vue';
 import MemoryMatchGame from './MemoryMatchGame.vue';
 import KuisCepatGame from './KuisCepatGame.vue';
 import BenarSalahGame from './BenarSalahGame.vue';
+import TebakGambarGame from './TebakGambarGame.vue';
+import KuisBalapanGame from './KuisBalapanGame.vue';
 
 interface Props {
   booth: Booth;
@@ -44,6 +46,18 @@ const handleComplete = (score: number, totalQuestions: number) => {
   <TebakPosisiGame
     v-else-if="gameType === 'tebak_posisi'"
     :content="props.booth.tebakPosisiContent"
+    :isCompleted="props.isCompleted"
+    @complete="handleComplete"
+  />
+  <TebakGambarGame
+    v-else-if="gameType === 'tebak_gambar'"
+    :content="props.booth.tebakGambarContent"
+    :isCompleted="props.isCompleted"
+    @complete="handleComplete"
+  />
+  <KuisBalapanGame
+    v-else-if="gameType === 'kuis_balapan'"
+    :content="props.booth.kuisBalapanContent"
     :isCompleted="props.isCompleted"
     @complete="handleComplete"
   />

@@ -942,13 +942,33 @@ const teamCaptain = computed(() => {
 
 // Buddies (Leaders)
 const buddiesList = computed(() => {
-  return allMembers.value.filter((m: any) => m.role === "BUDDY");
+  const fromMembers = allMembers.value.filter((m: any) => m.role === "BUDDY");
+  if (fromMembers.length > 0) return fromMembers;
+  if (team.value?.buddies && team.value.buddies.length > 0) {
+    return team.value.buddies.map((b: any) => ({
+      id: b.userId || b.id,
+      userId: b.userId || b.id,
+      fullName: b.fullName,
+      role: "BUDDY",
+      buddyRole: b.buddyRole || "PRIMARY",
+    }));
+  }
+  return [];
 });
 
 // Primary Buddy
 const primaryBuddy = computed(() => {
   const primaries = buddiesList.value.filter((b: any) => b.buddyRole === "PRIMARY");
-  return primaries.length > 0 ? primaries[0] : buddiesList.value[0] || null;
+  if (primaries.length > 0) return primaries[0];
+  if (buddiesList.value.length > 0) return buddiesList.value[0];
+  if (team.value?.buddyName) {
+    return {
+      fullName: team.value.buddyName,
+      buddyRole: "PRIMARY",
+      role: "BUDDY",
+    };
+  }
+  return null;
 });
 
 // Participants (Squad Members)

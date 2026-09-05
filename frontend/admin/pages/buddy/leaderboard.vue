@@ -227,43 +227,42 @@ import {
   Medal,
 } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
+import { OFFICIAL_BUDDIES } from "@/lib/officialBuddies";
 
 const { user } = useAuth();
 
 const activeTab = ref<"teams" | "individuals">("teams");
 const searchQuery = ref("");
 
-// Mock data seluruh tim kampus (PKKMB UNU 2026)
-const allTeams = ref([
-  { id: "group-01", rank: 1, name: "Genius 01", buddyName: "Budi Santoso", score: 2850, completedStamps: 18 },
-  { id: "group-03", rank: 2, name: "Genius 03", buddyName: "Dewi Lestari", score: 2620, completedStamps: 17 },
-  { id: "group-07", rank: 3, name: "Genius 07", buddyName: "Farhan Hakim", score: 2410, completedStamps: 16 },
-  { id: "group-04", rank: 4, name: "Genius 04", buddyName: "Siti Rahma", score: 2380, completedStamps: 15 },
-  { id: "group-02", rank: 5, name: "Genius 02", buddyName: "Hendra Wijaya", score: 2190, completedStamps: 14 },
-  { id: "group-05", rank: 6, name: "Genius 05", buddyName: "Nurul Hidayah", score: 2050, completedStamps: 13 },
-  { id: "group-06", rank: 7, name: "Genius 06", buddyName: "Agus Tri", score: 1980, completedStamps: 12 },
-  { id: "group-08", rank: 8, name: "Genius 08", buddyName: "Lina Marlina", score: 1850, completedStamps: 11 },
-]);
+// Official 50 Teams & Buddies (PKKMB UNU 2026)
+const allTeams = ref(
+  OFFICIAL_BUDDIES.map((b, idx) => ({
+    id: b.teamId,
+    rank: idx + 1,
+    name: b.teamName,
+    buddyName: b.fullName,
+    score: Math.max(1850, 2850 - idx * 20 + ((idx % 3) * 15)),
+    completedStamps: Math.max(10, 18 - (idx % 8)),
+  }))
+);
 
 // Mock data mahasiswa teratas kampus dengan Prodi Resmi UNU
 const allStudents = ref([
-  { id: "p1", rank: 1, fullName: "Ahmad Dahlan", username: "2611101", prodi: "Informatika", teamName: "Genius 01", teamId: "group-01", totalXp: 980, stamps: 18, avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p6", rank: 2, fullName: "Ilham Ramadhan", username: "2611201", prodi: "Informatika", teamName: "Genius 03", teamId: "group-03", totalXp: 940, stamps: 18, avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p2", rank: 3, fullName: "Fatimah Azzahra", username: "2611102", prodi: "Farmasi", teamName: "Genius 01", teamId: "group-01", totalXp: 920, stamps: 17, avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p11", rank: 4, fullName: "Zahra Kusuma", username: "2611301", prodi: "PGSD", teamName: "Genius 07", teamId: "group-07", totalXp: 890, stamps: 17, avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p7", rank: 5, fullName: "Putri Ayu", username: "2611202", prodi: "Farmasi", teamName: "Genius 03", teamId: "group-03", totalXp: 870, stamps: 16, avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p4", rank: 6, fullName: "Siti Nurhaliza", username: "2611104", prodi: "Manajemen", teamName: "Genius 01", teamId: "group-01", totalXp: 840, stamps: 16, avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p8", rank: 7, fullName: "Bagas Saputra", username: "2611203", prodi: "Agribisnis", teamName: "Genius 03", teamId: "group-03", totalXp: 810, stamps: 15, avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p3", rank: 8, fullName: "Rian Pratama", username: "2611103", prodi: "Teknik Elektro", teamName: "Genius 01", teamId: "group-01", totalXp: 790, stamps: 14, avatarUrl: "/character-cowok-avatar.png" },
+  { id: "p1", rank: 1, fullName: "Ahmad Dahlan", username: "2611101", prodi: "Informatika", teamName: "Genius 01", teamId: "team-1", totalXp: 980, stamps: 18, avatarUrl: "/character-cowok-avatar.png" },
+  { id: "p6", rank: 2, fullName: "Ilham Ramadhan", username: "2611201", prodi: "Informatika", teamName: "Genius 03", teamId: "team-3", totalXp: 940, stamps: 18, avatarUrl: "/character-cowok-avatar.png" },
+  { id: "p2", rank: 3, fullName: "Fatimah Azzahra", username: "2611102", prodi: "Farmasi", teamName: "Genius 01", teamId: "team-1", totalXp: 920, stamps: 17, avatarUrl: "/character-cewek-avatar.png" },
+  { id: "p11", rank: 4, fullName: "Zahra Kusuma", username: "2611301", prodi: "PGSD", teamName: "Genius 07", teamId: "team-7", totalXp: 890, stamps: 17, avatarUrl: "/character-cewek-avatar.png" },
+  { id: "p7", rank: 5, fullName: "Putri Ayu", username: "2611202", prodi: "Farmasi", teamName: "Genius 03", teamId: "team-3", totalXp: 870, stamps: 16, avatarUrl: "/character-cewek-avatar.png" },
+  { id: "p4", rank: 6, fullName: "Siti Nurhaliza", username: "2611104", prodi: "Manajemen", teamName: "Genius 01", teamId: "team-1", totalXp: 840, stamps: 16, avatarUrl: "/character-cewek-avatar.png" },
+  { id: "p8", rank: 7, fullName: "Bagas Saputra", username: "2611203", prodi: "Agribisnis", teamName: "Genius 03", teamId: "team-3", totalXp: 810, stamps: 15, avatarUrl: "/character-cowok-avatar.png" },
+  { id: "p3", rank: 8, fullName: "Rian Pratama", username: "2611103", prodi: "Teknik Elektro", teamName: "Genius 01", teamId: "team-1", totalXp: 790, stamps: 14, avatarUrl: "/character-cowok-avatar.png" },
 ]);
 
 const currentTeamId = computed(() => {
-  if (user.value?.teamId === "group-03" || user.value?.username === "buddy03") return "group-03";
-  if (user.value?.teamId === "group-07" || user.value?.username === "buddy07") return "group-07";
-  return "group-01";
+  return user.value?.teamId || "team-1";
 });
 
-const isMyTeam = (teamId: string) => teamId === currentTeamId.value;
+const isMyTeam = (teamId: string) => teamId === currentTeamId.value || teamId === user.value?.teamId;
 
 const isMyMember = (studentId: string) => {
   const student = allStudents.value.find((s) => s.id === studentId);
@@ -271,8 +270,10 @@ const isMyMember = (studentId: string) => {
 };
 
 const myTeamRankLabel = computed(() => {
-  if (currentTeamId.value === "group-03") return "#2 (2.620 PTS)";
-  if (currentTeamId.value === "group-07") return "#3 (2.410 PTS)";
+  const found = allTeams.value.find((t) => t.id === currentTeamId.value || t.name === user.value?.teamName);
+  if (found) {
+    return `#${found.rank} (${found.score.toLocaleString()} PTS)`;
+  }
   return "#1 (2.850 PTS)";
 });
 

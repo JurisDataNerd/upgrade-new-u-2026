@@ -358,6 +358,7 @@ import {
   Crown,
   Medal,
 } from "lucide-vue-next";
+import { OFFICIAL_BUDDIES } from "@/lib/officialBuddies";
 
 definePageMeta({
   layout: false, // Bebas dari sidebar admin untuk tampilan proyektor panggung
@@ -379,22 +380,15 @@ const updateClock = () => {
   }) + " WIB";
 };
 
-const podiumData = [
-  { rank: 1, name: "Genius 01", buddy: "Budi Santoso", score: 2850, completedStamps: 18 },
-  { rank: 2, name: "Genius 03", buddy: "Dewi Lestari", score: 2620, completedStamps: 17 },
-  { rank: 3, name: "Genius 07", buddy: "Farhan Hakim", score: 2410, completedStamps: 16 },
-];
+const allTeamsData = OFFICIAL_BUDDIES.slice(0, 10).map((b, idx) => ({
+  rank: idx + 1,
+  name: b.teamName,
+  buddy: b.fullName,
+  score: Math.max(1850, 2850 - idx * 60 + ((idx % 3) * 20)),
+  completedStamps: Math.max(10, 18 - (idx % 8)),
+}));
 
-const allTeamsData = [
-  ...podiumData,
-  { rank: 4, name: "Genius 04", buddy: "Siti Rahma", score: 2380, completedStamps: 15 },
-  { rank: 5, name: "Genius 02", buddy: "Hendra Wijaya", score: 2190, completedStamps: 14 },
-  { rank: 6, name: "Genius 05", buddy: "Nurul Hidayah", score: 2050, completedStamps: 13 },
-  { rank: 7, name: "Genius 06", buddy: "Agus Tri", score: 1980, completedStamps: 12 },
-  { rank: 8, name: "Genius 08", buddy: "Lina Marlina", score: 1850, completedStamps: 11 },
-  { rank: 9, name: "Genius 09", buddy: "Rizki Pratama", score: 1720, completedStamps: 10 },
-  { rank: 10, name: "Genius 10", buddy: "Anisa Rahma", score: 1640, completedStamps: 9 },
-];
+const podiumData = allTeamsData.slice(0, 3);
 
 const toggleFreeze = () => {
   isFrozen.value = !isFrozen.value;

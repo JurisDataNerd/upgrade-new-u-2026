@@ -151,11 +151,18 @@ export function useApi() {
     }
 
     // 4. Users & Participants & Buddies
-    if (cleanPath === "/users" || cleanPath === "/participants" || cleanPath === "/admin/participants") {
+    if (
+      cleanPath === "/users" ||
+      cleanPath === "/participants" ||
+      cleanPath === "/admin/participants" ||
+      cleanPath === "/buddies" ||
+      cleanPath === "/admin/buddies"
+    ) {
       if (method === "GET") {
-        const role = queryParams.role;
+        const role = cleanPath.includes("buddies") ? "BUDDY" : queryParams.role;
         const search = queryParams.search || queryParams.q;
-        const users = mockDb.getUsers({ role, search });
+        const assignmentStatus = queryParams.assignmentStatus;
+        const users = mockDb.getUsers({ role, search, assignmentStatus });
         return { success: true, data: users } as unknown as T;
       }
       if (method === "POST") {
@@ -164,7 +171,7 @@ export function useApi() {
       }
     }
 
-    const userAssignBuddyMatch = cleanPath.match(/^\/users\/([^\/]+)\/assign-buddy$/);
+    const userAssignBuddyMatch = cleanPath.match(/^\/(?:users|buddies)\/([^\/]+)\/assign-buddy$/);
     if (userAssignBuddyMatch) {
       const userId = userAssignBuddyMatch[1];
       const team = mockDb.getTeam(body.teamId);
@@ -172,19 +179,19 @@ export function useApi() {
       return { success: true, message: "Buddy berhasil ditugaskan." } as unknown as T;
     }
 
-    const userResetPassMatch = cleanPath.match(/^\/users\/([^\/]+)\/reset-password$/);
+    const userResetPassMatch = cleanPath.match(/^\/(?:users|buddies)\/([^\/]+)\/reset-password$/);
     if (userResetPassMatch) {
       return { success: true, message: "Password berhasil direset ke 'genius2026'." } as unknown as T;
     }
 
-    const userAwardTitleMatch = cleanPath.match(/^\/users\/([^\/]+)\/award-title$/);
+    const userAwardTitleMatch = cleanPath.match(/^\/(?:users|buddies)\/([^\/]+)\/award-title$/);
     if (userAwardTitleMatch) {
       const userId = userAwardTitleMatch[1];
       mockDb.updateUser(userId, { characterTitle: body.title, characterTier: body.tier });
       return { success: true, message: "Gelar berhasil disematkan." } as unknown as T;
     }
 
-    const userMatch = cleanPath.match(/^\/users\/([^\/]+)$/);
+    const userMatch = cleanPath.match(/^\/(?:users|buddies)\/([^\/]+)$/);
     if (userMatch) {
       const userId = userMatch[1];
       if (method === "GET") {

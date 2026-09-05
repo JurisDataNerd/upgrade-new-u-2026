@@ -725,6 +725,7 @@ import {
   getEvolutionForClassAndTier,
 } from "@genius/types";
 import { mockDb } from "@/lib/mockDb";
+import { OFFICIAL_BUDDIES } from "@/lib/officialBuddies";
 
 const route = useRoute();
 const api = useApi();
@@ -798,9 +799,35 @@ async function fetchBuddyDetail() {
   if (mock) {
     buddy.value = mock;
   } else {
-    // Fallback to first buddy
-    const fallbackBuddy = mockDb.getBuddies()[0];
-    buddy.value = fallbackBuddy || null;
+    const officialMatch = OFFICIAL_BUDDIES.find(
+      (b) => b.id === buddyId.value || b.username === buddyId.value
+    );
+    if (officialMatch) {
+      buddy.value = {
+        id: officialMatch.id,
+        username: officialMatch.username,
+        fullName: officialMatch.fullName,
+        email: officialMatch.email,
+        role: "BUDDY",
+        status: "ACTIVE",
+        avatarUrl: officialMatch.avatarUrl,
+        assignedTeamId: officialMatch.teamId,
+        assignedTeamName: officialMatch.teamName,
+        teamId: officialMatch.teamId,
+        teamName: officialMatch.teamName,
+        teamCode: officialMatch.teamCode,
+        buddyRole: officialMatch.buddyRole,
+        prodi: officialMatch.prodi,
+        faculty: officialMatch.faculty,
+        gender: officialMatch.gender,
+        bonusSpent: 0,
+        createdAt: officialMatch.createdAt,
+      };
+    } else {
+      // Fallback to first buddy
+      const fallbackBuddy = mockDb.getBuddies()[0];
+      buddy.value = fallbackBuddy || null;
+    }
   }
   loading.value = false;
 }

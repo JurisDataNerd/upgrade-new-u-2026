@@ -124,7 +124,7 @@
           <div class="relative shrink-0">
             <div class="h-9 w-9 rounded border-2 border-[#f59e0b] bg-[#3d2b1e] overflow-hidden flex items-center justify-center p-1">
               <img
-                :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.username === 'buddy03' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png')"
+                :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.avatarUrl || (user?.gender === 'FEMALE' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png'))"
                 alt="Admin Avatar"
                 class="h-full w-full object-contain"
               />
@@ -158,7 +158,7 @@
               <div class="relative cursor-pointer">
                 <div class="h-9 w-9 rounded border-2 border-[#f59e0b] bg-[#271d15] overflow-hidden hover:scale-105 transition-transform shadow-[0_0_8px_rgba(245,158,11,0.25)] flex items-center justify-center p-1">
                   <img
-                    :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.username === 'buddy03' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png')"
+                    :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.avatarUrl || (user?.gender === 'FEMALE' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png'))"
                     alt="Admin Avatar"
                     class="h-full w-full object-contain"
                   />

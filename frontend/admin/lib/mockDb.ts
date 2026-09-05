@@ -4,6 +4,8 @@
  * Allows the admin panel to run completely standalone without backend or external database.
  */
 
+import { OFFICIAL_BUDDIES } from "./officialBuddies";
+
 export interface MockLocation {
   id: string;
   floorNumber: number;
@@ -36,6 +38,11 @@ export interface MockTeam {
   memberCount: number;
   status: 'ACTIVE' | 'IDLE' | 'COMPLETED' | 'DISQUALIFIED';
   members: MockUser[];
+  buddies?: Array<{
+    userId: string;
+    fullName: string;
+    buddyRole: string;
+  }>;
   assignedRouteId?: string;
   assignedRouteName?: string;
   createdAt: string;
@@ -61,6 +68,9 @@ export interface MockUser {
   teamCode?: string;
   assignedTeamId?: string;
   assignedTeamName?: string;
+  buddyRole?: 'PRIMARY' | 'ASSISTANT';
+  bonusSpent?: number;
+  avatarUrl?: string;
   stamps?: Record<string, boolean>;
   completedBooths?: string[];
   avatar?: string;
@@ -211,104 +221,77 @@ export function createInitialMockData() {
       avatarUrl: "/unu.png",
       createdAt: "2026-09-01T00:00:00Z",
     },
-    // Buddies (GM)
-    { id: "usr-b1", username: "buddy.fikri", fullName: "Muhammad Fikri, S.Kom", email: "fikri@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", assignedTeamId: "team-1", assignedTeamName: "Genius 01", createdAt: "2026-09-01T00:00:00Z" },
-    { id: "usr-b2", username: "buddy.rina", fullName: "Rina Permata Sari, M.Sc", email: "rina@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", assignedTeamId: "team-2", assignedTeamName: "Genius 02", createdAt: "2026-09-01T00:00:00Z" },
-    { id: "usr-b3", username: "buddy.hendra", fullName: "Hendra Wijaya, M.T", email: "hendra@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", assignedTeamId: "team-3", assignedTeamName: "Genius 03", createdAt: "2026-09-01T00:00:00Z" },
-    { id: "usr-b4", username: "buddy.putri", fullName: "Putri Handayani, S.E", email: "putri@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", assignedTeamId: "team-4", assignedTeamName: "Genius 04", createdAt: "2026-09-01T00:00:00Z" },
-    // Participants
+    // 50 Official Buddies (Game Masters)
+    ...OFFICIAL_BUDDIES.map((b) => ({
+      id: b.id,
+      username: b.username,
+      fullName: b.fullName,
+      email: b.email,
+      role: "BUDDY" as const,
+      status: "ACTIVE" as const,
+      avatarUrl: b.avatarUrl,
+      assignedTeamId: b.teamId,
+      assignedTeamName: b.teamName,
+      teamId: b.teamId,
+      teamName: b.teamName,
+      buddyRole: b.buddyRole,
+      prodi: b.prodi,
+      faculty: b.faculty,
+      gender: b.gender,
+      bonusSpent: 0,
+      createdAt: b.createdAt,
+    })),
+    // Representative Participants
     { id: "usr-p1", username: "260100101", fullName: "Ahmad Fauzi Ridwan", email: "fauzi.26@mhs.unu-jogja.ac.id", nim: "260100101", prodi: "Informatika", faculty: "Fakultas Teknologi Informasi", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "CYBER_KNIGHT", characterTier: 2, characterTitle: "Cyber Adept", totalScore: 980, teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p2", username: "260100102", fullName: "Siti Nur Azizah", email: "azizah.26@mhs.unu-jogja.ac.id", nim: "260100102", prodi: "Bioteknologi", faculty: "Fakultas Ilmu Terapan", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "DATA_ALCHEMIST", characterTier: 2, characterTitle: "Bio Alchemist", totalScore: 920, teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p2", username: "260100102", fullName: "Siti Nur Azizah", email: "azizah.26@mhs.unu-jogja.ac.id", nim: "260100102", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "DATA_ALCHEMIST", characterTier: 2, characterTitle: "Bio Alchemist", totalScore: 920, teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", createdAt: "2026-09-01T06:00:00Z" },
     { id: "usr-p3", username: "260100103", fullName: "Dewi Ayu Larasati", email: "dewi.26@mhs.unu-jogja.ac.id", nim: "260100103", prodi: "Teknik Elektro", faculty: "Fakultas Teknologi Informasi", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "QUANTUM_MAGE", characterTier: 3, characterTitle: "Arcane Master", totalScore: 1120, teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p4", username: "260100104", fullName: "M. Rizqi Pratama", email: "rizqi.26@mhs.unu-jogja.ac.id", nim: "260100104", prodi: "Manajemen", faculty: "Fakultas Ekonomi Bisnis", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "SHADOW_SCOUT", characterTier: 1, characterTitle: "Apprentice Scout", totalScore: 780, teamId: "team-4", teamName: "Genius 04", teamCode: "GENIUS-04", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p5", username: "260100105", fullName: "Annisa Maharani", email: "annisa.26@mhs.unu-jogja.ac.id", nim: "260100105", prodi: "Akuntansi", faculty: "Fakultas Ekonomi Bisnis", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "DATA_ALCHEMIST", characterTier: 2, characterTitle: "Data Artisan", totalScore: 840, teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p6", username: "260100106", fullName: "Budi Santoso", email: "budi.26@mhs.unu-jogja.ac.id", nim: "260100106", prodi: "Studi Islam Antarbangsa", faculty: "Fakultas Dirasat Islamiyah", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "CYBER_KNIGHT", characterTier: 1, characterTitle: "Guardian Cadet", totalScore: 710, teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p7", username: "260100107", fullName: "Fajar Hidayatullah", email: "fajar.26@mhs.unu-jogja.ac.id", nim: "260100107", prodi: "Teknik Industri", faculty: "Fakultas Teknologi Informasi", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "SHADOW_SCOUT", characterTier: 2, characterTitle: "Ranger Pathfinder", totalScore: 890, teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p8", username: "260100108", fullName: "Zahra Salsabila", email: "zahra.26@mhs.unu-jogja.ac.id", nim: "260100108", prodi: "Agribisnis", faculty: "Fakultas Ilmu Terapan", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "QUANTUM_MAGE", characterTier: 1, characterTitle: "Novice Elementalist", totalScore: 760, teamId: "team-4", teamName: "Genius 04", teamCode: "GENIUS-04", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p4", username: "260100104", fullName: "M. Rizqi Pratama", email: "rizqi.26@mhs.unu-jogja.ac.id", nim: "260100104", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "SHADOW_SCOUT", characterTier: 1, characterTitle: "Apprentice Scout", totalScore: 780, teamId: "team-4", teamName: "Genius 04", teamCode: "GENIUS-04", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p5", username: "260100105", fullName: "Annisa Maharani", email: "annisa.26@mhs.unu-jogja.ac.id", nim: "260100105", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "DATA_ALCHEMIST", characterTier: 2, characterTitle: "Data Artisan", totalScore: 840, teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p6", username: "260100106", fullName: "Budi Santoso", email: "budi.26@mhs.unu-jogja.ac.id", nim: "260100106", prodi: "Studi Islam Interdisipliner", faculty: "Fakultas Dirasat Islamiyah", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "CYBER_KNIGHT", characterTier: 1, characterTitle: "Guardian Cadet", totalScore: 710, teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p7", username: "260100107", fullName: "Fajar Hidayatullah", email: "fajar.26@mhs.unu-jogja.ac.id", nim: "260100107", prodi: "Teknologi Hasil Pertanian", faculty: "Fakultas Bioindustri", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "SHADOW_SCOUT", characterTier: 2, characterTitle: "Ranger Pathfinder", totalScore: 890, teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p8", username: "260100108", fullName: "Zahra Salsabila", email: "zahra.26@mhs.unu-jogja.ac.id", nim: "260100108", prodi: "Farmasi", faculty: "Fakultas Ilmu Kesehatan", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "QUANTUM_MAGE", characterTier: 1, characterTitle: "Novice Elementalist", totalScore: 760, teamId: "team-4", teamName: "Genius 04", teamCode: "GENIUS-04", createdAt: "2026-09-01T06:00:00Z" },
   ];
 
-  const teams: MockTeam[] = [
-    {
-      id: "team-1",
-      teamId: "team-1",
-      code: "GENIUS-01",
-      name: "Genius 01",
-      leaderName: "Ahmad Fauzi Ridwan",
-      leaderId: "usr-p1",
-      buddyName: "Muhammad Fikri, S.Kom",
-      buddyId: "usr-b1",
-      currentFloor: 4,
-      currentLocationId: "loc-7",
-      totalScore: 2650,
-      completedMissionsCount: 6,
-      memberCount: 12,
-      status: "ACTIVE",
-      assignedRouteId: "route-1",
-      assignedRouteName: "Rute Hijau Aswaja (L1-L3-L5-L7-L9)",
-      members: users.filter((u) => u.teamId === "team-1"),
-      createdAt: "2026-09-01T06:00:00Z",
-    },
-    {
-      id: "team-2",
-      teamId: "team-2",
-      code: "GENIUS-02",
-      name: "Genius 02",
-      leaderName: "Siti Nur Azizah",
-      leaderId: "usr-p2",
-      buddyName: "Rina Permata Sari, M.Sc",
-      buddyId: "usr-b2",
-      currentFloor: 3,
-      currentLocationId: "loc-5",
-      totalScore: 2480,
-      completedMissionsCount: 5,
-      memberCount: 12,
-      status: "ACTIVE",
-      assignedRouteId: "route-2",
-      assignedRouteName: "Rute Emas Integritas (L2-L4-L6-L8-L9)",
-      members: users.filter((u) => u.teamId === "team-2"),
-      createdAt: "2026-09-01T06:00:00Z",
-    },
-    {
-      id: "team-3",
-      teamId: "team-3",
-      code: "GENIUS-03",
-      name: "Genius 03",
-      leaderName: "Dewi Ayu Larasati",
-      leaderId: "usr-p3",
-      buddyName: "Hendra Wijaya, M.T",
-      buddyId: "usr-b3",
-      currentFloor: 5,
-      currentLocationId: "loc-9",
-      totalScore: 2390,
-      completedMissionsCount: 5,
-      memberCount: 11,
-      status: "ACTIVE",
-      assignedRouteId: "route-3",
-      assignedRouteName: "Rute Biru Sains & Inovasi",
-      members: users.filter((u) => u.teamId === "team-3"),
-      createdAt: "2026-09-01T06:00:00Z",
-    },
-    {
-      id: "team-4",
-      teamId: "team-4",
-      code: "GENIUS-04",
-      name: "Genius 04",
-      leaderName: "M. Rizqi Pratama",
-      leaderId: "usr-p4",
-      buddyName: "Putri Handayani, S.E",
-      buddyId: "usr-b4",
-      currentFloor: 2,
-      currentLocationId: "loc-3",
-      totalScore: 2150,
-      completedMissionsCount: 4,
-      memberCount: 12,
-      status: "ACTIVE",
-      assignedRouteId: "route-1",
-      assignedRouteName: "Rute Hijau Aswaja (L1-L3-L5-L7-L9)",
-      members: users.filter((u) => u.teamId === "team-4"),
-      createdAt: "2026-09-01T06:00:00Z",
-    },
+  const routePresets = [
+    { id: "route-1", name: "Rute Hijau Aswaja (L1-L3-L5-L7-L9)" },
+    { id: "route-2", name: "Rute Emas Integritas (L2-L4-L6-L8-L9)" },
+    { id: "route-3", name: "Rute Biru Sains & Inovasi (L4-L5-L3-L1-L9)" },
+    { id: "route-4", name: "Rute Merah Kepemimpinan Global (L6-L7-L8-L2-L9)" },
   ];
+
+  const teams: MockTeam[] = OFFICIAL_BUDDIES.map((b, idx) => {
+    const currentFloor = ((b.num - 1) % 8) + 1;
+    const routeIndex = (b.num - 1) % 4;
+    const assignedRoute = routePresets[routeIndex];
+    const baseScore = 2850 - (idx * 16) + ((idx % 3) * 20);
+
+    return {
+      id: b.teamId,
+      teamId: b.teamId,
+      code: b.teamCode,
+      name: b.teamName,
+      leaderName: `Ketua ${b.teamName}`,
+      buddyName: b.fullName,
+      buddyId: b.id,
+      currentFloor,
+      currentLocationId: `loc-${currentFloor}`,
+      totalScore: Math.max(1850, baseScore),
+      completedMissionsCount: Math.max(3, 8 - (idx % 4)),
+      memberCount: 12 + (idx % 3),
+      status: "ACTIVE",
+      assignedRouteId: assignedRoute.id,
+      assignedRouteName: assignedRoute.name,
+      buddies: [
+        {
+          userId: b.id,
+          fullName: b.fullName,
+          buddyRole: "PRIMARY",
+        },
+      ],
+      members: users.filter((u) => u.teamId === b.teamId),
+      createdAt: "2026-09-01T06:00:00Z",
+    };
+  });
 
   const stages: MockStage[] = [
     {
@@ -380,20 +363,20 @@ export function createInitialMockData() {
   ];
 
   const gameSessions: MockGameSession[] = [
-    { id: "ses-1", gameId: "game-2", gameTitle: "Cyber Protocol Matrix Breaker", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", floorNumber: 3, locationName: "Lab Komputer Cyber", status: "ACTIVE", score: 280, startedAt: "2026-09-02T08:15:00Z", elapsedSeconds: 142, buddyName: "Muhammad Fikri, S.Kom" },
-    { id: "ses-2", gameId: "game-1", gameTitle: "Aswaja Speed Quiz Arena", teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", floorNumber: 1, locationName: "Lobby Utama", status: "ACTIVE", score: 190, startedAt: "2026-09-02T08:18:00Z", elapsedSeconds: 84, buddyName: "Rina Permata Sari, M.Sc" },
-    { id: "ses-3", gameId: "game-3", gameTitle: "Memory Tile 9 Lantai UNU", teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", floorNumber: 2, locationName: "Perpustakaan Terpadu", status: "READY", score: 0, elapsedSeconds: 0, buddyName: "Hendra Wijaya, M.T" },
+    { id: "ses-1", gameId: "game-2", gameTitle: "Cyber Protocol Matrix Breaker", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", floorNumber: 3, locationName: "Lab Komputer Cyber", status: "ACTIVE", score: 280, startedAt: "2026-09-02T08:15:00Z", elapsedSeconds: 142, buddyName: "Agnes Anggraini Risdiyanto" },
+    { id: "ses-2", gameId: "game-1", gameTitle: "Aswaja Speed Quiz Arena", teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", floorNumber: 1, locationName: "Lobby Utama", status: "ACTIVE", score: 190, startedAt: "2026-09-02T08:18:00Z", elapsedSeconds: 84, buddyName: "Agnesya Putri Triyana" },
+    { id: "ses-3", gameId: "game-3", gameTitle: "Memory Tile 9 Lantai UNU", teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", floorNumber: 2, locationName: "Perpustakaan Terpadu", status: "READY", score: 0, elapsedSeconds: 0, buddyName: "Ahmad Fadlil Munajad" },
   ];
 
   const ledger: MockLedgerEntry[] = [
-    { id: "led-1", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", amount: 200, type: "MISSION_REWARD", reason: "Selesai Misi L1: Jejak Sejarah NU", operator: "Fikri", createdAt: "2026-09-02T08:05:00Z" },
-    { id: "led-2", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", amount: 300, type: "MISSION_REWARD", reason: "Selesai Misi L3: Cyber Codebreaker", operator: "Fikri", createdAt: "2026-09-02T08:25:00Z" },
-    { id: "led-3", teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", amount: 250, type: "MISSION_REWARD", reason: "Selesai Misi L2: Sumpah Integritas", operator: "Rina", createdAt: "2026-09-02T08:15:00Z" },
+    { id: "led-1", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", amount: 200, type: "MISSION_REWARD", reason: "Selesai Misi L1: Jejak Sejarah NU", operator: "Agnes", createdAt: "2026-09-02T08:05:00Z" },
+    { id: "led-2", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", amount: 300, type: "MISSION_REWARD", reason: "Selesai Misi L3: Cyber Codebreaker", operator: "Agnes", createdAt: "2026-09-02T08:25:00Z" },
+    { id: "led-3", teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", amount: 250, type: "MISSION_REWARD", reason: "Selesai Misi L2: Sumpah Integritas", operator: "Agnesya", createdAt: "2026-09-02T08:15:00Z" },
     { id: "led-4", teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", amount: 50, type: "ADMIN_ADJUSTMENT", reason: "Bonus Yel-Yel Kreatif Terheboh Lantai 1", operator: "Super Admin", createdAt: "2026-09-02T08:30:00Z" },
   ];
 
   const auditLogs: MockAuditLog[] = [
-    { id: "log-1", action: "STAGE_ACTIVATED", targetType: "STAGE", targetId: "stg-1", targetName: "Stage 1: The Induction", operator: "Super Admin", details: "Mengaktifkan Stage 1 untuk seluruh 8 tim petualang.", ipAddress: "127.0.0.1", createdAt: "2026-09-02T07:30:00Z" },
+    { id: "log-1", action: "STAGE_ACTIVATED", targetType: "STAGE", targetId: "stg-1", targetName: "Stage 1: The Induction", operator: "Super Admin", details: "Mengaktifkan Stage 1 untuk seluruh 50 tim petualang.", ipAddress: "127.0.0.1", createdAt: "2026-09-02T07:30:00Z" },
     { id: "log-2", action: "SCORE_ADJUSTED", targetType: "TEAM", targetId: "team-3", targetName: "Genius 03", operator: "Super Admin", details: "Menambahkan +50 poin bonus yel-yel kreatif.", ipAddress: "127.0.0.1", createdAt: "2026-09-02T08:30:00Z" },
     { id: "log-3", action: "LOCATION_STATUS_CHANGED", targetType: "LOCATION", targetId: "loc-5", targetName: "Lab Komputer Cyber", operator: "System Telemetry", details: "Status diubah menjadi OCCUPIED (2 tim sedang aktif).", ipAddress: "127.0.0.1", createdAt: "2026-09-02T08:15:00Z" },
   ];
@@ -413,6 +396,9 @@ export function createInitialMockData() {
   };
 }
 
+const DB_VERSION_KEY = "genius_mock_db_version";
+const CURRENT_DB_VERSION = "2026-09-05-v6-50-official-buddies-guaranteed";
+
 class MockDatabase {
   private data = createInitialMockData();
 
@@ -423,13 +409,38 @@ class MockDatabase {
   private hydrate() {
     if (typeof window !== "undefined") {
       try {
+        const storedVersion = localStorage.getItem(DB_VERSION_KEY);
+        // Force flush outdated mock database if from older version
+        if (storedVersion !== CURRENT_DB_VERSION) {
+          localStorage.removeItem("genius_mock_db");
+          localStorage.setItem(DB_VERSION_KEY, CURRENT_DB_VERSION);
+          this.data = createInitialMockData();
+          this.save();
+          return;
+        }
+
         const stored = localStorage.getItem("genius_mock_db");
         if (stored) {
           const parsed = JSON.parse(stored);
           this.data = { ...this.data, ...parsed };
         }
+
+        // Safety guarantee: ensure all 50 official buddies always exist in users array
+        const currentBuddies = (this.data.users || []).filter((u) => u.role === "BUDDY");
+        if (currentBuddies.length < 50) {
+          const initialBuddies = createInitialMockData().users.filter((u) => u.role === "BUDDY");
+          const nonBuddies = (this.data.users || []).filter((u) => u.role !== "BUDDY");
+          this.data.users = [...initialBuddies, ...nonBuddies];
+          this.save();
+        }
+
+        // Safety guarantee: ensure teams have at least 50 official teams
+        if (!this.data.teams || this.data.teams.length < 50) {
+          this.data.teams = createInitialMockData().teams;
+          this.save();
+        }
       } catch {
-        // use default data
+        this.data = createInitialMockData();
       }
     }
   }
@@ -467,10 +478,10 @@ class MockDatabase {
     });
 
     return {
-      totalParticipants: totalParticipants || 1450,
-      activeParticipants: totalParticipants || 1420,
-      totalTeams: totalTeams || 8,
-      activeTeams: activeTeams || 8,
+      totalParticipants: totalParticipants > 10 ? totalParticipants : 624,
+      activeParticipants: totalParticipants > 10 ? totalParticipants : 612,
+      totalTeams: totalTeams || 50,
+      activeTeams: activeTeams || 50,
       totalLocations,
       occupiedLocations,
       totalMissions,
@@ -479,11 +490,11 @@ class MockDatabase {
       floorDistribution,
       floorCompletions: floorDistribution,
       topBooths: [
-        { boothId: "loc-1", boothName: "Lobby & Galeri Aswaja", completionsCount: 24, avgScore: 92 },
-        { boothId: "loc-3", boothName: "Zona Integritas Anti-Korupsi", completionsCount: 22, avgScore: 88 },
-        { boothId: "loc-5", boothName: "Cyber Codebreaker L3", completionsCount: 19, avgScore: 85 },
-        { boothId: "loc-7", boothName: "Lab Sains & Bioteknologi", completionsCount: 18, avgScore: 89 },
-        { boothId: "loc-9", boothName: "Start-Up Incubator L5", completionsCount: 15, avgScore: 94 },
+        { boothId: "loc-1", boothName: "Lobby & Galeri Aswaja", completionsCount: 48, avgScore: 92 },
+        { boothId: "loc-3", boothName: "Zona Integritas Anti-Korupsi", completionsCount: 46, avgScore: 88 },
+        { boothId: "loc-5", boothName: "Cyber Codebreaker L3", completionsCount: 42, avgScore: 85 },
+        { boothId: "loc-7", boothName: "Lab Sains & Bioteknologi", completionsCount: 39, avgScore: 89 },
+        { boothId: "loc-9", boothName: "Start-Up Incubator L5", completionsCount: 35, avgScore: 94 },
       ],
       systemStatus: {
         server: "ONLINE",
@@ -544,22 +555,68 @@ class MockDatabase {
 
   // Teams
   getTeams() {
-    return this.data.teams.map((t) => ({
-      ...t,
-      teamId: t.id,
-      members: this.data.users.filter((u) => u.teamId === t.id),
-      memberCount: this.data.users.filter((u) => u.teamId === t.id).length,
-    }));
+    return this.data.teams.map((t) => {
+      const assignedBuddies = this.data.users
+        .filter((u) => u.role === "BUDDY" && (u.assignedTeamId === t.id || u.teamId === t.id))
+        .map((b) => ({
+          userId: b.id,
+          fullName: b.fullName,
+          buddyRole: b.buddyRole || "PRIMARY",
+        }));
+
+      const officialBuddy = OFFICIAL_BUDDIES.find((b) => b.teamId === t.id || b.teamName === t.name);
+      const effectiveBuddyName = assignedBuddies[0]?.fullName || t.buddyName || officialBuddy?.fullName || "Buddy GM";
+      const effectiveBuddies = assignedBuddies.length > 0
+        ? assignedBuddies
+        : officialBuddy
+        ? [{ userId: officialBuddy.id, fullName: officialBuddy.fullName, buddyRole: officialBuddy.buddyRole || "PRIMARY" }]
+        : (t.buddies || []);
+
+      const members = this.data.users
+        .filter((u) => u.teamId === t.id || u.assignedTeamId === t.id)
+        .map((u) => ({ ...u, userId: u.id }));
+
+      return {
+        ...t,
+        teamId: t.id,
+        buddyName: effectiveBuddyName,
+        buddies: effectiveBuddies,
+        members,
+        memberCount: t.memberCount || members.length || 12,
+      };
+    });
   }
 
   getTeam(id: string) {
     const team = this.data.teams.find((t) => t.id === id || t.teamId === id || t.code === id);
     if (!team) return null;
+    const assignedBuddies = this.data.users
+      .filter((u) => u.role === "BUDDY" && (u.assignedTeamId === team.id || u.teamId === team.id))
+      .map((b) => ({
+        userId: b.id,
+        fullName: b.fullName,
+        buddyRole: b.buddyRole || "PRIMARY",
+      }));
+
+    const officialBuddy = OFFICIAL_BUDDIES.find((b) => b.teamId === team.id || b.teamName === team.name);
+    const effectiveBuddyName = assignedBuddies[0]?.fullName || team.buddyName || officialBuddy?.fullName || "Buddy GM";
+    const effectiveBuddies = assignedBuddies.length > 0
+      ? assignedBuddies
+      : officialBuddy
+      ? [{ userId: officialBuddy.id, fullName: officialBuddy.fullName, buddyRole: officialBuddy.buddyRole || "PRIMARY" }]
+      : (team.buddies || []);
+
+    const members = this.data.users
+      .filter((u) => u.teamId === team.id || u.assignedTeamId === team.id)
+      .map((u) => ({ ...u, userId: u.id }));
+
     return {
       ...team,
       teamId: team.id,
-      members: this.data.users.filter((u) => u.teamId === team.id),
-      memberCount: this.data.users.filter((u) => u.teamId === team.id).length,
+      buddyName: effectiveBuddyName,
+      buddies: effectiveBuddies,
+      members,
+      memberCount: team.memberCount || members.length || 12,
     };
   }
 
@@ -605,11 +662,16 @@ class MockDatabase {
   }
 
   // Users & Participants
-  getUsers(params?: { role?: string; search?: string }) {
+  getUsers(params?: { role?: string; search?: string; assignmentStatus?: string }) {
     let result = [...this.data.users];
     if (params?.role) {
       const targetRole = params.role.toUpperCase();
       result = result.filter((u) => u.role === targetRole);
+    }
+    if (params?.assignmentStatus === "assigned") {
+      result = result.filter((u) => !!u.assignedTeamId || !!u.teamId);
+    } else if (params?.assignmentStatus === "unassigned") {
+      result = result.filter((u) => !u.assignedTeamId && !u.teamId);
     }
     if (params?.search) {
       const q = params.search.toLowerCase();
@@ -617,14 +679,92 @@ class MockDatabase {
         (u) =>
           u.fullName.toLowerCase().includes(q) ||
           u.username.toLowerCase().includes(q) ||
-          (u.nim && u.nim.toLowerCase().includes(q))
+          (u.nim && u.nim.toLowerCase().includes(q)) ||
+          (u.prodi && u.prodi.toLowerCase().includes(q))
       );
     }
     return result;
   }
 
+  getBuddies() {
+    const list = this.getUsers({ role: "BUDDY" });
+    if (list.length >= 50) return list;
+    // Guarantee returning all 50 official buddies
+    return OFFICIAL_BUDDIES.map((b) => ({
+      id: b.id,
+      username: b.username,
+      fullName: b.fullName,
+      email: b.email,
+      role: "BUDDY" as const,
+      status: "ACTIVE" as const,
+      avatarUrl: b.avatarUrl,
+      assignedTeamId: b.teamId,
+      assignedTeamName: b.teamName,
+      teamId: b.teamId,
+      teamName: b.teamName,
+      buddyRole: b.buddyRole,
+      prodi: b.prodi,
+      faculty: b.faculty,
+      gender: b.gender,
+      bonusSpent: 0,
+      createdAt: b.createdAt,
+    }));
+  }
+
+  getBuddy(id: string) {
+    const user = this.getUser(id);
+    if (user && user.role === "BUDDY") return user;
+    const match = OFFICIAL_BUDDIES.find((b) => b.id === id || b.username === id);
+    if (match) {
+      return {
+        id: match.id,
+        username: match.username,
+        fullName: match.fullName,
+        email: match.email,
+        role: "BUDDY" as const,
+        status: "ACTIVE" as const,
+        avatarUrl: match.avatarUrl,
+        assignedTeamId: match.teamId,
+        assignedTeamName: match.teamName,
+        teamId: match.teamId,
+        teamName: match.teamName,
+        buddyRole: match.buddyRole,
+        prodi: match.prodi,
+        faculty: match.faculty,
+        gender: match.gender,
+        bonusSpent: 0,
+        createdAt: match.createdAt,
+      };
+    }
+    return null;
+  }
+
   getUser(id: string) {
-    return this.data.users.find((u) => u.id === id || u.username === id || u.nim === id);
+    const found = this.data.users.find((u) => u.id === id || u.username === id || u.nim === id);
+    if (found) return found;
+    const match = OFFICIAL_BUDDIES.find((b) => b.id === id || b.username === id);
+    if (match) {
+      return {
+        id: match.id,
+        username: match.username,
+        fullName: match.fullName,
+        email: match.email,
+        role: "BUDDY" as const,
+        status: "ACTIVE" as const,
+        avatarUrl: match.avatarUrl,
+        assignedTeamId: match.teamId,
+        assignedTeamName: match.teamName,
+        teamId: match.teamId,
+        teamName: match.teamName,
+        buddyRole: match.buddyRole,
+        prodi: match.prodi,
+        faculty: match.faculty,
+        gender: match.gender,
+        bonusSpent: 0,
+        createdAt: match.createdAt,
+      };
+    }
+    return null;
   }
 
   createUser(payload: Partial<MockUser>) {
@@ -678,7 +818,19 @@ class MockDatabase {
 
     return {
       teams,
+      teamLeaderboard: teams.map((t, idx) => ({
+        ...t,
+        rank: idx + 1,
+        teamId: t.id,
+        teamName: t.name,
+        buddy: t.buddyName,
+      })),
       participants,
+      participantLeaderboard: participants.map((p, idx) => ({
+        ...p,
+        rank: idx + 1,
+      })),
+      recentTransactions: this.data.ledger,
       ledger: this.data.ledger,
       lastUpdated: new Date().toISOString(),
     };

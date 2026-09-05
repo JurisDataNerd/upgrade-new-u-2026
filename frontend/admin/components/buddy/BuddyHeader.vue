@@ -57,22 +57,18 @@ import { useAuth } from "@/composables/useAuth";
 const { user, switchRole, logout } = useAuth();
 
 const cleanBuddyName = computed(() => {
-  const raw = user.value?.fullName || "Budi Santoso";
+  const raw = user.value?.fullName || "Agnes Anggraini Risdiyanto";
   return raw.replace(/^Kak(ak)?\s+/i, "").trim();
 });
 
 const cleanTeamName = computed(() => {
   const raw = user.value?.teamName || "Genius 01";
-  if (/Garuda/i.test(raw)) return "Genius 01";
-  if (/Khawarizmi/i.test(raw)) return "Genius 03";
-  if (/Ibnu\s*Sina/i.test(raw)) return "Genius 07";
-  return raw.replace(/^Team\s+/i, "");
+  return raw.replace(/^Team\s+/i, "").trim();
 });
 
 const buddyAvatar = computed(() => {
-  if (user.value?.username === "buddy03" || user.value?.teamId === "group-03") {
-    return "/character-cewek-avatar.png"; // Dewi
-  }
-  return "/character-cowok-avatar.png"; // Budi / Farhan
+  if (user.value?.avatarUrl) return user.value.avatarUrl;
+  if (user.value?.gender === "FEMALE") return "/character-cewek-avatar.png";
+  return "/character-cowok-avatar.png";
 });
 </script>

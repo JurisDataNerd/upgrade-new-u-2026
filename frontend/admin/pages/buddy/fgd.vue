@@ -268,7 +268,7 @@ const membersTeam03: FgdMember[] = [
 ];
 
 const teamMembers = computed(() => {
-  if (user.value?.teamId === "group-03" || user.value?.teamId === "team-khawarizmi" || user.value?.username === "buddy03") {
+  if (user.value?.teamId === "team-3" || user.value?.username === "buddy03") {
     return membersTeam03;
   }
   return membersTeam01;

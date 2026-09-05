@@ -74,7 +74,7 @@ export const FLOORS_DATA: Floor[] = [
       narrative:
         'Langkah pertamamu dimulai di Welcome Hall Lantai 1. Di sinilah akar peradaban keilmuan berpadu dengan nilai luhur Ahlussunnah wal Jama\'ah. Kamu akan dibimbing untuk memahami pilar karakter mahasiswa unggul dan etika sopan santun kehidupan kampus.',
       guideMessage:
-        'Selesaikan 2 tantangan mini-game di lantai ini: Tebak Kata Nilai Luhur dan Uji Benar/Salah Etika Kampus.',
+        'Selesaikan 2 tantangan mini-game di lantai ini: Tebak Gambar Nilai Luhur dan Kuis Balapan Etika Kampus.',
       keyLearning: [
         'Pilar Aswaja: Tawasuth (Moderat), Tawazun (Seimbang), Tasamuh (Toleran), I\'tidal (Adil)',
         'Etika komunikasi santun dengan dosen, staf, dan sesama mahasiswa',
@@ -260,12 +260,12 @@ export const BOOTHS_DATA: Record<string, Booth> = {
     code: 'B1-A',
     name: 'Corner Nilai Dasar & Aswaja An-Nahdliyyah',
     subtitle: 'Mengenal Fondasi Karakter Kampus UNU',
-    type: 'tebak_kata',
-    tipe_game: 'tebak_kata',
+    type: 'tebak_gambar',
+    tipe_game: 'tebak_gambar',
     category: 'umum',
     readingTime: '2 menit baca',
-    iconName: 'Sparkle',
-    stampIcon: 'Sparkle',
+    iconName: 'Images',
+    stampIcon: 'Images',
     stampTitle: 'Stempel Fondasi Karakter',
     stampColor: '#10B981',
     badgeTag: 'Karakter Kampus',
@@ -280,23 +280,77 @@ export const BOOTHS_DATA: Record<string, Booth> = {
         explanation: 'Tasamuh berarti sikap toleran yang saling menghormati perbedaan suku, agama, dan pandangan.',
       },
     ],
-    tebakKataContent: {
+    tebakGambarContent: {
       items: [
         {
-          id: 'tk-1a-1',
-          clue: 'Pilar nilai luhur yang berarti sikap toleran, saling menghargai perbedaan latar belakang suku, agama, dan pandangan hidup:',
-          targetWord: 'TASAMUH',
-          scrambledLetters: ['T', 'A', 'S', 'A', 'M', 'U', 'H', 'B', 'K'],
-          hint: 'Dimulai dengan huruf T, 7 huruf',
-          explanation: 'Tasamuh adalah pilar penting dalam Aswaja yang mengajarkan toleransi dan sikap saling menghargai.',
+          id: 'tg-1a-1',
+          imageIcon: 'star',
+          imageAlt: 'Bintang sembilan lambang perjuangan Wali Sanga',
+          prompt:
+            'Lambang organisasi ini menampilkan bintang berjumlah sembilan yang melambangkan semangat perjuangan Wali Sanga. Organisasi apakah itu?',
+          options: ['Nahdlatul Ulama (NU)', 'Muhammadiyah', 'Persatuan Islam (Persis)', 'GP Ansor'],
+          correctOptionIndex: 0,
+          explanation:
+            'Sembilan bintang pada lambang NU melambangkan Wali Sanga, para penyebar Islam di Nusantara yang menjadi rujukan tradisi keilmuan NU.',
         },
         {
-          id: 'tk-1a-2',
-          clue: 'Pilar nilai yang berarti sikap moderat, tidak condong ke ekstrem kanan ataupun ekstrem kiri:',
-          targetWord: 'TAWASUTH',
-          scrambledLetters: ['T', 'A', 'W', 'A', 'S', 'U', 'T', 'H', 'O', 'P'],
-          hint: 'Dimulai dengan huruf T, 8 huruf',
-          explanation: 'Tawasuth mengajarkan jalan tengah yang bijak dan proporsional dalam menyikapi berbagai persoalan.',
+          id: 'tg-1a-2',
+          imageIcon: 'book',
+          imageAlt: 'Kitab kuning rujukan pesantren',
+          prompt:
+            'Kitab klasik berbahasa Arab yang menjadi rujukan utama tradisi keilmuan di pesantren-pesantren NU dikenal dengan istilah...',
+          options: ['Kitab Kuning', 'Buku Paket', 'Majalah Ilmiah', 'Kamus Besar'],
+          correctOptionIndex: 0,
+          explanation:
+            'Kitab Kuning (turats) adalah warisan keilmuan ulama yang diajarkan turun-temurun di pesantren dengan metode sorogan, bandongan, dan musyawarah.',
+        },
+        {
+          id: 'tg-1a-3',
+          imageIcon: 'mosque',
+          imageAlt: 'Masjid tempat musyawarah ulama',
+          prompt:
+            'Nahdlatul Ulama didirikan oleh para ulama pesantren, dipelopori KH. Hasyim Asy\'ari. NU berdiri pada tanggal...',
+          options: ['31 Januari 1926', '17 Agustus 1945', '20 Mei 1908', '28 Oktober 1928'],
+          correctOptionIndex: 0,
+          explanation:
+            'NU dideklarasikan di Surabaya pada 31 Januari 1926 (16 Rajab 1344 H) oleh para ulama pesantren untuk menjaga tradisi Ahlussunnah wal Jama\'ah.',
+        },
+        {
+          id: 'tg-1a-4',
+          imageIcon: 'scroll',
+          imageAlt: 'Naskah Resolusi Jihad',
+          prompt:
+            'Fatwa Resolusi Jihad yang memobilisasi santri dan rakyat melawan penjajah pada masa perjuangan kemerdekaan dikeluarkan oleh...',
+          options: ['KH. Hasyim Asy\'ari', 'KH. Ahmad Dahlan', 'Ir. Soekarno', 'HOS Tjokroaminoto'],
+          correctOptionIndex: 0,
+          explanation:
+            'Resolusi Jihad dicetuskan KH. Hasyim Asy\'ari (Hadratus Syaikh) pada 22 Oktober 1945, menegaskan wajibnya perlawanan terhadap penjajah yang ingin kembali berkuasa.',
+        },
+        {
+          id: 'tg-1a-5',
+          imageIcon: 'handshake',
+          imageAlt: 'Persaudaraan dan kebangkitan',
+          prompt: 'Istilah "Nahdlatul Ulama" secara harfiah bermakna...',
+          options: ['Kebangkitan Ulama', 'Persatuan Pemuda', 'Rumah Ilmu', 'Barisan Santri'],
+          correctOptionIndex: 0,
+          explanation:
+            '"Nahdlatul Ulama" berarti kebangkitan para ulama — organisasi yang lahir dari dan untuk menjaga tradisi keislaman Ahlussunnah wal Jama\'ah di Indonesia.',
+        },
+        {
+          id: 'tg-1a-6',
+          imageIcon: 'scales',
+          imageAlt: 'Timbangan moderasi dan keadilan',
+          prompt:
+            'Sebagai pengamal manhaj Ahlussunnah wal Jama\'ah (Aswaja), NU menekankan sikap hidup yang...',
+          options: [
+            'Moderat dan seimbang (tawasuth)',
+            'Kaku menolak semua perubahan',
+            'Menutup diri dari ilmu modern',
+            'Ekstrem dalam berpendapat',
+          ],
+          correctOptionIndex: 0,
+          explanation:
+            'Aswaja ala NU mengedepankan tawasuth (moderat), tawazun (seimbang), tasamuh (toleran), dan i\'tidal (adil) — jalan tengah dalam beragama dan berbangsa.',
         },
       ],
     },
@@ -307,12 +361,12 @@ export const BOOTHS_DATA: Record<string, Booth> = {
     code: 'B1-B',
     name: 'Corner Budaya Akademik & Etika Mahasiswa',
     subtitle: 'Tata Krama dan Kedisiplinan Kehidupan Kampus',
-    type: 'benar_salah',
-    tipe_game: 'benar_salah',
+    type: 'kuis_balapan',
+    tipe_game: 'kuis_balapan',
     category: 'umum',
     readingTime: '2 menit baca',
-    iconName: 'GraduationCap',
-    stampIcon: 'GraduationCap',
+    iconName: 'FlagCheckered',
+    stampIcon: 'FlagCheckered',
     stampTitle: 'Stempel Etika Mahasiswa',
     stampColor: '#059669',
     badgeTag: 'Budaya Kampus',
@@ -332,31 +386,53 @@ export const BOOTHS_DATA: Record<string, Booth> = {
         explanation: 'Etika menghubungi dosen wajib mencantumkan salam, identitas lengkap, tujuan jelas, dan bahasa santun.',
       },
     ],
-    benarSalahContent: {
-      statements: [
+    kuisBalapanContent: {
+      rivalIntervalSeconds: 8,
+      questions: [
         {
-          id: 'bs-1b-1',
-          statement:
-            'Saat mengirim pesan konfirmasi atau izin ke dosen, mahasiswa wajib memberi salam, menyebutkan nama & NIM, serta berbahasa santun.',
-          isCorrect: true,
+          id: 'qb-1b-1',
+          text: 'Dalam tradisi pesantren NU, menuntut ilmu harus didahului oleh...',
+          options: ['Adab kepada guru', 'Kecerdasan instan', 'Fasilitas mewah', 'Jumlah hafalan banyak'],
+          correctAnswerIndex: 0,
           explanation:
-            'Benar! Komunikasi akademik formal harus mengedepankan tata krama, kejelasan identitas, dan waktu yang sopan.',
+            'Para ulama NU mengajarkan "al-adabu qablal-\'ilm" — adab mendahului ilmu. Hormat kepada guru adalah kunci berkahnya menuntut ilmu.',
         },
         {
-          id: 'bs-1b-2',
-          statement:
-            'Mahasiswa diperbolehkan menitipkan presensi (absen titip) kepada teman jika sedang terlambat bangun.',
-          isCorrect: false,
+          id: 'qb-1b-2',
+          text: 'Metode membaca kitab kuning secara kolektif, dengan guru membaca dan menjelaskan (syarah) di depan santri, disebut...',
+          options: ['Bandongan', 'Sorogan', 'Presentasi', 'Diskusi panel'],
+          correctAnswerIndex: 0,
           explanation:
-            'Salah! Menitipkan presensi adalah pelanggaran integritas akademik dan ketidakjujuran yang dilarang di kampus.',
+            'Bandongan adalah metode belajar kitab secara massal: guru membaca teks Arab beserta terjemah dan syarahnya. Sorogan bersifat individual (santri maju satu per satu).',
         },
         {
-          id: 'bs-1b-3',
-          statement:
-            'Menjaga kebersihan ruang kelas dan merawat fasilitas bersama kampus merupakan tanggung jawab seluruh mahasiswa.',
-          isCorrect: true,
+          id: 'qb-1b-3',
+          text: 'Mengutip pendapat atau tulisan orang lain dalam karya ilmiah tanpa mencantumkan sumbernya termasuk...',
+          options: ['Plagiarisme', 'Parafrase yang baik', 'Sitasi lazim', 'Rujukan sekunder'],
+          correctAnswerIndex: 0,
           explanation:
-            'Benar! Fasilitas kampus adalah milik bersama yang wajib dijaga kebersihan dan keberlangsungannya oleh segenap sivitas.',
+            'Plagiarisme melanggar integritas akademik. Nilai kejujuran (istiqamah dan amanah) yang diajarkan Aswaja wajib dijaga dalam karya tulis ilmiah.',
+        },
+        {
+          id: 'qb-1b-4',
+          text: 'Etika yang tepat saat mahasiswa datang terlambat masuk ruang kuliah adalah...',
+          options: [
+            'Minta izin dengan sopan, lalu masuk pelan dan duduk di dekat pintu',
+            'Menyusup diam-diam ke kursi paling belakang',
+            'Mengetuk pintu keras agar dosen tahu',
+            'Membatalkan kelas itu saja',
+          ],
+          correctAnswerIndex: 0,
+          explanation:
+            'Keterlambatan kadang tak terelakkan; adabnya adalah meminta izin secara sopan dan masuk dengan mengganggu seminimal mungkin jalannya perkuliahan.',
+        },
+        {
+          id: 'qb-1b-5',
+          text: 'Hari Santri Nasional, yang diambil dari momentum Resolusi Jihad, diperingati setiap tanggal...',
+          options: ['22 Oktober', '31 Januari', '17 Agustus', '1 Muharram'],
+          correctAnswerIndex: 0,
+          explanation:
+            '22 Oktober ditetapkan sebagai Hari Santri Nasional (Kepres No. 24 Tahun 2015), mengenang Resolusi Jihad KH. Hasyim Asy\'ari tahun 1945.',
         },
       ],
     },

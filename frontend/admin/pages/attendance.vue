@@ -463,7 +463,7 @@ const participantsList = ref<ParticipantAttendanceRow[]>([
     prodi: "Informatika",
     avatarUrl: "/character-cowok-avatar.png",
     teamName: "Genius 01",
-    buddyName: "Budi Santoso",
+    buddyName: "Agnes Anggraini Risdiyanto",
     attendance: {
       checkInAt: "2026-09-22T07:18:00Z",
       status: "ON_TIME",
@@ -484,7 +484,7 @@ const participantsList = ref<ParticipantAttendanceRow[]>([
     prodi: "Farmasi",
     avatarUrl: "/character-cewek-avatar.png",
     teamName: "Genius 01",
-    buddyName: "Budi Santoso",
+    buddyName: "Agnes Anggraini Risdiyanto",
     attendance: {
       checkInAt: "2026-09-22T07:25:00Z",
       status: "ON_TIME",
@@ -505,7 +505,7 @@ const participantsList = ref<ParticipantAttendanceRow[]>([
     prodi: "Teknik Elektro",
     avatarUrl: "/character-cowok-avatar.png",
     teamName: "Genius 01",
-    buddyName: "Budi Santoso",
+    buddyName: "Agnes Anggraini Risdiyanto",
     attendance: {
       checkInAt: "2026-09-22T07:38:00Z",
       status: "LATE",
@@ -521,7 +521,7 @@ const participantsList = ref<ParticipantAttendanceRow[]>([
     prodi: "Manajemen",
     avatarUrl: "/character-cewek-avatar.png",
     teamName: "Genius 02",
-    buddyName: "Siti Rahmawati",
+    buddyName: "Agnesya Putri Triyana",
     attendance: {
       checkInAt: "2026-09-22T07:12:00Z",
       status: "ON_TIME",
@@ -542,7 +542,7 @@ const participantsList = ref<ParticipantAttendanceRow[]>([
     prodi: "PGSD",
     avatarUrl: "/character-cowok-avatar.png",
     teamName: "Genius 02",
-    buddyName: "Siti Rahmawati",
+    buddyName: "Agnesya Putri Triyana",
     attendance: {
       checkInAt: null,
       status: "ABSENT",
@@ -558,7 +558,7 @@ const participantsList = ref<ParticipantAttendanceRow[]>([
     prodi: "Akuntansi",
     avatarUrl: "/character-cewek-avatar.png",
     teamName: "Genius 03",
-    buddyName: "Ahmad Fauzi",
+    buddyName: "Ahmad Fadlil Munajad",
     attendance: {
       checkInAt: "2026-09-22T07:22:00Z",
       status: "ON_TIME",

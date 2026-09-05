@@ -205,17 +205,8 @@ import { useAuth } from "@/composables/useAuth";
 const { user } = useAuth();
 
 const currentTeamName = computed(() => {
-  if (user.value?.teamId === "group-03" || user.value?.username === "buddy03") {
-    return "Genius 03";
-  }
-  if (user.value?.teamId === "group-07" || user.value?.username === "buddy07") {
-    return "Genius 07";
-  }
-  let name = user.value?.teamName || "Genius 01";
-  if (/Garuda/i.test(name)) return "Genius 01";
-  if (/Khawarizmi/i.test(name)) return "Genius 03";
-  if (/Ibnu\s*Sina/i.test(name)) return "Genius 07";
-  return name.replace(/^Team\s+/i, "");
+  const name = user.value?.teamName || "Genius 01";
+  return name.replace(/^Team\s+/i, "").trim();
 });
 
 const teamSynergyBonus = ref(100);

@@ -58,7 +58,7 @@
           <div class="flex items-center gap-2.5 min-w-0">
             <div class="h-8 w-8 rounded border-2 border-[#f59e0b] bg-[#271d15] overflow-hidden shrink-0 flex items-center justify-center p-1">
               <img
-                :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.username === 'buddy03' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png')"
+                :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.avatarUrl || (user?.gender === 'FEMALE' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png'))"
                 alt="Admin Avatar"
                 class="h-full w-full object-contain"
               />
