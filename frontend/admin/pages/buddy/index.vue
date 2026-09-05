@@ -73,8 +73,17 @@
       </NuxtLink>
     </div>
 
+    <!-- Loading / Empty State -->
+    <div v-if="loading" class="sdv-card p-6 text-center text-[#c4956a] font-mono text-xs">
+      <div class="inline-block w-5 h-5 border-2 border-[#f0d060] border-t-transparent rounded-full animate-spin mb-2"></div>
+      <div>Memuat data regu dari server...</div>
+    </div>
+    <div v-else-if="activeMembers.length === 0" class="sdv-card p-6 text-center text-[#c4956a] font-mono text-xs">
+      Belum ada mahasiswa baru yang terdaftar di regu ini.
+    </div>
+
     <!-- Student Cards (Clean, Compact, Real UNU Majors) -->
-    <div class="space-y-2">
+    <div v-else class="space-y-2">
       <div
         v-for="m in activeMembers"
         :key="m.id"
@@ -85,7 +94,7 @@
           <div class="flex items-center gap-2.5 min-w-0">
             <!-- Mini Avatar -->
             <img
-              :src="m.avatarUrl"
+              :src="m.avatarUrl || '/character-cowok-avatar.png'"
               :alt="m.fullName"
               class="w-8 h-8 rounded border border-[#f0d060] bg-black/40 shrink-0"
             />
@@ -141,14 +150,14 @@
               v-if="!m.checkInTime"
               type="button"
               @click="markManualAttendance(m)"
-              class="rpg-btn-wood h-7 px-2 font-pixel text-[8px] font-bold flex items-center gap-1 shadow"
+              class="rpg-btn-wood h-7 px-2 font-pixel text-[8px] font-bold flex items-center gap-1 shadow cursor-pointer"
             >
               <span>+ HADIR</span>
             </button>
 
             <NuxtLink
               :to="`/buddy/fgd?participantId=${m.id}`"
-              class="rpg-btn-primary h-7 px-2 font-pixel text-[8px] font-bold flex items-center gap-1 shadow"
+              class="rpg-btn-primary h-7 px-2 font-pixel text-[8px] font-bold flex items-center gap-1 shadow cursor-pointer"
             >
               <span>{{ m.fgdScore ? `FGD: ${m.fgdScore} XP` : 'NILAI FGD' }}</span>
             </NuxtLink>
@@ -163,14 +172,16 @@
 import { ref, computed, onMounted } from "vue";
 import { FileEdit, Gift, Trophy } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
+import { useApi } from "@/composables/useApi";
 
 const { user } = useAuth();
+const api = useApi();
 
 interface BuddyMember {
   id: string;
   fullName: string;
   username: string; // NIM
-  prodi: string; // Jurusan UNU Resmi
+  prodi: string; // Jurusan / Class
   avatarUrl: string;
   totalXp: number;
   attendanceStatus: "ON_TIME" | "LATE" | "ABSENT";
@@ -179,65 +190,38 @@ interface BuddyMember {
   fgdScore?: number;
 }
 
-// Data Genius 01 - Budi (Jurusan resmi UNU)
-const membersTeam01: BuddyMember[] = [
-  { id: "p1", fullName: "Ahmad Dahlan", username: "2611101", prodi: "Informatika", avatarUrl: "/character-cowok-avatar.png", totalXp: 520, attendanceStatus: "ON_TIME", checkInTime: "07:18", stampsCount: 8, fgdScore: 186 },
-  { id: "p2", fullName: "Fatimah Azzahra", username: "2611102", prodi: "Farmasi", avatarUrl: "/character-cewek-avatar.png", totalXp: 480, attendanceStatus: "ON_TIME", checkInTime: "07:25", stampsCount: 6, fgdScore: 173 },
-  { id: "p3", fullName: "Rian Pratama", username: "2611103", prodi: "Teknik Elektro", avatarUrl: "/character-cowok-avatar.png", totalXp: 310, attendanceStatus: "LATE", checkInTime: "07:38", stampsCount: 4 },
-  { id: "p4", fullName: "Siti Nurhaliza", username: "2611104", prodi: "Manajemen", avatarUrl: "/character-cewek-avatar.png", totalXp: 420, attendanceStatus: "ON_TIME", checkInTime: "07:15", stampsCount: 5, fgdScore: 160 },
-  { id: "p5", fullName: "Kevin Wijaya", username: "2611105", prodi: "PGSD", avatarUrl: "/character-cowok-avatar.png", totalXp: 180, attendanceStatus: "ABSENT", stampsCount: 2 },
-];
-
-// Data Genius 03 - Dewi
-const membersTeam03: BuddyMember[] = [
-  { id: "p6", fullName: "Ilham Ramadhan", username: "2611201", prodi: "Informatika", avatarUrl: "/character-cowok-avatar.png", totalXp: 560, attendanceStatus: "ON_TIME", checkInTime: "07:12", stampsCount: 9, fgdScore: 190 },
-  { id: "p7", fullName: "Putri Ayu", username: "2611202", prodi: "Teknologi Hasil Pertanian", avatarUrl: "/character-cewek-avatar.png", totalXp: 450, attendanceStatus: "ON_TIME", checkInTime: "07:22", stampsCount: 7, fgdScore: 175 },
-  { id: "p8", fullName: "Bagas Saputra", username: "2611203", prodi: "Agribisnis", avatarUrl: "/character-cowok-avatar.png", totalXp: 390, attendanceStatus: "ON_TIME", checkInTime: "07:29", stampsCount: 6 },
-  { id: "p9", fullName: "Annisa Maharani", username: "2611204", prodi: "Akuntansi", avatarUrl: "/character-cewek-avatar.png", totalXp: 410, attendanceStatus: "LATE", checkInTime: "07:41", stampsCount: 5 },
-  { id: "p10", fullName: "Fikri Haikal", username: "2611205", prodi: "Studi Islam Interdisipliner", avatarUrl: "/character-cowok-avatar.png", totalXp: 340, attendanceStatus: "ON_TIME", checkInTime: "07:18", stampsCount: 5 },
-];
-
-// Data Genius 07 - Farhan
-const membersTeam07: BuddyMember[] = [
-  { id: "p11", fullName: "Zahra Kusuma", username: "2611301", prodi: "Farmasi", avatarUrl: "/character-cewek-avatar.png", totalXp: 540, attendanceStatus: "ON_TIME", checkInTime: "07:14", stampsCount: 8, fgdScore: 185 },
-  { id: "p12", fullName: "Rizki Fauzi", username: "2611302", prodi: "Informatika", avatarUrl: "/character-cowok-avatar.png", totalXp: 460, attendanceStatus: "ON_TIME", checkInTime: "07:20", stampsCount: 7 },
-  { id: "p13", fullName: "Nabila Safitri", username: "2611303", prodi: "Pendidikan Bahasa Inggris", avatarUrl: "/character-cewek-avatar.png", totalXp: 380, attendanceStatus: "ON_TIME", checkInTime: "07:26", stampsCount: 5 },
-  { id: "p14", fullName: "Wahyu Hidayat", username: "2611304", prodi: "Teknik Elektro", avatarUrl: "/character-cowok-avatar.png", totalXp: 310, attendanceStatus: "LATE", checkInTime: "07:44", stampsCount: 4 },
-];
-
-const activeMembers = ref<BuddyMember[]>(membersTeam01);
+const loading = ref(true);
+const teamData = ref<any>(null);
+const activeMembers = ref<BuddyMember[]>([]);
+const leaderboardTeams = ref<any[]>([]);
 
 const cleanBuddyName = computed(() => {
-  const raw = user.value?.fullName || "Agnes Anggraini Risdiyanto";
+  const raw = user.value?.fullName || "Buddy";
   return raw.replace(/^Kak(ak)?\s+/i, "").trim();
 });
 
 const currentTeamInfo = computed(() => {
-  const teamName = user.value?.teamName || "Genius 01";
-  const floor = user.value?.assignedFloor ? `Lantai ${user.value.assignedFloor}` : "Lantai 1";
+  const name = teamData.value?.name || user.value?.teamName || "Genius 01";
+  const routeName = teamData.value?.routeName || (user.value?.assignedFloor ? `Lantai ${user.value.assignedFloor}` : "Lantai 1");
   return {
-    name: teamName.replace(/^Team\s+/i, "").trim(),
-    startFloor: floor,
+    name: name.replace(/^Team\s+/i, "").trim(),
+    startFloor: routeName,
   };
 });
 
 const currentTeamScore = computed(() => {
-  if (user.value?.teamId) {
-    const num = parseInt(user.value.teamId.replace(/\D/g, ""), 10);
-    if (!isNaN(num)) {
-      const score = Math.max(1850, 2850 - (num - 1) * 20);
-      return score.toLocaleString();
-    }
-  }
-  return "2.850";
+  const found = leaderboardTeams.value.find(
+    (t: any) => t.teamId === teamData.value?.id || t.teamName === currentTeamInfo.value.name
+  );
+  if (found?.totalScore != null) return Number(found.totalScore).toLocaleString();
+  return Number(teamData.value?.totalScore || 0).toLocaleString();
 });
 
 const currentTeamRank = computed(() => {
-  if (user.value?.teamId) {
-    const num = parseInt(user.value.teamId.replace(/\D/g, ""), 10);
-    if (!isNaN(num) && num > 0) return num;
-  }
-  return 1;
+  const found = leaderboardTeams.value.find(
+    (t: any) => t.teamId === teamData.value?.id || t.teamName === currentTeamInfo.value.name
+  );
+  return found?.rank || 1;
 });
 
 const attendedCount = computed(
@@ -248,43 +232,106 @@ const fgdCompletedCount = computed(
   () => activeMembers.value.filter((m) => !!m.fgdScore).length
 );
 
-const markManualAttendance = (member: BuddyMember) => {
-  member.attendanceStatus = "ON_TIME";
-  member.checkInTime = "07:30 (Manual)";
-  member.totalXp += 100;
-  saveMembersState();
-};
+async function markManualAttendance(member: BuddyMember) {
+  try {
+    const res = await api.post<{ success: boolean; data: any }>("/api/attendance/check-in", {
+      participantId: member.id,
+      day: 1,
+      qrToken: "QR-PRESENSI-H1-GATE",
+    });
 
-const saveMembersState = () => {
-  if (import.meta.client) {
-    const key = `genius_buddy_members_${user.value?.teamId || "group-01"}`;
-    localStorage.setItem(key, JSON.stringify(activeMembers.value));
-  }
-};
-
-const loadMembersState = () => {
-  if (import.meta.client) {
-    if (user.value?.teamId === "group-03" || user.value?.username === "buddy03") {
-      activeMembers.value = [...membersTeam03];
-    } else if (user.value?.teamId === "group-07" || user.value?.username === "buddy07") {
-      activeMembers.value = [...membersTeam07];
-    } else {
-      activeMembers.value = [...membersTeam01];
+    if (res.success) {
+      member.attendanceStatus = res.data?.checkInStatus || "ON_TIME";
+      const now = new Date();
+      member.checkInTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")} (Manual)`;
+      member.totalXp += 100;
     }
+  } catch (err: any) {
+    console.error("Gagal presensi manual:", err);
+  }
+}
 
-    const key = `genius_buddy_members_${user.value?.teamId || "group-01"}`;
-    const saved = localStorage.getItem(key);
-    if (saved) {
-      try {
-        activeMembers.value = JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
+async function loadData() {
+  loading.value = true;
+  try {
+    // 1. Resolve Team ID
+    let targetTeamId = user.value?.teamId;
+    if (!targetTeamId) {
+      const teamsRes = await api.get<{ success: boolean; data: any[] }>("/api/teams");
+      if (teamsRes.success && teamsRes.data?.length) {
+        const myTeam = teamsRes.data.find((t: any) =>
+          t.buddies?.some((b: any) => b.userId === user.value?.id)
+        );
+        targetTeamId = myTeam ? myTeam.id : teamsRes.data[0].id;
       }
     }
+
+    if (targetTeamId) {
+      // 2. Fetch Team Details, Leaderboard, FGD Evaluations, and Attendance
+      const [teamRes, lbRes, evalsRes, attRes] = await Promise.allSettled([
+        api.get<{ success: boolean; data: any }>(`/api/teams/${targetTeamId}`),
+        api.get<{ success: boolean; data: any }>("/api/leaderboard"),
+        api.get<{ success: boolean; data: any }>(`/api/buddy/evaluations/team/${targetTeamId}`),
+        api.get<{ success: boolean; data: any }>("/api/attendance/recap?day=1"),
+      ]);
+
+      if (teamRes.status === "fulfilled" && teamRes.value.success) {
+        teamData.value = teamRes.value.data;
+      }
+
+      if (lbRes.status === "fulfilled" && lbRes.value.success) {
+        leaderboardTeams.value = lbRes.value.data?.teamLeaderboard || [];
+      }
+
+      const fgdEvalsMap = new Map<string, number>();
+      if (evalsRes.status === "fulfilled" && evalsRes.value.success) {
+        const evalsMembers = evalsRes.value.data?.members || [];
+        evalsMembers.forEach((em: any) => {
+          if (em.userId) fgdEvalsMap.set(em.userId, em.totalFgdXp || 0);
+        });
+      }
+
+      const attendanceMap = new Map<string, { status: "ON_TIME" | "LATE"; time: string }>();
+      if (attRes.status === "fulfilled" && attRes.value.success) {
+        const attendees = attRes.value.data?.attendees || [];
+        attendees.forEach((a: any) => {
+          if (a.participantId) {
+            const timeStr = a.checkInAt ? new Date(a.checkInAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : "07:30";
+            attendanceMap.set(a.participantId, {
+              status: a.checkInStatus === "LATE" ? "LATE" : "ON_TIME",
+              time: timeStr,
+            });
+          }
+        });
+      }
+
+      // Map team members (participants only)
+      const rawMembers = (teamData.value?.members || []).filter((m: any) => m.role === "PARTICIPANT" || !m.role);
+      activeMembers.value = rawMembers.map((m: any) => {
+        const att = attendanceMap.get(m.userId || m.id);
+        const fgdScore = fgdEvalsMap.get(m.userId || m.id);
+        return {
+          id: m.userId || m.id,
+          fullName: m.fullName || "Mahasiswa",
+          username: m.username || "-",
+          prodi: m.characterClass || m.characterTitle || "Informatika",
+          avatarUrl: m.avatarUrl || "/character-cowok-avatar.png",
+          totalXp: Number(m.totalScore || 0),
+          attendanceStatus: att ? att.status : "ABSENT",
+          checkInTime: att ? att.time : undefined,
+          stampsCount: Math.min(18, Math.floor(Number(m.totalScore || 0) / 50)),
+          fgdScore: fgdScore && fgdScore > 0 ? fgdScore : undefined,
+        };
+      });
+    }
+  } catch (err: any) {
+    console.error("Failed to load buddy dashboard data:", err);
+  } finally {
+    loading.value = false;
   }
-};
+}
 
 onMounted(() => {
-  loadMembersState();
+  loadData();
 });
 </script>

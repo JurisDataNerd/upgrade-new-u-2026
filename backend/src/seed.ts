@@ -23,6 +23,7 @@ async function seed() {
   // 1. Seed Admin & Sample Users
   console.log("Creating Admin & Demo Users...");
   const adminPassword = await hashPassword("admin2026");
+  const buddyPassword = await hashPassword("buddy2026");
   const defaultPassword = await hashPassword("genius2026");
 
   // Check if admin exists
@@ -47,7 +48,7 @@ async function seed() {
     console.log("  ✅ Admin created: username 'admin', password 'admin2026'");
   }
 
-  // Create sample Buddy
+  // Create sample Buddies
   const [existingBuddy] = await db
     .select()
     .from(users)
@@ -60,13 +61,32 @@ async function seed() {
       .insert(users)
       .values({
         username: "buddy_budi",
-        passwordHash: defaultPassword,
+        passwordHash: buddyPassword,
         fullName: "Budi Santoso (Buddy)",
         role: "BUDDY",
         status: "ACTIVE",
       })
       .returning();
     console.log("  ✅ Sample Buddy created: username 'buddy_budi'");
+  }
+
+  const [existingBuddy01] = await db
+    .select()
+    .from(users)
+    .where(eq(users.username, "buddy01"))
+    .limit(1);
+
+  if (!existingBuddy01) {
+    await db
+      .insert(users)
+      .values({
+        username: "buddy01",
+        passwordHash: buddyPassword,
+        fullName: "Budi Santoso (Buddy)",
+        role: "BUDDY",
+        status: "ACTIVE",
+      });
+    console.log("  ✅ Sample Buddy created: username 'buddy01'");
   }
 
   // Create sample Participants with rich RPG profiles & evolution tiers

@@ -74,7 +74,7 @@
           </div>
 
           <button
-            @click="logout"
+            @click="handleMobileLogout"
             class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-[#f59e0b] bg-[#1a140f] text-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.3)] hover:scale-110 hover:bg-[#2b2014] hover:border-red-500 hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.4)] transition-all"
             title="Keluar Akun"
           >
@@ -103,11 +103,14 @@ import {
   Gamepad2,
   HelpCircle,
   Sparkles,
+  ScrollText,
+  History,
   Award,
   Radio,
   QrCode,
   ShieldAlert,
   LogOut,
+  Store,
 } from "lucide-vue-next";
 import {
   Sheet,
@@ -120,8 +123,13 @@ import { useLayoutState } from "@/composables/useLayoutState";
 import { useAuth } from "@/composables/useAuth";
 
 const { mobileOpen, openMobile, closeMobile } = useLayoutState();
-const { user, userInitials, logout } = useAuth();
+const { user, userInitials, confirmLogout } = useAuth();
 const route = useRoute();
+
+function handleMobileLogout() {
+  closeMobile();
+  confirmLogout();
+}
 
 function isActive(path: string) {
   if (path === "/") return route.path === "/";
@@ -155,6 +163,7 @@ const navGroups = [
       { to: "/routes", label: "Rute Perjalanan", icon: GitFork },
       { to: "/missions", label: "Misi & Pos", icon: Target },
       { to: "/stages", label: "Game Stages", icon: Layers },
+      { to: "/ormawa", label: "Stan Ormawa Expo", icon: Store },
       { to: "/qr-center", label: "QR Print Center", icon: QrCode },
     ],
   },
@@ -170,8 +179,8 @@ const navGroups = [
   {
     label: "Ledger & Komando",
     items: [
-      { to: "/scores", label: "Point Ledger", icon: Trophy },
-      { to: "/audit-logs", label: "Audit Logs", icon: Target },
+      { to: "/scores", label: "Point Ledger", icon: ScrollText },
+      { to: "/audit-logs", label: "Audit Logs", icon: History },
       { to: "/settings", label: "Emergency & Settings", icon: ShieldAlert },
     ],
   },

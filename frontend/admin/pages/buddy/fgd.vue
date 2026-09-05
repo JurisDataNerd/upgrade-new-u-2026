@@ -44,8 +44,17 @@
       </div>
     </div>
 
+    <!-- Loading / Empty State -->
+    <div v-if="loading" class="sdv-card p-6 text-center text-[#c4956a] font-mono text-xs">
+      <div class="inline-block w-5 h-5 border-2 border-[#f0d060] border-t-transparent rounded-full animate-spin mb-2"></div>
+      <div>Memuat anggota regu dan rubrik penilaian...</div>
+    </div>
+    <div v-else-if="teamMembers.length === 0" class="sdv-card p-6 text-center text-[#c4956a] font-mono text-xs">
+      Belum ada mahasiswa yang terdaftar di regu bimbingan Anda.
+    </div>
+
     <!-- Member Carousel (Clean, shows UNU prodi) -->
-    <div class="space-y-1">
+    <div v-else class="space-y-1">
       <span class="font-pixel text-[8px] text-[#f0d060] uppercase tracking-wider block px-1">
         PILIH MAHASISWA:
       </span>
@@ -63,7 +72,7 @@
           ]"
         >
           <img
-            :src="m.avatarUrl"
+            :src="m.avatarUrl || '/character-cowok-avatar.png'"
             :alt="m.fullName"
             class="h-8 w-8 rounded-lg border border-[#f0d060] object-cover bg-black/40 shrink-0"
           />
@@ -81,7 +90,7 @@
       <div class="flex items-center justify-between border-b border-[#5a3a18] pb-2">
         <div class="flex items-center gap-2.5">
           <img
-            :src="selectedMember.avatarUrl"
+            :src="selectedMember.avatarUrl || '/character-cowok-avatar.png'"
             :alt="selectedMember.fullName"
             class="h-9 w-9 rounded-lg border-2 border-[#f0d060] object-cover bg-black/40 shrink-0"
           />
@@ -202,10 +211,11 @@
       <button
         type="button"
         @click="submitFgdEvaluation"
-        class="rpg-btn-primary w-full h-10 font-pixel text-xs font-bold flex items-center justify-center gap-2 shadow cursor-pointer active:scale-98"
+        :disabled="submitting"
+        class="rpg-btn-primary w-full h-10 font-pixel text-xs font-bold flex items-center justify-center gap-2 shadow cursor-pointer active:scale-98 disabled:opacity-50"
       >
         <CheckCircle2 class="h-4 w-4" />
-        <span>SIMPAN NILAI (+{{ calculatedXp }} XP)</span>
+        <span>{{ submitting ? 'MENYIMPAN...' : `SIMPAN NILAI (+${calculatedXp} XP)` }}</span>
       </button>
     </div>
 
@@ -221,7 +231,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import {
   FileEdit,
@@ -231,8 +241,10 @@ import {
   CheckCircle2,
 } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
+import { useApi } from "@/composables/useApi";
 
 const { user } = useAuth();
+const api = useApi();
 const route = useRoute();
 
 const fgdSessions = [
@@ -247,34 +259,17 @@ interface FgdMember {
   id: string;
   fullName: string;
   username: string; // NIM
-  prodi: string; // Jurusan UNU Resmi
+  prodi: string; // Jurusan / Class
   avatarUrl: string;
+  evaluations?: any[];
 }
 
-const membersTeam01: FgdMember[] = [
-  { id: "p1", fullName: "Ahmad Dahlan", username: "2611101", prodi: "Informatika", avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p2", fullName: "Fatimah Azzahra", username: "2611102", prodi: "Farmasi", avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p3", fullName: "Rian Pratama", username: "2611103", prodi: "Teknik Elektro", avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p4", fullName: "Siti Nurhaliza", username: "2611104", prodi: "Manajemen", avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p5", fullName: "Kevin Wijaya", username: "2611105", prodi: "PGSD", avatarUrl: "/character-cowok-avatar.png" },
-];
+const loading = ref(true);
+const submitting = ref(false);
+const activeTeamId = ref<string>("");
+const teamMembers = ref<FgdMember[]>([]);
+const selectedMember = ref<FgdMember | null>(null);
 
-const membersTeam03: FgdMember[] = [
-  { id: "p6", fullName: "Ilham Ramadhan", username: "2611201", prodi: "Informatika", avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p7", fullName: "Putri Ayu", username: "2611202", prodi: "Farmasi", avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p8", fullName: "Bagas Saputra", username: "2611203", prodi: "Agribisnis", avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p9", fullName: "Annisa Maharani", username: "2611204", prodi: "Akuntansi", avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p10", fullName: "Fikri Haikal", username: "2611205", prodi: "Teknologi Hasil Pertanian", avatarUrl: "/character-cowok-avatar.png" },
-];
-
-const teamMembers = computed(() => {
-  if (user.value?.teamId === "team-3" || user.value?.username === "buddy03") {
-    return membersTeam03;
-  }
-  return membersTeam01;
-});
-
-const selectedMember = ref<FgdMember | null>(teamMembers.value[0] || null);
 
 const scoreKeaktifan = ref(5);
 const scoreKedalaman = ref(4);
@@ -288,63 +283,156 @@ const totalScore = computed(() => scoreKeaktifan.value + scoreKedalaman.value + 
 // Rumus konversi XP: (skala 3-15) -> +40 s/d +200 XP
 const calculatedXp = computed(() => Math.round((totalScore.value / 15) * 200));
 
-const selectMember = (m: FgdMember) => {
+function selectMember(m: FgdMember) {
   selectedMember.value = m;
-  // Load previous score if exists in localStorage
-  if (import.meta.client) {
-    const key = `genius_fgd_${selectedSession.value}_${m.id}`;
-    const saved = localStorage.getItem(key);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        scoreKeaktifan.value = parsed.keaktifan || 5;
-        scoreKedalaman.value = parsed.kedalaman || 4;
-        scoreAdab.value = parsed.adab || 5;
-        feedbackNotes.value = parsed.notes || "";
-      } catch (e) {
-        console.error(e);
+  loadMemberEvaluation(m.id, selectedSession.value);
+}
+
+// When session changes, reload scores for selected member
+watch(selectedSession, (newSession) => {
+  if (selectedMember.value) {
+    loadMemberEvaluation(selectedMember.value.id, newSession);
+  }
+});
+
+function loadMemberEvaluation(participantId: string, sessionId: string) {
+  const member = teamMembers.value.find((m) => m.id === participantId);
+  const found = member?.evaluations?.find((e: any) => e.sessionId === sessionId);
+
+  if (found && found.rubricScores) {
+    scoreKeaktifan.value = found.rubricScores.keaktifan || 5;
+    scoreKedalaman.value = found.rubricScores.kedalaman || 4;
+    scoreAdab.value = found.rubricScores.adab || 5;
+    feedbackNotes.value = found.feedbackNotes || "";
+  } else {
+    // Defaults for new rubric
+    scoreKeaktifan.value = 5;
+    scoreKedalaman.value = 4;
+    scoreAdab.value = 5;
+    feedbackNotes.value = "Aktif berdiskusi dan santun";
+  }
+}
+
+async function submitFgdEvaluation() {
+  if (!selectedMember.value) return;
+  submitting.value = true;
+
+  try {
+    const res = await api.post<{ success: boolean; message?: string; data?: any }>(
+      "/api/buddy/evaluations",
+      {
+        sessionId: selectedSession.value,
+        participantId: selectedMember.value.id,
+        teamId: activeTeamId.value,
+        rubricScores: {
+          keaktifan: scoreKeaktifan.value,
+          kedalaman: scoreKedalaman.value,
+          adab: scoreAdab.value,
+        },
+        feedbackNotes: feedbackNotes.value,
+      }
+    );
+
+    if (res.success) {
+      toastMessage.value = res.message || `Nilai ${selectedMember.value.fullName} berhasil disimpan! (+${calculatedXp.value} XP)`;
+
+      // Update in-memory evaluations for the member
+      if (!selectedMember.value.evaluations) selectedMember.value.evaluations = [];
+      const idx = selectedMember.value.evaluations.findIndex((e: any) => e.sessionId === selectedSession.value);
+      const evalObj = {
+        sessionId: selectedSession.value,
+        rubricScores: {
+          keaktifan: scoreKeaktifan.value,
+          kedalaman: scoreKedalaman.value,
+          adab: scoreAdab.value,
+        },
+        feedbackNotes: feedbackNotes.value,
+        xpAwarded: calculatedXp.value,
+      };
+      if (idx >= 0) {
+        selectedMember.value.evaluations[idx] = evalObj;
+      } else {
+        selectedMember.value.evaluations.push(evalObj);
       }
     }
+  } catch (err: any) {
+    console.error("Gagal submit evaluasi FGD:", err);
+    toastMessage.value = err?.data?.error?.message || "Gagal menyimpan evaluasi ke server.";
+  } finally {
+    submitting.value = false;
+    setTimeout(() => {
+      toastMessage.value = null;
+    }, 3500);
   }
-};
+}
 
-const submitFgdEvaluation = () => {
-  if (!selectedMember.value) return;
-  const xp = calculatedXp.value;
-  toastMessage.value = `Nilai ${selectedMember.value.fullName} berhasil disimpan! (+${xp} XP)`;
+async function loadData() {
+  loading.value = true;
+  try {
+    let targetTeamId = user.value?.teamId;
+    if (!targetTeamId) {
+      const teamsRes = await api.get<{ success: boolean; data: any[] }>("/api/teams");
+      if (teamsRes.success && teamsRes.data?.length) {
+        const myTeam = teamsRes.data.find((t: any) =>
+          t.buddies?.some((b: any) => b.userId === user.value?.id)
+        );
+        targetTeamId = myTeam ? myTeam.id : teamsRes.data[0].id;
+      }
+    }
 
-  if (import.meta.client) {
-    const key = `genius_fgd_${selectedSession.value}_${selectedMember.value.id}`;
-    localStorage.setItem(
-      key,
-      JSON.stringify({
-        score: totalScore.value,
-        xp,
-        keaktifan: scoreKeaktifan.value,
-        kedalaman: scoreKedalaman.value,
-        adab: scoreAdab.value,
-        notes: feedbackNotes.value,
-        savedAt: new Date().toISOString(),
-      })
-    );
+    if (targetTeamId) {
+      activeTeamId.value = targetTeamId;
+
+      const [teamRes, evalsRes] = await Promise.allSettled([
+        api.get<{ success: boolean; data: any }>(`/api/teams/${targetTeamId}`),
+        api.get<{ success: boolean; data: any }>(`/api/buddy/evaluations/team/${targetTeamId}`),
+      ]);
+
+      const evalMap = new Map<string, any[]>();
+      if (evalsRes.status === "fulfilled" && evalsRes.value.success) {
+        const emList = evalsRes.value.data?.members || [];
+        emList.forEach((em: any) => {
+          if (em.userId) evalMap.set(em.userId, em.evaluations || []);
+        });
+      }
+
+      if (teamRes.status === "fulfilled" && teamRes.value.success) {
+        const rawMembers = (teamRes.value.data?.members || []).filter(
+          (m: any) => m.role === "PARTICIPANT" || !m.role
+        );
+
+        teamMembers.value = rawMembers.map((m: any) => ({
+          id: m.userId || m.id,
+          fullName: m.fullName || "Mahasiswa",
+          username: m.username || "-",
+          prodi: m.characterClass || m.characterTitle || "Informatika",
+          avatarUrl: m.avatarUrl || "/character-cowok-avatar.png",
+          evaluations: evalMap.get(m.userId || m.id) || [],
+        }));
+      }
+
+      // If route has participantId query param, select that participant
+      const queryParticipantId = route.query.participantId as string;
+      if (queryParticipantId) {
+        const found = teamMembers.value.find((m) => m.id === queryParticipantId);
+        if (found) {
+          selectMember(found);
+          return;
+        }
+      }
+
+      if (teamMembers.value.length > 0) {
+        selectMember(teamMembers.value[0]);
+      }
+    }
+  } catch (err: any) {
+    console.error("Gagal memuat data FGD:", err);
+  } finally {
+    loading.value = false;
   }
-
-  setTimeout(() => {
-    toastMessage.value = null;
-  }, 3000);
-};
+}
 
 onMounted(() => {
-  const queryParticipantId = route.query.participantId as string;
-  if (queryParticipantId) {
-    const found = teamMembers.value.find((m) => m.id === queryParticipantId);
-    if (found) {
-      selectMember(found);
-      return;
-    }
-  }
-  if (teamMembers.value.length > 0) {
-    selectMember(teamMembers.value[0]);
-  }
+  loadData();
 });
 </script>

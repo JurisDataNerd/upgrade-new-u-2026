@@ -28,7 +28,7 @@ export const missionStatusEnum = pgEnum("mission_status", ["ACTIVE", "INACTIVE"]
 export const gameTypeEnum = pgEnum("game_type", [
   "QUIZ", "PUZZLE", "MEMORY", "REACTION", "RAPID_ANSWER",
   "SEQUENCE", "WORD_GAME", "IMAGE_GUESS", "LOGIC",
-  "TEAM_CHALLENGE", "EXPLORATION",
+  "TEAM_CHALLENGE", "EXPLORATION", "FLAPPY_BIRD",
 ]);
 export const gameStatusEnum = pgEnum("game_status", ["DRAFT", "ACTIVE", "INACTIVE"]);
 export const gameSessionStatusEnum = pgEnum("game_session_status", [

@@ -314,15 +314,15 @@
           <div v-else-if="revealStep === 1" class="space-y-2 animate-bounce">
             <Medal class="h-12 w-12 text-[#ea580c] mx-auto" />
             <span class="font-pixel text-sm text-[#fb923c] uppercase">SELAMAT KEPADA JUARA 3 (PERUNGGU)</span>
-            <h3 class="font-sans text-xl font-bold text-white">{{ podiumData[2].name }}</h3>
-            <span class="font-pixel text-lg text-[#fb923c] block">{{ podiumData[2].score.toLocaleString() }} PTS</span>
+            <h3 class="font-sans text-xl font-bold text-white">{{ podiumData[2]?.name || 'Regu Juara 3' }}</h3>
+            <span class="font-pixel text-lg text-[#fb923c] block">{{ (podiumData[2]?.score || 0).toLocaleString() }} PTS</span>
           </div>
 
           <div v-else-if="revealStep === 2" class="space-y-2 animate-bounce">
             <Medal class="h-12 w-12 text-gray-300 mx-auto" />
             <span class="font-pixel text-sm text-gray-300 uppercase">SELAMAT KEPADA JUARA 2 (PERAK)</span>
-            <h3 class="font-sans text-xl font-bold text-white">{{ podiumData[1].name }}</h3>
-            <span class="font-pixel text-lg text-[#e2e8f0] block">{{ podiumData[1].score.toLocaleString() }} PTS</span>
+            <h3 class="font-sans text-xl font-bold text-white">{{ podiumData[1]?.name || 'Regu Juara 2' }}</h3>
+            <span class="font-pixel text-lg text-[#e2e8f0] block">{{ (podiumData[1]?.score || 0).toLocaleString() }} PTS</span>
           </div>
 
           <div v-else-if="revealStep === 3" class="space-y-3 animate-pulse">
@@ -330,9 +330,9 @@
             <span class="font-pixel text-base text-[#facc15] uppercase tracking-wider block">
               MAHAKARYA JUARA UMUM PKKMB UNU 2026!
             </span>
-            <h3 class="font-sans text-2xl sm:text-3xl font-bold text-[#fef08a]">{{ podiumData[0].name }}</h3>
-            <p class="text-xs text-gray-300 font-mono">Buddy: {{ podiumData[0].buddy }} &bull; Sinergi Regu Sempurna</p>
-            <span class="font-pixel text-2xl text-[#86efac] block">{{ podiumData[0].score.toLocaleString() }} PTS</span>
+            <h3 class="font-sans text-2xl sm:text-3xl font-bold text-[#fef08a]">{{ podiumData[0]?.name || 'Regu Juara 1' }}</h3>
+            <p class="text-xs text-gray-300 font-mono">Buddy: {{ podiumData[0]?.buddy || 'Pendamping Regu' }} &bull; Sinergi Regu Sempurna</p>
+            <span class="font-pixel text-2xl text-[#86efac] block">{{ (podiumData[0]?.score || 0).toLocaleString() }} PTS</span>
           </div>
         </div>
       </div>
@@ -342,13 +342,13 @@
     <footer class="relative z-20 px-6 py-2.5 border-t border-[#3d2c1e] bg-[#100a06] flex items-center justify-between text-[10px] text-gray-400 font-mono">
       <span>UNU YOGYAKARTA &bull; PKKMB GENIUS 2026</span>
       <span class="text-[#f59e0b]">TEKAN F11 UNTUK MODE LAYAR PENUH PROYEKTOR</span>
-      <span>STATUS SERVER: OPTIMAL (0 LATENCY)</span>
+      <span>STATUS SERVER: {{ isConnected ? 'REALTIME WEBSOCKET (LIVE)' : 'SYNCING...' }}</span>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import {
   Trophy,
   Users,
@@ -358,37 +358,71 @@ import {
   Crown,
   Medal,
 } from "lucide-vue-next";
-import { OFFICIAL_BUDDIES } from "@/lib/officialBuddies";
+import { useApi } from "@/composables/useApi";
+import { useRealtime } from "@/composables/useRealtime";
 
 definePageMeta({
   layout: false, // Bebas dari sidebar admin untuk tampilan proyektor panggung
 });
+
+const api = useApi();
+const { isConnected, onEvent } = useRealtime();
 
 const activeMode = ref<"podium" | "all-teams" | "reveal">("podium");
 const isFrozen = ref(true);
 const revealStep = ref(0);
 const currentTime = ref("");
 
+interface TeamRankItem {
+  rank: number;
+  id?: string;
+  name: string;
+  buddy: string;
+  score: number;
+  completedStamps: number;
+}
+
+const rawTeamsList = ref<TeamRankItem[]>([]);
+
+const podiumData = computed(() => {
+  return rawTeamsList.value.slice(0, 3);
+});
+
+const allTeamsData = computed(() => {
+  return rawTeamsList.value;
+});
+
 let timerInterval: ReturnType<typeof setInterval> | null = null;
+let unsubscribeWs: (() => void) | null = null;
 
 const updateClock = () => {
   const now = new Date();
-  currentTime.value = now.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }) + " WIB";
+  currentTime.value =
+    now.toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }) + " WIB";
 };
 
-const allTeamsData = OFFICIAL_BUDDIES.slice(0, 10).map((b, idx) => ({
-  rank: idx + 1,
-  name: b.teamName,
-  buddy: b.fullName,
-  score: Math.max(1850, 2850 - idx * 60 + ((idx % 3) * 20)),
-  completedStamps: Math.max(10, 18 - (idx % 8)),
-}));
-
-const podiumData = allTeamsData.slice(0, 3);
+async function fetchLiveLeaderboard() {
+  try {
+    const res: any = await api.get("/api/leaderboard?limit=50");
+    const data = res?.data !== undefined ? res.data : res;
+    if (data && Array.isArray(data.topTeams)) {
+      rawTeamsList.value = data.topTeams.map((t: any, idx: number) => ({
+        rank: t.rank || idx + 1,
+        id: t.teamId,
+        name: t.teamName || `Regu ${t.teamCode || idx + 1}`,
+        buddy: t.buddyName || "Game Master",
+        score: Number(t.totalScore || 0),
+        completedStamps: Number(t.transactionCount || 0),
+      }));
+    }
+  } catch (err) {
+    console.error("[Projector] Gagal memuat data leaderboard live:", err);
+  }
+}
 
 const toggleFreeze = () => {
   isFrozen.value = !isFrozen.value;
@@ -421,9 +455,19 @@ onMounted(() => {
       isFrozen.value = savedFreeze === "true";
     }
   }
+
+  fetchLiveLeaderboard();
+
+  // Listen to realtime WebSocket updates
+  unsubscribeWs = onEvent((event) => {
+    if (event === "LEADERBOARD_UPDATED" || event === "SCORE_SUBMITTED") {
+      fetchLiveLeaderboard();
+    }
+  });
 });
 
 onUnmounted(() => {
   if (timerInterval) clearInterval(timerInterval);
+  if (unsubscribeWs) unsubscribeWs();
 });
 </script>

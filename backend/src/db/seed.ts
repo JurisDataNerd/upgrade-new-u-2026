@@ -278,6 +278,28 @@ export async function seedDatabase() {
   if (existingBuddy1.length === 0) {
     await db.insert(users).values([
       {
+        username: "buddy_budi",
+        passwordHash: buddyPasswordHash,
+        role: "BUDDY" as const,
+        fullName: "Budi Santoso (Buddy)",
+        gender: "MALE",
+        characterClass: "MECHA_PALADIN",
+        characterTitle: "Pilar Regu Sejati",
+        characterTier: 2,
+        unlockedTitles: ["Pilar Regu Sejati", "Novice Adventurer"],
+      },
+      {
+        username: "buddy01",
+        passwordHash: buddyPasswordHash,
+        role: "BUDDY" as const,
+        fullName: "Budi Santoso (Buddy)",
+        gender: "MALE",
+        characterClass: "MECHA_PALADIN",
+        characterTitle: "Pilar Regu Sejati",
+        characterTier: 2,
+        unlockedTitles: ["Pilar Regu Sejati", "Novice Adventurer"],
+      },
+      {
         username: "buddy_ahmad",
         passwordHash: buddyPasswordHash,
         role: "BUDDY" as const,

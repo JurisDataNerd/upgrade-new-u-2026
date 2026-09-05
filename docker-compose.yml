@@ -31,8 +31,6 @@ services:
       DATABASE_URL: "postgres://genius:genius2026@postgres:5432/genius_2026"
       JWT_SECRET: "genius-2026-super-secret-key-local-development"
       JWT_EXPIRES_IN: "24h"
-      ADMIN_DEFAULT_USERNAME: "admin"
-      ADMIN_DEFAULT_PASSWORD: "admin2026"
     depends_on:
       postgres:
         condition: service_healthy

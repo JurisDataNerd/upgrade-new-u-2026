@@ -1051,6 +1051,8 @@ import {
 } from "@/components/ui/dialog";
 import PixelPagination from "@/components/PixelPagination.vue";
 import { useApi } from "@/composables/useApi";
+import { useToast } from "@/composables/useToast";
+import { useConfirm } from "@/composables/useConfirm";
 import {
   RPG_CHARACTERS,
   TITLE_CATALOG,
@@ -1060,6 +1062,8 @@ import {
 } from "@genius/types";
 
 const api = useApi();
+const toast = useToast();
+const confirmModal = useConfirm();
 
 const loading = ref(false);
 const saving = ref(false);
@@ -1286,11 +1290,11 @@ async function executeAwardTitle() {
       title: finalTitle,
       upgradeTier: awardTitleForm.value.upgradeTier,
     });
-    alert(`Gelar '${finalTitle}' berhasil disematkan!`);
+    toast.success("Gelar Disematkan!", `Gelar '${finalTitle}' berhasil dianugerahkan ke ${selectedParticipant.value.fullName}.`);
     showAwardModal.value = false;
     await fetchParticipants();
   } catch (err: any) {
-    alert("Gagal menyematkan gelar: " + (err.data?.error?.message || err.message));
+    toast.error("Gagal Menyematkan Gelar", err.data?.error?.message || err.message || "Terjadi kesalahan sistem.");
   } finally {
     saving.value = false;
   }
@@ -1312,6 +1316,7 @@ async function submitForm() {
       };
       if (form.value.password) payload.password = form.value.password;
       await api.put(`/api/users/${form.value.id}`, payload);
+      toast.success("Peserta Diperbarui!", `Data peserta ${form.value.fullName} (@${form.value.username}) berhasil disimpan.`);
     } else {
       await api.post("/api/users", {
         username: form.value.username,
@@ -1326,35 +1331,53 @@ async function submitForm() {
         teamId: form.value.teamId,
         status: form.value.status,
       });
+      toast.success("Peserta Didaftarkan!", `Mahasiswa baru ${form.value.fullName} (@${form.value.username}) berhasil ditambahkan.`);
     }
     showFormModal.value = false;
     await fetchParticipants();
   } catch (err: any) {
-    alert("Gagal menyimpan peserta: " + (err.data?.error?.message || err.message));
+    toast.error("Gagal Menyimpan", err.data?.error?.message || err.message || "Gagal menyimpan data peserta.");
   } finally {
     saving.value = false;
   }
 }
 
 async function openResetPasswordModal(p: any) {
-  if (confirm(`Reset password untuk ${p.fullName} (@${p.username}) ke default 'genius2026'?`)) {
-    try {
-      await api.post(`/api/users/${p.id}/reset-password`, { password: "genius2026" });
-      alert(`Password untuk @${p.username} berhasil di-reset ke: genius2026`);
-    } catch (err: any) {
-      alert("Gagal reset password: " + err.message);
-    }
+  const confirmed = await confirmModal.show({
+    title: "Reset Password Peserta?",
+    description: `Reset password untuk ${p.fullName} (@${p.username}) ke default 'genius2026'? Mahasiswa akan login menggunakan password default tersebut.`,
+    confirmText: "Ya, Reset Password",
+    cancelText: "Batal",
+    variant: "warning",
+    icon: "shield",
+  });
+  if (!confirmed) return;
+
+  try {
+    await api.post(`/api/users/${p.id}/reset-password`, { password: "genius2026" });
+    toast.success("Password Di-reset!", `Password untuk @${p.username} berhasil di-reset ke: genius2026`);
+  } catch (err: any) {
+    toast.error("Gagal Reset Password", err.message || "Terjadi kesalahan sistem.");
   }
 }
 
 async function confirmDelete(p: any) {
-  if (confirm(`Hapus peserta ${p.fullName} (@${p.username})?`)) {
-    try {
-      await api.del(`/api/users/${p.id}`);
-      await fetchParticipants();
-    } catch (err: any) {
-      alert("Gagal menghapus: " + err.message);
-    }
+  const confirmed = await confirmModal.show({
+    title: "Hapus Peserta?",
+    description: `Apakah Anda yakin ingin menghapus peserta ${p.fullName} (@${p.username})? Seluruh riwayat petualangan dan poin juga akan terhapus.`,
+    confirmText: "Ya, Hapus Peserta",
+    cancelText: "Batal",
+    variant: "danger",
+    icon: "trash",
+  });
+  if (!confirmed) return;
+
+  try {
+    await api.del(`/api/users/${p.id}`);
+    toast.success("Peserta Dihapus", `Peserta ${p.fullName} (@${p.username}) berhasil dihapus.`);
+    await fetchParticipants();
+  } catch (err: any) {
+    toast.error("Gagal Menghapus", err.message || "Terjadi kesalahan sistem.");
   }
 }
 

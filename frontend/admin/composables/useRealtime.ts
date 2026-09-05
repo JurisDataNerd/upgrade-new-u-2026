@@ -1,106 +1,157 @@
 import { ref, onMounted, onUnmounted } from "vue";
+import { useRuntimeConfig } from "#app";
+import { useAuth } from "./useAuth";
 
-/**
- * Static In-Memory Realtime Telemetry Simulation.
- * Emulates live WebSocket events for UNU Jogja 9 Floors gamification without external server.
- */
+export interface RealtimeFeedEvent {
+  id: string;
+  event: string;
+  topic?: string;
+  type?: string;
+  title?: string;
+  description?: string;
+  data?: any;
+  floorNumber?: number;
+  teamName?: string;
+  teamCode?: string;
+  timestamp: string;
+}
+
+type EventCallback = (event: string, data: any) => void;
+
+const isConnected = ref(false);
+const feedEvents = ref<RealtimeFeedEvent[]>([]);
+const eventListeners = new Set<EventCallback>();
+
+let socket: WebSocket | null = null;
+let reconnectTimer: any = null;
+let keepAliveTimer: any = null;
+
 export function useRealtime() {
-  const isConnected = ref(true);
-  const feedEvents = ref<any[]>([
-    {
-      id: "evt-1",
-      event: "ADMIN_FEED_EVENT",
-      type: "MISSION_COMPLETED",
-      title: "Misi Diselesaikan",
-      description: "Genius 01 berhasil menyelesaikan Misi L3: Cyber Codebreaker (+300 pts)",
-      floorNumber: 3,
-      teamName: "Genius 01",
-      teamCode: "GENIUS-01",
-      timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
-    },
-    {
-      id: "evt-2",
-      event: "LOCATION_STATUS_UPDATE",
-      type: "QR_SCANNED",
-      title: "QR Pos Terpindai",
-      description: "Genius 02 memindai QR di Pos Integritas Lantai 2",
-      floorNumber: 2,
-      teamName: "Genius 02",
-      teamCode: "GENIUS-02",
-      timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-    },
-    {
-      id: "evt-3",
-      event: "ADMIN_FEED_EVENT",
-      type: "TIER_UPGRADE",
-      title: "Evolusi Karakter RPG",
-      description: "Mahasiswa Dewi Ayu Larasati berevolusi ke Tier 3: Arcane Master!",
-      floorNumber: 5,
-      teamName: "Genius 03",
-      teamCode: "GENIUS-03",
-      timestamp: new Date(Date.now() - 1000 * 60 * 8).toISOString(),
-    },
-  ]);
+  const config = useRuntimeConfig();
+  const auth = useAuth();
 
-  let intervalTimer: any = null;
+  const getWsUrl = () => {
+    const apiBase = config.public?.apiBase || "http://localhost:3001/api";
+    const wsBase = apiBase.replace(/^http/, "ws").replace(/\/api$/, "/ws");
+    const token = auth.token?.value;
+    return token ? `${wsBase}?token=${encodeURIComponent(token)}` : wsBase;
+  };
 
-  const simulatedTemplates = [
-    {
-      type: "MISSION_COMPLETED",
-      title: "Misi Selesai",
-      description: "Genius 03 menuntaskan Pitching di Incubator Lantai 5 (+350 pts)",
-      floorNumber: 5,
-      teamName: "Genius 03",
-      teamCode: "GENIUS-03",
-    },
-    {
-      type: "QR_SCANNED",
-      title: "QR Terverifikasi",
-      description: "Fikri memverifikasi kedatangan Genius 01 di Lab Bioteknologi Lantai 4",
-      floorNumber: 4,
-      teamName: "Genius 01",
-      teamCode: "GENIUS-01",
-    },
-    {
-      type: "SCORE_AWARDED",
-      title: "Kuis Kilat Berhasil",
-      description: "Genius 04 meraih skor sempurna 200 pts pada Aswaja Speed Quiz Lantai 1",
-      floorNumber: 1,
-      teamName: "Genius 04",
-      teamCode: "GENIUS-04",
-    },
-    {
-      type: "STAGE_PROGRESS",
-      title: "Progres Tahapan",
-      description: "Genius 02 menyelesaikan 5 dari 9 pos eksplorasi kampus UNU Jogja",
-      floorNumber: 6,
-      teamName: "Genius 02",
-      teamCode: "GENIUS-02",
-    },
-  ];
+  const connect = () => {
+    if (typeof window === "undefined") return;
+    if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
+      return;
+    }
+
+    try {
+      const url = getWsUrl();
+      socket = new WebSocket(url);
+
+      socket.onopen = () => {
+        isConnected.value = true;
+        // Subscribe to standard admin topics
+        const topics = ["admin:feed", "leaderboard:global", "announcements:global"];
+        topics.forEach((topic) => {
+          socket?.send(JSON.stringify({ action: "SUBSCRIBE", topic }));
+        });
+
+        // Keepalive ping every 30 seconds
+        if (keepAliveTimer) clearInterval(keepAliveTimer);
+        keepAliveTimer = setInterval(() => {
+          if (socket?.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ action: "PING" }));
+          }
+        }, 30000);
+      };
+
+      socket.onmessage = (e) => {
+        try {
+          const msg = JSON.parse(e.data);
+          if (msg.event === "PONG") return;
+
+          const eventItem: RealtimeFeedEvent = {
+            id: `evt-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+            event: msg.event || "MESSAGE",
+            topic: msg.topic,
+            type: msg.data?.type || msg.event,
+            title: msg.data?.title || msg.event,
+            description: msg.data?.message || msg.data?.description || JSON.stringify(msg.data || {}),
+            data: msg.data,
+            teamName: msg.data?.teamName,
+            teamCode: msg.data?.teamCode,
+            floorNumber: msg.data?.floorNumber,
+            timestamp: msg.timestamp || new Date().toISOString(),
+          };
+
+          feedEvents.value.unshift(eventItem);
+          if (feedEvents.value.length > 50) {
+            feedEvents.value.pop();
+          }
+
+          // Notify all registered listeners
+          eventListeners.forEach((callback) => {
+            try {
+              callback(msg.event, msg.data);
+            } catch (err) {
+              console.error("[useRealtime] Callback error:", err);
+            }
+          });
+        } catch (err) {
+          console.warn("[useRealtime] Failed to parse message:", err);
+        }
+      };
+
+      socket.onclose = () => {
+        isConnected.value = false;
+        if (keepAliveTimer) clearInterval(keepAliveTimer);
+        // Attempt reconnect after 5 seconds
+        if (!reconnectTimer) {
+          reconnectTimer = setTimeout(() => {
+            reconnectTimer = null;
+            connect();
+          }, 5000);
+        }
+      };
+
+      socket.onerror = () => {
+        isConnected.value = false;
+      };
+    } catch (err) {
+      console.warn("[useRealtime] WebSocket connection failed:", err);
+    }
+  };
+
+  const onEvent = (callback: EventCallback) => {
+    eventListeners.add(callback);
+    return () => {
+      eventListeners.delete(callback);
+    };
+  };
+
+  const subscribeTopic = (topic: string) => {
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ action: "SUBSCRIBE", topic }));
+    }
+  };
+
+  const onLeaderboardUpdate = (callback: (data: any) => void) => {
+    return onEvent((event, data) => {
+      if (event === "LEADERBOARD_UPDATE" || event === "SCORE_SUBMITTED" || event === "SCORE_CORRECTION") {
+        callback(data);
+      }
+    });
+  };
 
   onMounted(() => {
-    // Generate periodic subtle live events
-    intervalTimer = setInterval(() => {
-      const template = simulatedTemplates[Math.floor(Math.random() * simulatedTemplates.length)];
-      feedEvents.value.unshift({
-        id: `evt-${Date.now()}`,
-        event: "ADMIN_FEED_EVENT",
-        ...template,
-        timestamp: new Date().toISOString(),
-      });
-      if (feedEvents.value.length > 30) {
-        feedEvents.value.pop();
-      }
-    }, 18000);
-  });
-
-  onUnmounted(() => {
-    if (intervalTimer) clearInterval(intervalTimer);
+    connect();
   });
 
   return {
     isConnected,
     feedEvents,
+    onEvent,
+    onLeaderboardUpdate,
+    subscribeTopic,
+    connect,
   };
 }

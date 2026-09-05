@@ -105,7 +105,14 @@
       </div>
 
       <!-- Member Selector -->
-      <div class="space-y-1">
+      <div v-if="loading" class="p-4 text-center text-[#c4956a] font-mono text-xs">
+        <div class="inline-block w-4 h-4 border-2 border-[#f0d060] border-t-transparent rounded-full animate-spin mb-1"></div>
+        <div>Memuat anggota...</div>
+      </div>
+      <div v-else-if="activeMembers.length === 0" class="p-4 text-center text-[#c4956a] font-mono text-xs">
+        Belum ada anggota terdaftar.
+      </div>
+      <div v-else class="space-y-1">
         <div class="grid grid-cols-1 gap-1.5">
           <div
             v-for="m in activeMembers"
@@ -184,7 +191,7 @@
         class="rpg-btn-primary w-full h-10 font-pixel text-xs font-bold flex items-center justify-center gap-2 shadow cursor-pointer active:scale-98"
       >
         <Save class="h-4 w-4" />
-        <span>{{ isSubmitted ? 'PERBARUI POIN BONUS' : 'SIMPAN & DISTRIBUSIKAN POIN' }}</span>
+        <span>{{ submitting ? 'MENYIMPAN...' : (isSubmitted ? 'PERBARUI POIN BONUS' : 'SIMPAN & DISTRIBUSIKAN POIN') }}</span>
       </button>
     </div>
   </div>
@@ -201,17 +208,35 @@ import {
   CheckCircle2,
 } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
+import { useApi } from "@/composables/useApi";
 
 const { user } = useAuth();
+const api = useApi();
+
+const loading = ref(true);
+const submitting = ref(false);
+const activeTeamId = ref<string>("");
+const teamName = ref<string>("Genius 01");
+
+interface Member {
+  id: string;
+  fullName: string;
+  username: string; // NIM
+  prodi: string; // Jurusan / Class
+  avatarUrl: string;
+  totalXp: number;
+}
+
+const activeMembers = ref<Member[]>([]);
 
 const currentTeamName = computed(() => {
-  const name = user.value?.teamName || "Genius 01";
+  const name = teamName.value || user.value?.teamName || "Genius 01";
   return name.replace(/^Team\s+/i, "").trim();
 });
 
 const teamSynergyBonus = ref(100);
 const starBonusXp = 150;
-const selectedStarId = ref("p1");
+const selectedStarId = ref("");
 const buddyNote = ref("Selamat telah menyelesaikan seluruh petualangan PKKMB UNU 2026!");
 const isSubmitted = ref(false);
 
@@ -228,39 +253,6 @@ const synergyCriteria = ref([
   { text: "Saling tolong & menjaga kebersihan", checked: true },
 ]);
 
-interface Member {
-  id: string;
-  fullName: string;
-  username: string;
-  prodi: string; // Jurusan UNU Resmi
-  avatarUrl: string;
-  totalXp: number;
-}
-
-// Data Mahasiswa dengan Prodi Resmi UNU Yogyakarta
-const membersTeam01: Member[] = [
-  { id: "p1", fullName: "Ahmad Dahlan", username: "2611101", prodi: "Informatika", avatarUrl: "/character-cowok-avatar.png", totalXp: 520 },
-  { id: "p2", fullName: "Fatimah Azzahra", username: "2611102", prodi: "Farmasi", avatarUrl: "/character-cewek-avatar.png", totalXp: 480 },
-  { id: "p3", fullName: "Rian Pratama", username: "2611103", prodi: "Teknik Elektro", avatarUrl: "/character-cowok-avatar.png", totalXp: 310 },
-  { id: "p4", fullName: "Siti Nurhaliza", username: "2611104", prodi: "Manajemen", avatarUrl: "/character-cewek-avatar.png", totalXp: 420 },
-  { id: "p5", fullName: "Kevin Wijaya", username: "2611105", prodi: "PGSD", avatarUrl: "/character-cowok-avatar.png", totalXp: 180 },
-];
-
-const membersTeam03: Member[] = [
-  { id: "p6", fullName: "Ilham Ramadhan", username: "2611201", prodi: "Informatika", avatarUrl: "/character-cowok-avatar.png", totalXp: 560 },
-  { id: "p7", fullName: "Putri Ayu", username: "2611202", prodi: "Farmasi", avatarUrl: "/character-cewek-avatar.png", totalXp: 450 },
-  { id: "p8", fullName: "Bagas Saputra", username: "2611203", prodi: "Agribisnis", avatarUrl: "/character-cowok-avatar.png", totalXp: 390 },
-  { id: "p9", fullName: "Annisa Maharani", username: "2611204", prodi: "Akuntansi", avatarUrl: "/character-cewek-avatar.png", totalXp: 410 },
-  { id: "p10", fullName: "Fikri Haikal", username: "2611205", prodi: "Teknologi Hasil Pertanian", avatarUrl: "/character-cowok-avatar.png", totalXp: 340 },
-];
-
-const activeMembers = computed(() => {
-  if (user.value?.teamId === "group-03" || user.value?.username === "buddy03") {
-    return membersTeam03;
-  }
-  return membersTeam01;
-});
-
 const totalDistributedXp = computed(() => {
   let total = activeMembers.value.length * teamSynergyBonus.value;
   if (selectedStarId.value) {
@@ -269,42 +261,94 @@ const totalDistributedXp = computed(() => {
   return total;
 });
 
-const loadSavedData = () => {
-  if (import.meta.client) {
-    const key = `genius_buddy_day3_bonus_${user.value?.teamId || "group-01"}`;
-    const saved = localStorage.getItem(key);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        teamSynergyBonus.value = parsed.teamSynergyBonus || 100;
-        selectedStarId.value = parsed.selectedStarId || (activeMembers.value[0]?.id ?? "p1");
-        buddyNote.value = parsed.buddyNote || "";
-        isSubmitted.value = true;
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      selectedStarId.value = activeMembers.value[0]?.id ?? "p1";
-    }
-  }
-};
+async function saveDay3Bonus() {
+  if (submitting.value) return;
+  submitting.value = true;
 
-const saveDay3Bonus = () => {
-  if (import.meta.client) {
-    const key = `genius_buddy_day3_bonus_${user.value?.teamId || "group-01"}`;
-    const payload = {
-      teamSynergyBonus: teamSynergyBonus.value,
-      selectedStarId: selectedStarId.value,
-      buddyNote: buddyNote.value,
-      totalDistributedXp: totalDistributedXp.value,
-      savedAt: new Date().toISOString(),
-    };
-    localStorage.setItem(key, JSON.stringify(payload));
+  try {
+    const promises: Promise<any>[] = [];
+
+    // 1. Award synergy bonus to all active members
+    for (const m of activeMembers.value) {
+      promises.push(
+        api.post("/api/scores", {
+          participantId: m.id,
+          teamId: activeTeamId.value,
+          amount: teamSynergyBonus.value,
+          sourceType: "BONUS",
+          reason: `Bonus Kekompakan Regu Hari 3: ${buddyNote.value.slice(0, 50)}`,
+        })
+      );
+    }
+
+    // 2. Award star maba bonus
+    if (selectedStarId.value) {
+      promises.push(
+        api.post("/api/scores", {
+          participantId: selectedStarId.value,
+          teamId: activeTeamId.value,
+          amount: starBonusXp,
+          sourceType: "BONUS",
+          reason: "Penghargaan Star Maba Teraktif Regu Hari Ke-3",
+        })
+      );
+    }
+
+    await Promise.allSettled(promises);
     isSubmitted.value = true;
+  } catch (err: any) {
+    console.error("Gagal mendistribusikan bonus:", err);
+  } finally {
+    submitting.value = false;
   }
-};
+}
+
+async function loadData() {
+  loading.value = true;
+  try {
+    let targetTeamId = user.value?.teamId;
+    if (!targetTeamId) {
+      const teamsRes = await api.get<{ success: boolean; data: any[] }>("/api/teams");
+      if (teamsRes.success && teamsRes.data?.length) {
+        const myTeam = teamsRes.data.find((t: any) =>
+          t.buddies?.some((b: any) => b.userId === user.value?.id)
+        );
+        targetTeamId = myTeam ? myTeam.id : teamsRes.data[0].id;
+      }
+    }
+
+    if (targetTeamId) {
+      activeTeamId.value = targetTeamId;
+      const teamRes = await api.get<{ success: boolean; data: any }>(`/api/teams/${targetTeamId}`);
+
+      if (teamRes.success && teamRes.data) {
+        teamName.value = teamRes.data.name || "Genius 01";
+        const rawMembers = (teamRes.data.members || []).filter(
+          (m: any) => m.role === "PARTICIPANT" || !m.role
+        );
+
+        activeMembers.value = rawMembers.map((m: any) => ({
+          id: m.userId || m.id,
+          fullName: m.fullName || "Mahasiswa",
+          username: m.username || "-",
+          prodi: m.characterClass || m.characterTitle || "Informatika",
+          avatarUrl: m.avatarUrl || "/character-cowok-avatar.png",
+          totalXp: Number(m.totalScore || 0),
+        }));
+
+        if (activeMembers.value.length > 0 && !selectedStarId.value) {
+          selectedStarId.value = activeMembers.value[0].id;
+        }
+      }
+    }
+  } catch (err: any) {
+    console.error("Gagal memuat anggota regu untuk bonus:", err);
+  } finally {
+    loading.value = false;
+  }
+}
 
 onMounted(() => {
-  loadSavedData();
+  loadData();
 });
 </script>

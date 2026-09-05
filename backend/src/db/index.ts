@@ -20,16 +20,21 @@ if (usePglite) {
   const client = new PGlite(dataDir);
 
   // Auto-run migration if tables not yet created
-  const migrationFile = path.resolve(import.meta.dir, "../../drizzle/0000_freezing_galactus.sql");
-  if (fs.existsSync(migrationFile)) {
+  const drizzleDir = path.resolve(import.meta.dir, "../../drizzle");
+  const migrationFiles = fs.existsSync(drizzleDir)
+    ? fs.readdirSync(drizzleDir).filter((f) => f.endsWith(".sql")).sort()
+    : [];
+  if (migrationFiles.length > 0) {
     try {
       const checkRes = await client.query<{ exists: boolean }>(
         "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users');"
       );
       if (!checkRes.rows[0]?.exists) {
-        const sql = fs.readFileSync(migrationFile, "utf8");
-        await client.exec(sql);
-        console.log("[DB] PGlite schema initialized from migration.");
+        for (const file of migrationFiles) {
+          const sql = fs.readFileSync(path.join(drizzleDir, file), "utf8");
+          await client.exec(sql);
+          console.log(`[DB] PGlite schema initialized from migration ${file}.`);
+        }
       }
     } catch (err: any) {
       console.warn("[DB] PGlite table check warning:", err.message);

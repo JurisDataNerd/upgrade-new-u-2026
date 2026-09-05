@@ -327,8 +327,12 @@ import {
 } from "@/components/ui/dialog";
 import PixelPagination from "@/components/PixelPagination.vue";
 import { useApi } from "@/composables/useApi";
+import { useToast } from "@/composables/useToast";
+import { useConfirm } from "@/composables/useConfirm";
 
 const api = useApi();
+const toast = useToast();
+const confirmModal = useConfirm();
 
 const loading = ref(false);
 const saving = ref(false);
@@ -445,6 +449,7 @@ async function submitForm() {
       };
       if (form.value.password) payload.password = form.value.password;
       await api.put(`/api/users/${form.value.id}`, payload);
+      toast.success("Pengguna Diperbarui!", `Data @${form.value.username} berhasil disimpan.`);
     } else {
       await api.post("/api/users", {
         username: form.value.username,
@@ -453,35 +458,53 @@ async function submitForm() {
         password: form.value.password || "genius2026",
         status: form.value.status,
       });
+      toast.success("Pengguna Dibuat!", `Akun @${form.value.username} berhasil didaftarkan.`);
     }
     showFormModal.value = false;
     await fetchUsers();
   } catch (err: any) {
-    alert("Gagal menyimpan pengguna: " + (err.data?.error?.message || err.message));
+    toast.error("Gagal Menyimpan", err.data?.error?.message || err.message || "Gagal menyimpan pengguna.");
   } finally {
     saving.value = false;
   }
 }
 
 async function openResetPasswordModal(u: any) {
-  if (confirm(`Reset password untuk ${u.fullName} (@${u.username}) ke default 'genius2026'?`)) {
-    try {
-      await api.post(`/api/users/${u.id}/reset-password`, { password: "genius2026" });
-      alert(`Password untuk @${u.username} berhasil di-reset ke: genius2026`);
-    } catch (err: any) {
-      alert("Gagal reset password: " + err.message);
-    }
+  const confirmed = await confirmModal.show({
+    title: "Reset Password Pengguna?",
+    description: `Reset password untuk ${u.fullName} (@${u.username}) ke default 'genius2026'? Pengguna harus menggunakan password baru ini untuk login.`,
+    confirmText: "Ya, Reset Password",
+    cancelText: "Batal",
+    variant: "warning",
+    icon: "shield",
+  });
+  if (!confirmed) return;
+
+  try {
+    await api.post(`/api/users/${u.id}/reset-password`, { password: "genius2026" });
+    toast.success("Password Di-reset!", `Password untuk @${u.username} berhasil di-reset ke: genius2026`);
+  } catch (err: any) {
+    toast.error("Gagal Reset Password", err.message || "Terjadi kesalahan sistem.");
   }
 }
 
 async function confirmDelete(u: any) {
-  if (confirm(`Hapus pengguna ${u.fullName} (@${u.username})?`)) {
-    try {
-      await api.del(`/api/users/${u.id}`);
-      await fetchUsers();
-    } catch (err: any) {
-      alert("Gagal menghapus: " + err.message);
-    }
+  const confirmed = await confirmModal.show({
+    title: "Hapus Pengguna?",
+    description: `Apakah Anda yakin ingin menghapus akun ${u.fullName} (@${u.username})? Tindakan ini tidak dapat dibatalkan.`,
+    confirmText: "Ya, Hapus Akun",
+    cancelText: "Batal",
+    variant: "danger",
+    icon: "trash",
+  });
+  if (!confirmed) return;
+
+  try {
+    await api.del(`/api/users/${u.id}`);
+    toast.success("Pengguna Dihapus", `Akun @${u.username} berhasil dihapus.`);
+    await fetchUsers();
+  } catch (err: any) {
+    toast.error("Gagal Menghapus", err.message || "Terjadi kesalahan saat menghapus pengguna.");
   }
 }
 

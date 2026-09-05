@@ -2,7 +2,7 @@ import { Elysia, t } from "elysia";
 import { db } from "../db";
 import { teams, teamMembers, users, routes, scoreTransactions } from "../db/schema";
 import { eq, sql, desc, inArray, or, ilike, and } from "drizzle-orm";
-import { requireAdmin } from "../middleware/auth";
+import { requireAdmin, requireBuddyOrAdmin } from "../middleware/auth";
 
 export const teamRoutes = new Elysia({
   prefix: "/api/teams",
@@ -10,7 +10,7 @@ export const teamRoutes = new Elysia({
     tags: ["Teams & Regu"],
   },
 })
-  .use(requireAdmin)
+  .use(requireBuddyOrAdmin)
 
   // GET /api/teams — List all teams with route, buddy list, and participant counts
   .get("/", async ({ query }) => {
@@ -286,7 +286,11 @@ export const teamRoutes = new Elysia({
   // POST /api/teams — Create team
   .post(
     "/",
-    async ({ body, set }) => {
+    async ({ body, user, set }) => {
+      if (user?.role !== "ADMIN") {
+        set.status = 403;
+        return { success: false, error: { code: "FORBIDDEN", message: "Admin permission required" } };
+      }
       const existing = await db
         .select()
         .from(teams)
@@ -321,7 +325,11 @@ export const teamRoutes = new Elysia({
   // PUT /api/teams/:id — Update team
   .put(
     "/:id",
-    async ({ params, body, set }) => {
+    async ({ params, body, user, set }) => {
+      if (user?.role !== "ADMIN") {
+        set.status = 403;
+        return { success: false, error: { code: "FORBIDDEN", message: "Admin permission required" } };
+      }
       const updates: Record<string, unknown> = { updatedAt: new Date() };
       if (body.name) updates.name = body.name.trim();
       if (body.code) updates.code = body.code.toUpperCase().trim();
@@ -352,7 +360,11 @@ export const teamRoutes = new Elysia({
   )
 
   // DELETE /api/teams/:id — Delete team
-  .delete("/:id", async ({ params, set }) => {
+  .delete("/:id", async ({ params, user, set }) => {
+    if (user?.role !== "ADMIN") {
+      set.status = 403;
+      return { success: false, error: { code: "FORBIDDEN", message: "Admin permission required" } };
+    }
     await db.delete(teamMembers).where(eq(teamMembers.teamId, params.id));
     const [team] = await db.delete(teams).where(eq(teams.id, params.id)).returning({ id: teams.id });
     if (!team) {
@@ -365,7 +377,11 @@ export const teamRoutes = new Elysia({
   // POST /api/teams/:id/members — Add member to team
   .post(
     "/:id/members",
-    async ({ params, body, set }) => {
+    async ({ params, body, user, set }) => {
+      if (user?.role !== "ADMIN") {
+        set.status = 403;
+        return { success: false, error: { code: "FORBIDDEN", message: "Admin permission required" } };
+      }
       const [team] = await db.select().from(teams).where(eq(teams.id, params.id)).limit(1);
       if (!team) {
         set.status = 404;
@@ -397,7 +413,11 @@ export const teamRoutes = new Elysia({
   // POST /api/teams/:id/batch-members — Batch assign participants to team
   .post(
     "/:id/batch-members",
-    async ({ params, body, set }) => {
+    async ({ params, body, user, set }) => {
+      if (user?.role !== "ADMIN") {
+        set.status = 403;
+        return { success: false, error: { code: "FORBIDDEN", message: "Admin permission required" } };
+      }
       const [team] = await db.select().from(teams).where(eq(teams.id, params.id)).limit(1);
       if (!team) {
         set.status = 404;
@@ -436,7 +456,11 @@ export const teamRoutes = new Elysia({
   )
 
   // DELETE /api/teams/:id/members/:userId — Remove member from team
-  .delete("/:id/members/:userId", async ({ params, set }) => {
+  .delete("/:id/members/:userId", async ({ params, user, set }) => {
+    if (user?.role !== "ADMIN") {
+      set.status = 403;
+      return { success: false, error: { code: "FORBIDDEN", message: "Admin permission required" } };
+    }
     const [member] = await db
       .delete(teamMembers)
       .where(eq(teamMembers.userId, params.userId))

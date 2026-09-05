@@ -498,8 +498,12 @@ import {
 } from "@/components/ui/dialog";
 import PixelPagination from "@/components/PixelPagination.vue";
 import { useApi } from "@/composables/useApi";
+import { useToast } from "@/composables/useToast";
+import { useConfirm } from "@/composables/useConfirm";
 
 const api = useApi();
+const toast = useToast();
+const confirmModal = useConfirm();
 
 const loading = ref(false);
 const saving = ref(false);
@@ -616,30 +620,41 @@ async function submitForm() {
         routeId: form.value.routeId,
         status: form.value.status,
       });
+      toast.success("Tim Diperbarui!", `Data tim "${form.value.name}" berhasil disimpan.`);
     } else {
       await api.post("/api/teams", {
         name: form.value.name,
         code: form.value.code,
         routeId: form.value.routeId,
       });
+      toast.success("Tim Dibuat!", `Tim "${form.value.name}" (${form.value.code}) berhasil didaftarkan.`);
     }
     showFormModal.value = false;
     await fetchTeams();
   } catch (err: any) {
-    alert("Gagal menyimpan tim: " + (err.data?.error?.message || err.message));
+    toast.error("Gagal Menyimpan Tim", err.data?.error?.message || err.message || "Gagal menyimpan tim.");
   } finally {
     saving.value = false;
   }
 }
 
 async function confirmDelete(t: any) {
-  if (confirm(`Yakin ingin menghapus tim '${t.name}' (${t.code})?`)) {
-    try {
-      await api.del(`/api/teams/${t.id}`);
-      await fetchTeams();
-    } catch (err: any) {
-      alert("Gagal menghapus tim: " + err.message);
-    }
+  const confirmed = await confirmModal.show({
+    title: "Hapus Tim Petualang?",
+    description: `Yakin ingin menghapus tim '${t.name}' (${t.code})? Semua anggota tim akan kembali berstatus petualang independen.`,
+    confirmText: "Ya, Hapus Tim",
+    cancelText: "Batal",
+    variant: "danger",
+    icon: "trash",
+  });
+  if (!confirmed) return;
+
+  try {
+    await api.del(`/api/teams/${t.id}`);
+    toast.success("Tim Dihapus", `Tim '${t.name}' berhasil dihapus.`);
+    await fetchTeams();
+  } catch (err: any) {
+    toast.error("Gagal Menghapus Tim", err.message || "Terjadi kesalahan sistem.");
   }
 }
 
@@ -674,12 +689,13 @@ async function addMemberToTeam() {
       userId: selectedUserToAdd.value,
       buddyRole: isBuddy ? "PRIMARY" : null,
     });
+    toast.success("Anggota Ditambahkan!", `${targetUser?.fullName || "Pengguna"} dimasukkan ke dalam tim.`);
     selectedUserToAdd.value = "";
     await reloadTeamRoster(selectedTeam.value.id);
     await fetchTeams();
     await fetchAllUsers();
   } catch (err: any) {
-    alert("Gagal menambahkan anggota: " + (err.data?.error?.message || err.message));
+    toast.error("Gagal Menambahkan Anggota", err.data?.error?.message || err.message || "Terjadi kesalahan sistem.");
   } finally {
     saving.value = false;
   }
@@ -689,11 +705,12 @@ async function removeMemberFromTeam(userId: string) {
   if (!selectedTeam.value) return;
   try {
     await api.del(`/api/teams/${selectedTeam.value.id}/members/${userId}`);
+    toast.info("Anggota Dikeluarkan", "Anggota tim telah dilepaskan dari roster.");
     await reloadTeamRoster(selectedTeam.value.id);
     await fetchTeams();
     await fetchAllUsers();
   } catch (err: any) {
-    alert("Gagal mengeluarkan anggota: " + err.message);
+    toast.error("Gagal Mengeluarkan Anggota", err.message || "Terjadi kesalahan sistem.");
   }
 }
 

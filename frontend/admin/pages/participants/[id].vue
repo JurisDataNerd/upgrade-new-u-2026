@@ -624,7 +624,6 @@ import {
   getTitleRarityDetails,
   findTitleDefinition,
 } from "@genius/types";
-import { mockDb } from "@/lib/mockDb";
 
 const route = useRoute();
 const api = useApi();
@@ -658,7 +657,7 @@ const awardForm = ref({
   upgradeTier: undefined as number | undefined,
 });
 
-// Load Participant Data from Backend API or Mock DB
+// Load Participant Data from Backend REST API
 async function fetchParticipantDetail() {
   if (!participantId.value) return;
   loading.value = true;
@@ -667,28 +666,15 @@ async function fetchParticipantDetail() {
     const data = res?.data !== undefined ? res.data : res;
     if (data && (data.id || data.username)) {
       participant.value = data;
-      loading.value = false;
-      return;
+    } else {
+      participant.value = null;
     }
   } catch (err: any) {
-    console.warn("API participant fetch failed, falling back to mockDb:", err?.message || err);
+    console.error("Gagal memuat detail peserta dari server:", err?.message || err);
+    participant.value = null;
+  } finally {
+    loading.value = false;
   }
-
-  // Fallback to mockDb
-  const mock = mockDb.getUsers().find(
-    (u) =>
-      u.id === participantId.value ||
-      u.username === participantId.value ||
-      u.nim === participantId.value
-  );
-  if (mock) {
-    participant.value = mock;
-  } else {
-    // If specific ID is not matched, fallback to first mock participant
-    const fallbackParticipant = mockDb.getUsers().find((u) => u.role === "PARTICIPANT");
-    participant.value = fallbackParticipant || null;
-  }
-  loading.value = false;
 }
 
 onMounted(() => {

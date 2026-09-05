@@ -433,7 +433,7 @@
 
           <!-- Tip -->
           <div class="p-2.5 bg-[#161a22] border border-[#2b251d] rounded-lg text-[10px] text-gray-400 leading-relaxed flex items-start gap-2">
-            <span class="text-amber-400 text-xs mt-0.5">💡</span>
+            <span class="text-amber-400 text-xs mt-0.5 font-bold">[i]</span>
             <span>Buddy memimpin maksimal 1 tim dan mengalokasikan bonus poin stage sesuai dedikasi peserta.</span>
           </div>
         </div>
@@ -724,8 +724,7 @@ import {
   CharacterTier,
   getEvolutionForClassAndTier,
 } from "@genius/types";
-import { mockDb } from "@/lib/mockDb";
-import { OFFICIAL_BUDDIES } from "@/lib/officialBuddies";
+
 
 const route = useRoute();
 const api = useApi();
@@ -776,7 +775,7 @@ const awardForm = ref({
   upgradeTier: undefined as number | undefined,
 });
 
-// Load Buddy Data
+// Load Buddy Data from Backend REST API
 async function fetchBuddyDetail() {
   if (!buddyId.value) return;
   loading.value = true;
@@ -785,51 +784,16 @@ async function fetchBuddyDetail() {
     const data = res?.data !== undefined ? res.data : res;
     if (data && (data.id || data.username)) {
       buddy.value = data;
-      loading.value = false;
-      return;
+    } else {
+      buddy.value = null;
     }
   } catch (err: any) {
-    console.warn("API buddy fetch failed, falling back to mockDb:", err?.message || err);
+    console.error("Gagal memuat data buddy dari server:", err?.message || err);
+    buddy.value = null;
+  } finally {
+    loading.value = false;
   }
 
-  // Fallback to mockDb
-  const mock = mockDb.getBuddies().find(
-    (b) => b.id === buddyId.value || b.username === buddyId.value
-  );
-  if (mock) {
-    buddy.value = mock;
-  } else {
-    const officialMatch = OFFICIAL_BUDDIES.find(
-      (b) => b.id === buddyId.value || b.username === buddyId.value
-    );
-    if (officialMatch) {
-      buddy.value = {
-        id: officialMatch.id,
-        username: officialMatch.username,
-        fullName: officialMatch.fullName,
-        email: officialMatch.email,
-        role: "BUDDY",
-        status: "ACTIVE",
-        avatarUrl: officialMatch.avatarUrl,
-        assignedTeamId: officialMatch.teamId,
-        assignedTeamName: officialMatch.teamName,
-        teamId: officialMatch.teamId,
-        teamName: officialMatch.teamName,
-        teamCode: officialMatch.teamCode,
-        buddyRole: officialMatch.buddyRole,
-        prodi: officialMatch.prodi,
-        faculty: officialMatch.faculty,
-        gender: officialMatch.gender,
-        bonusSpent: 0,
-        createdAt: officialMatch.createdAt,
-      };
-    } else {
-      // Fallback to first buddy
-      const fallbackBuddy = mockDb.getBuddies()[0];
-      buddy.value = fallbackBuddy || null;
-    }
-  }
-  loading.value = false;
 }
 
 // Load Teams List for assignment
@@ -842,9 +806,9 @@ async function fetchTeams() {
       return;
     }
   } catch (err) {
-    console.warn("Teams fetch failed, falling back to mockDb:", err);
+    console.error("Gagal memuat daftar tim dari server:", err);
+    teamsList.value = [];
   }
-  teamsList.value = mockDb.getTeams();
 }
 
 onMounted(async () => {
@@ -919,9 +883,9 @@ const commanderRadarPoints = computed(() => {
 // Commander Slots
 const currentCommanderSlots = computed(() => {
   return [
-    { label: "Scepter", icon: "👑", item: "Tongkat Komando Aswaja", desc: "Tongkat bermahkotakan permata emas untuk memimpin komando regu." },
-    { label: "Armor", icon: "🦺", item: "Jubah Emas Game Master", desc: "Jubah kebesaran pendamping dengan perlindungan sensor tinggi." },
-    { label: "Comms", icon: "🎧", item: "Quantum Ear-piece GM", desc: "Headset komunikasi langsung ke panitia pusat kendali lantai 9." },
+    { label: "Scepter", icon: "[S]", item: "Tongkat Komando Aswaja", desc: "Tongkat bermahkotakan permata emas untuk memimpin komando regu." },
+    { label: "Armor", icon: "[A]", item: "Jubah Emas Game Master", desc: "Jubah kebesaran pendamping dengan perlindungan sensor tinggi." },
+    { label: "Comms", icon: "[C]", item: "Quantum Ear-piece GM", desc: "Headset komunikasi langsung ke panitia pusat kendali lantai 9." },
   ];
 });
 

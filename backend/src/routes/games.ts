@@ -239,6 +239,29 @@ export const gameRoutes = new Elysia({
         maxPlayers: 20,
         status: "ACTIVE" as const,
       },
+      {
+        name: "Flappy Genius — Terbang Melampaui Nilai UNU",
+        type: "FLAPPY_BIRD" as const,
+        description:
+          "Arcade endless-flyer bergaya pixel retro: kendalikan burung Genius melewati pipa-pipa berlabel nilai Aswaja & UNU Yogyakarta. Semakin banyak pipa dilewati, semakin tinggi XP yang diperoleh!",
+        instructions:
+          "Tap / tekan SPACE untuk membuat burung Genius melompat. Hindari pipa dan tanah! Setiap pipa yang berhasil kamu lewati bernilai XP. Game berakhir saat waktu habis atau burungmu menabrak.",
+        config: {
+          pipeSpeed: 200,
+          gapSize: 140,
+          pipeInterval: 1800,
+          gravity: 800,
+          jumpForce: -360,
+          durationSeconds: 60,
+          xpPerPipe: 5,
+          maxScore: 100,
+          pipeLabels: ["Tasamuh", "Tawasuth", "I'tidal", "Tawazun", "Amar Ma'ruf", "Nahi Munkar"],
+        },
+        questionBankCategory: "Arcade",
+        minPlayers: 1,
+        maxPlayers: 1,
+        status: "ACTIVE" as const,
+      },
     ];
 
     const results: any[] = [];

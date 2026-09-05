@@ -3,7 +3,7 @@ import { db } from "../db";
 import { users, teams, teamMembers, scoreTransactions } from "../db/schema";
 import { eq, like, or, sql, desc, inArray, and } from "drizzle-orm";
 import { hashPassword } from "../lib/password";
-import { requireAdmin } from "../middleware/auth";
+import { requireAdmin, requireBuddyOrAdmin } from "../middleware/auth";
 import { RPG_CHARACTERS, TITLE_CATALOG, PRESET_AVATARS } from "@genius/types";
 
 export const userRoutes = new Elysia({
@@ -24,7 +24,7 @@ export const userRoutes = new Elysia({
     };
   })
 
-  .use(requireAdmin)
+  .use(requireBuddyOrAdmin)
 
   // GET /api/users — List all users with team info, RPG fields, and score aggregation
   .get("/", async ({ query }) => {
@@ -257,6 +257,8 @@ export const userRoutes = new Elysia({
       },
     };
   })
+
+  .use(requireAdmin)
 
   // POST /api/users — Create single user
   .post(
