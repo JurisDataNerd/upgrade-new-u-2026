@@ -39,7 +39,7 @@
       </button>
 
       <button
-        @click="logout"
+        @click="confirmLogout"
         class="h-7 w-7 rounded bg-[#2a1313] border border-red-800/80 text-red-400 hover:text-white hover:bg-red-900 flex items-center justify-center cursor-pointer transition-all active:scale-95"
         title="Keluar"
       >
@@ -54,7 +54,7 @@ import { computed } from "vue";
 import { Crown, Shield, ArrowLeftRight, LogOut } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
 
-const { user, switchRole, logout } = useAuth();
+const { user, switchRole, confirmLogout } = useAuth();
 
 const cleanBuddyName = computed(() => {
   const raw = user.value?.fullName || "Budi Santoso";

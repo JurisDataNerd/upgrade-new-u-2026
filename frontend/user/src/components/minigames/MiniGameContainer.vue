@@ -7,6 +7,7 @@ import TebakPosisiGame from './TebakPosisiGame.vue';
 import MemoryMatchGame from './MemoryMatchGame.vue';
 import KuisCepatGame from './KuisCepatGame.vue';
 import BenarSalahGame from './BenarSalahGame.vue';
+import FlappyBirdGame from './FlappyBirdGame.vue';
 
 interface Props {
   booth: Booth;
@@ -56,6 +57,12 @@ const handleComplete = (score: number, totalQuestions: number) => {
   <BenarSalahGame
     v-else-if="gameType === 'benar_salah'"
     :content="props.booth.benarSalahContent"
+    :isCompleted="props.isCompleted"
+    @complete="handleComplete"
+  />
+  <FlappyBirdGame
+    v-else-if="gameType === 'flappy_bird'"
+    :content="props.booth.flappyBirdContent"
     :isCompleted="props.isCompleted"
     @complete="handleComplete"
   />

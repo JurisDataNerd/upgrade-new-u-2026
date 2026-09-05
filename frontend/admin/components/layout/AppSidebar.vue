@@ -179,7 +179,7 @@
         <Tooltip>
           <TooltipTrigger as-child>
             <button
-              @click="logout"
+              @click="confirmLogout"
               class="absolute -right-3.5 top-5 z-40 hidden xl:flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#f59e0b] bg-[#1a140f] text-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.3)] hover:scale-110 hover:bg-[#2b2014] hover:border-red-500 hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.4)] transition-all"
               aria-label="Keluar dari akun"
             >
@@ -212,9 +212,12 @@ import {
   CalendarCheck,
   UserCog,
   Sparkles,
+  ScrollText,
+  History,
   Award,
   Radio,
   QrCode,
+  Store,
   ShieldAlert,
   ChevronLeft,
   ChevronRight,
@@ -229,7 +232,7 @@ import { useLayoutState } from "@/composables/useLayoutState";
 import { useAuth } from "@/composables/useAuth";
 
 const { sidebarCollapsed, toggleSidebar } = useLayoutState();
-const { user, userInitials, logout } = useAuth();
+const { user, userInitials, logout, confirmLogout } = useAuth();
 const route = useRoute();
 
 const isActive = (to: string) => {
@@ -264,6 +267,7 @@ const navGroups = [
       { label: "Rute Perjalanan", to: "/routes", icon: GitFork },
       { label: "Misi & Pos", to: "/missions", icon: Target },
       { label: "Game Stages", to: "/stages", icon: Layers },
+      { label: "Stan Ormawa Expo", to: "/ormawa", icon: Store, badge: "DAY 3" },
       { label: "QR Print Center", to: "/qr-center", icon: QrCode },
     ],
   },
@@ -279,8 +283,8 @@ const navGroups = [
   {
     label: "Ledger & Komando",
     items: [
-      { label: "Point Ledger", to: "/scores", icon: Trophy },
-      { label: "Audit Logs", to: "/audit-logs", icon: Target },
+      { label: "Point Ledger", to: "/scores", icon: ScrollText },
+      { label: "Audit Logs", to: "/audit-logs", icon: History },
       { label: "Emergency & Settings", to: "/settings", icon: ShieldAlert },
     ],
   },

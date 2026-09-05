@@ -72,35 +72,44 @@
 
     <!-- TAB 1: KLASEMEN REGU (TEAMS) -->
     <div v-if="activeTab === 'teams'" class="space-y-3">
+      <!-- Loading indicator -->
+      <div v-if="loading" class="sdv-card p-6 text-center text-[#c4956a] font-mono text-xs">
+        <div class="inline-block w-5 h-5 border-2 border-[#f0d060] border-t-transparent rounded-full animate-spin mb-2"></div>
+        <div>Memuat data klasemen kampus...</div>
+      </div>
+
       <!-- Top 3 Podium (Mini Physical Cards) -->
-      <div class="grid grid-cols-3 gap-2 pt-1 pb-1 font-mono">
+      <div v-else class="grid grid-cols-3 gap-2 pt-1 pb-1 font-mono">
         <!-- 2nd Place -->
         <div class="sdv-card p-2 text-center flex flex-col justify-end items-center">
           <Medal class="h-5 w-5 text-gray-300 mb-1" />
           <span class="font-pixel text-[7.5px] text-gray-300">#2 PERAK</span>
-          <span class="font-sans text-[10px] font-bold text-white line-clamp-1 mt-0.5">Genius 03</span>
-          <span class="font-pixel text-[8.5px] text-[#f0d060] font-bold mt-1">2.620 PTS</span>
+          <span class="font-sans text-[10px] font-bold text-white line-clamp-1 mt-0.5">{{ rank2Team?.name || '-' }}</span>
+          <span class="font-pixel text-[8.5px] text-[#f0d060] font-bold mt-1">{{ rank2Team ? `${rank2Team.score.toLocaleString()} PTS` : '- PTS' }}</span>
         </div>
 
         <!-- 1st Place (Winner / Highlight) -->
         <div class="sdv-card-gold p-2.5 text-center flex flex-col justify-end items-center scale-105 shadow-xl">
           <Crown class="h-6 w-6 text-[#facc15] mb-1 animate-bounce" />
           <span class="font-pixel text-[8px] text-[#facc15]">#1 EMAS</span>
-          <span class="font-sans text-[10.5px] font-bold text-[#fef08a] line-clamp-1 mt-0.5">Genius 01</span>
-          <span class="font-pixel text-[9.5px] text-[#86efac] font-bold mt-1">2.850 PTS</span>
+          <span class="font-sans text-[10.5px] font-bold text-[#fef08a] line-clamp-1 mt-0.5">{{ rank1Team?.name || '-' }}</span>
+          <span class="font-pixel text-[9.5px] text-[#86efac] font-bold mt-1">{{ rank1Team ? `${rank1Team.score.toLocaleString()} PTS` : '- PTS' }}</span>
         </div>
 
         <!-- 3rd Place -->
         <div class="sdv-card p-2 text-center flex flex-col justify-end items-center">
           <Medal class="h-5 w-5 text-[#ea580c] mb-1" />
           <span class="font-pixel text-[7.5px] text-[#fb923c]">#3 PERUNGGU</span>
-          <span class="font-sans text-[10px] font-bold text-white line-clamp-1 mt-0.5">Genius 07</span>
-          <span class="font-pixel text-[8.5px] text-[#f0d060] font-bold mt-1">2.410 PTS</span>
+          <span class="font-sans text-[10px] font-bold text-white line-clamp-1 mt-0.5">{{ rank3Team?.name || '-' }}</span>
+          <span class="font-pixel text-[8.5px] text-[#f0d060] font-bold mt-1">{{ rank3Team ? `${rank3Team.score.toLocaleString()} PTS` : '- PTS' }}</span>
         </div>
       </div>
 
       <!-- Team List -->
-      <div class="space-y-2">
+      <div v-if="!loading" class="space-y-2">
+        <div v-if="filteredTeams.length === 0" class="sdv-card p-4 text-center text-[#c4956a] font-mono text-xs">
+          Tidak ada regu yang cocok.
+        </div>
         <div
           v-for="team in filteredTeams"
           :key="team.id"
@@ -138,7 +147,7 @@
                 </span>
               </div>
               <span class="text-[9.5px] text-[#c4956a] font-mono">
-                Buddy: {{ team.buddyName }} &bull; {{ team.completedStamps }}/18 Pos
+                Kode: {{ team.code }} &bull; {{ team.completedStamps }}/18 Pos
               </span>
             </div>
           </div>
@@ -155,7 +164,16 @@
 
     <!-- TAB 2: KLASEMEN INDIVIDU (INDIVIDUALS) -->
     <div v-else class="space-y-2">
+      <!-- Loading indicator -->
+      <div v-if="loading" class="sdv-card p-6 text-center text-[#c4956a] font-mono text-xs">
+        <div class="inline-block w-5 h-5 border-2 border-[#f0d060] border-t-transparent rounded-full animate-spin mb-2"></div>
+        <div>Memuat data mahasiswa kampus...</div>
+      </div>
+      <div v-else-if="filteredStudents.length === 0" class="sdv-card p-4 text-center text-[#c4956a] font-mono text-xs">
+        Tidak ada mahasiswa yang cocok.
+      </div>
       <div
+        v-else
         v-for="student in filteredStudents"
         :key="student.id"
         :class="[
@@ -217,7 +235,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import {
   Trophy,
   Users,
@@ -227,60 +245,80 @@ import {
   Medal,
 } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
+import { useApi } from "@/composables/useApi";
+import { useRealtime } from "@/composables/useRealtime";
 
 const { user } = useAuth();
+const api = useApi();
+const { onLeaderboardUpdate } = useRealtime();
 
 const activeTab = ref<"teams" | "individuals">("teams");
 const searchQuery = ref("");
+const loading = ref(true);
 
-// Mock data seluruh tim kampus (PKKMB UNU 2026)
-const allTeams = ref([
-  { id: "group-01", rank: 1, name: "Genius 01", buddyName: "Budi Santoso", score: 2850, completedStamps: 18 },
-  { id: "group-03", rank: 2, name: "Genius 03", buddyName: "Dewi Lestari", score: 2620, completedStamps: 17 },
-  { id: "group-07", rank: 3, name: "Genius 07", buddyName: "Farhan Hakim", score: 2410, completedStamps: 16 },
-  { id: "group-04", rank: 4, name: "Genius 04", buddyName: "Siti Rahma", score: 2380, completedStamps: 15 },
-  { id: "group-02", rank: 5, name: "Genius 02", buddyName: "Hendra Wijaya", score: 2190, completedStamps: 14 },
-  { id: "group-05", rank: 6, name: "Genius 05", buddyName: "Nurul Hidayah", score: 2050, completedStamps: 13 },
-  { id: "group-06", rank: 7, name: "Genius 06", buddyName: "Agus Tri", score: 1980, completedStamps: 12 },
-  { id: "group-08", rank: 8, name: "Genius 08", buddyName: "Lina Marlina", score: 1850, completedStamps: 11 },
-]);
+interface TeamRankItem {
+  id: string;
+  rank: number;
+  name: string;
+  code: string;
+  score: number;
+  completedStamps: number;
+  buddyName: string;
+}
 
-// Mock data mahasiswa teratas kampus dengan Prodi Resmi UNU
-const allStudents = ref([
-  { id: "p1", rank: 1, fullName: "Ahmad Dahlan", username: "2611101", prodi: "Informatika", teamName: "Genius 01", teamId: "group-01", totalXp: 980, stamps: 18, avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p6", rank: 2, fullName: "Ilham Ramadhan", username: "2611201", prodi: "Informatika", teamName: "Genius 03", teamId: "group-03", totalXp: 940, stamps: 18, avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p2", rank: 3, fullName: "Fatimah Azzahra", username: "2611102", prodi: "Farmasi", teamName: "Genius 01", teamId: "group-01", totalXp: 920, stamps: 17, avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p11", rank: 4, fullName: "Zahra Kusuma", username: "2611301", prodi: "PGSD", teamName: "Genius 07", teamId: "group-07", totalXp: 890, stamps: 17, avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p7", rank: 5, fullName: "Putri Ayu", username: "2611202", prodi: "Farmasi", teamName: "Genius 03", teamId: "group-03", totalXp: 870, stamps: 16, avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p4", rank: 6, fullName: "Siti Nurhaliza", username: "2611104", prodi: "Manajemen", teamName: "Genius 01", teamId: "group-01", totalXp: 840, stamps: 16, avatarUrl: "/character-cewek-avatar.png" },
-  { id: "p8", rank: 7, fullName: "Bagas Saputra", username: "2611203", prodi: "Agribisnis", teamName: "Genius 03", teamId: "group-03", totalXp: 810, stamps: 15, avatarUrl: "/character-cowok-avatar.png" },
-  { id: "p3", rank: 8, fullName: "Rian Pratama", username: "2611103", prodi: "Teknik Elektro", teamName: "Genius 01", teamId: "group-01", totalXp: 790, stamps: 14, avatarUrl: "/character-cowok-avatar.png" },
-]);
+interface StudentRankItem {
+  id: string;
+  rank: number;
+  fullName: string;
+  username: string;
+  prodi: string;
+  teamName: string;
+  teamId?: string;
+  totalXp: number;
+  stamps: number;
+  avatarUrl: string;
+}
+
+const allTeams = ref<TeamRankItem[]>([]);
+const allStudents = ref<StudentRankItem[]>([]);
+
+const rank1Team = computed(() => allTeams.value.find((t) => t.rank === 1) || allTeams.value[0]);
+const rank2Team = computed(() => allTeams.value.find((t) => t.rank === 2) || allTeams.value[1]);
+const rank3Team = computed(() => allTeams.value.find((t) => t.rank === 3) || allTeams.value[2]);
 
 const currentTeamId = computed(() => {
-  if (user.value?.teamId === "group-03" || user.value?.username === "buddy03") return "group-03";
-  if (user.value?.teamId === "group-07" || user.value?.username === "buddy07") return "group-07";
-  return "group-01";
+  return user.value?.teamId || "";
 });
 
-const isMyTeam = (teamId: string) => teamId === currentTeamId.value;
+const isMyTeam = (teamId: string) => {
+  if (!currentTeamId.value) return false;
+  return teamId === currentTeamId.value;
+};
 
 const isMyMember = (studentId: string) => {
   const student = allStudents.value.find((s) => s.id === studentId);
-  return student?.teamId === currentTeamId.value;
+  if (!currentTeamId.value || !student?.teamId) return false;
+  return student.teamId === currentTeamId.value;
 };
 
 const myTeamRankLabel = computed(() => {
-  if (currentTeamId.value === "group-03") return "#2 (2.620 PTS)";
-  if (currentTeamId.value === "group-07") return "#3 (2.410 PTS)";
-  return "#1 (2.850 PTS)";
+  if (!currentTeamId.value) {
+    const first = allTeams.value[0];
+    return first ? `#${first.rank} (${first.score.toLocaleString()} PTS)` : "#-";
+  }
+  const found = allTeams.value.find((t) => t.id === currentTeamId.value);
+  if (found) return `#${found.rank} (${found.score.toLocaleString()} PTS)`;
+  return "#-";
 });
 
 const filteredTeams = computed(() => {
   if (!searchQuery.value.trim()) return allTeams.value;
   const q = searchQuery.value.toLowerCase();
   return allTeams.value.filter(
-    (t) => t.name.toLowerCase().includes(q) || t.buddyName.toLowerCase().includes(q)
+    (t) =>
+      t.name.toLowerCase().includes(q) ||
+      t.code.toLowerCase().includes(q) ||
+      t.buddyName.toLowerCase().includes(q)
   );
 });
 
@@ -293,5 +331,49 @@ const filteredStudents = computed(() => {
       s.username.includes(q) ||
       s.teamName.toLowerCase().includes(q)
   );
+});
+
+async function fetchLeaderboard() {
+  loading.value = true;
+  try {
+    const res = await api.get<{ success: boolean; data: any }>("/api/leaderboard");
+    if (res.success && res.data) {
+      const rawTeams = res.data.teamLeaderboard || [];
+      allTeams.value = rawTeams.map((t: any, idx: number) => ({
+        id: t.teamId,
+        rank: t.rank || idx + 1,
+        name: t.teamName || "Genius Tim",
+        code: t.teamCode || "-",
+        score: Number(t.totalScore || 0),
+        completedStamps: Math.min(18, Math.floor(Number(t.totalScore || 0) / 100)),
+        buddyName: t.buddyName || "Buddy",
+      }));
+
+      const rawParticipants = res.data.participantLeaderboard || [];
+      allStudents.value = rawParticipants.map((p: any, idx: number) => ({
+        id: p.participantId,
+        rank: p.rank || idx + 1,
+        fullName: p.participantName || "Mahasiswa",
+        username: p.username || "-",
+        prodi: p.characterClass || p.characterTitle || "Informatika",
+        teamName: p.teamName || "Genius",
+        teamId: p.teamId,
+        totalXp: Number(p.totalScore || 0),
+        stamps: Math.min(18, Math.floor(Number(p.totalScore || 0) / 50)),
+        avatarUrl: p.gender === "FEMALE" ? "/character-cewek-avatar.png" : "/character-cowok-avatar.png",
+      }));
+    }
+  } catch (err: any) {
+    console.error("Gagal memuat leaderboard buddy:", err);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  fetchLeaderboard();
+  onLeaderboardUpdate(() => {
+    fetchLeaderboard();
+  });
 });
 </script>

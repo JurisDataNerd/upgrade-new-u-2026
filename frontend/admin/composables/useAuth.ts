@@ -1,88 +1,27 @@
 import { ref, computed } from "vue";
-import { navigateTo } from "#app";
+import { navigateTo, useRuntimeConfig } from "#app";
 
 export interface User {
   id: string;
   username: string;
   fullName: string;
-  role: "ADMIN" | "BUDDY";
+  role: "ADMIN" | "BUDDY" | "PARTICIPANT";
+  status?: string;
+  gender?: string;
+  characterClass?: string;
+  characterTitle?: string;
+  characterTier?: number;
+  unlockedTitles?: string[];
+  avatarUrl?: string;
   teamId?: string;
   teamName?: string;
+  teamCode?: string;
+  buddyRole?: "PRIMARY" | "ASSISTANT";
   assignedFloor?: number;
 }
 
-export const defaultAdmin: User = {
-  id: "usr-admin",
-  username: "admin",
-  fullName: "Super Admin GENIUS 2026",
-  role: "ADMIN",
-};
-
-export const defaultBuddy01: User = {
-  id: "usr-buddy-budi",
-  username: "buddy01",
-  fullName: "Budi Santoso",
-  role: "BUDDY",
-  teamId: "group-01",
-  teamName: "Genius 01",
-  assignedFloor: 3,
-};
-
-export const defaultBuddy03: User = {
-  id: "usr-buddy-dewi",
-  username: "buddy03",
-  fullName: "Dewi Lestari",
-  role: "BUDDY",
-  teamId: "group-03",
-  teamName: "Genius 03",
-  assignedFloor: 5,
-};
-
-export const defaultBuddy07: User = {
-  id: "usr-buddy-farhan",
-  username: "buddy07",
-  fullName: "Farhan Hakim",
-  role: "BUDDY",
-  teamId: "group-07",
-  teamName: "Genius 07",
-  assignedFloor: 7,
-};
-
-export const defaultBuddy: User = defaultBuddy01;
-
-export const DUMMY_ACCOUNTS = [
-  {
-    role: "ADMIN" as const,
-    username: "admin",
-    password: "admin2026",
-    label: "Super Admin (Full Control Center)",
-    user: defaultAdmin,
-  },
-  {
-    role: "BUDDY" as const,
-    username: "buddy01",
-    password: "buddy2026",
-    label: "Budi Santoso (Genius 01)",
-    user: defaultBuddy01,
-  },
-  {
-    role: "BUDDY" as const,
-    username: "buddy03",
-    password: "buddy2026",
-    label: "Dewi Lestari (Genius 03)",
-    user: defaultBuddy03,
-  },
-  {
-    role: "BUDDY" as const,
-    username: "buddy07",
-    password: "buddy2026",
-    label: "Farhan Hakim (Genius 07)",
-    user: defaultBuddy07,
-  },
-];
-
-const token = ref<string | null>("mock-static-token");
-const user = ref<User | null>(defaultAdmin);
+const token = ref<string | null>(null);
+const user = ref<User | null>(null);
 const loading = ref(false);
 
 // Hydrate from localStorage on client-side
@@ -92,41 +31,13 @@ if (typeof window !== "undefined") {
   if (storedToken && storedUser) {
     try {
       token.value = storedToken;
-      const parsed = JSON.parse(storedUser);
-
-      // Auto-sanitize legacy cached data from localStorage
-      if (parsed.fullName) {
-        parsed.fullName = parsed.fullName.replace(/^Kak(ak)?\s+/i, "").trim();
-      }
-
-      if (parsed.username === "buddy01" || (parsed.teamName && /Garuda/i.test(parsed.teamName))) {
-        parsed.fullName = "Budi Santoso";
-        parsed.teamName = "Genius 01";
-        parsed.teamId = "group-01";
-      } else if (parsed.username === "buddy03" || (parsed.teamName && /Khawarizmi/i.test(parsed.teamName))) {
-        parsed.fullName = "Dewi Lestari";
-        parsed.teamName = "Genius 03";
-        parsed.teamId = "group-03";
-      } else if (parsed.username === "buddy07" || (parsed.teamName && /Ibnu\s*Sina/i.test(parsed.teamName))) {
-        parsed.fullName = "Farhan Hakim";
-        parsed.teamName = "Genius 07";
-        parsed.teamId = "group-07";
-      } else if (parsed.teamName) {
-        parsed.teamName = parsed.teamName.replace(/^Team\s+/i, "").trim();
-      }
-
-      user.value = parsed;
-      // Persist the sanitized object back to localStorage immediately
-      localStorage.setItem("genius_admin_user", JSON.stringify(parsed));
+      user.value = JSON.parse(storedUser);
     } catch {
-      token.value = "mock-static-token";
-      user.value = defaultAdmin;
+      token.value = null;
+      user.value = null;
+      localStorage.removeItem("genius_admin_token");
+      localStorage.removeItem("genius_admin_user");
     }
-  } else {
-    token.value = "mock-static-token";
-    user.value = defaultAdmin;
-    localStorage.setItem("genius_admin_token", "mock-static-token");
-    localStorage.setItem("genius_admin_user", JSON.stringify(defaultAdmin));
   }
 }
 
@@ -136,7 +47,7 @@ export function useAuth() {
   const isBuddy = computed(() => user.value?.role === "BUDDY");
 
   const userInitials = computed(() => {
-    if (!user.value?.fullName) return "SA";
+    if (!user.value?.fullName) return "GM";
     return user.value.fullName
       .split(" ")
       .map((w) => w[0])
@@ -145,106 +56,144 @@ export function useAuth() {
       .slice(0, 2);
   });
 
-  async function login(usernameInput: string, passwordInput?: string): Promise<{ success: boolean; error?: string }> {
+  /**
+   * Real Authentication via Backend REST API (/api/auth/login)
+   */
+  async function login(usernameInput: string, passwordInput: string): Promise<{ success: boolean; error?: string }> {
     loading.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 150));
+    try {
+      const config = useRuntimeConfig();
+      const baseUrl = config.public?.apiBase || "http://localhost:3001/api";
 
-    const cleanUser = usernameInput.trim().toLowerCase();
+      const res = await $fetch<{
+        success: boolean;
+        data?: {
+          token: string;
+          user: User;
+        };
+        error?: {
+          code: string;
+          message: string;
+        };
+        message?: string;
+      }>(`${baseUrl}/auth/login`, {
+        method: "POST",
+        body: {
+          username: usernameInput.trim(),
+          password: passwordInput,
+        },
+      });
 
-    // Match with predefined dummy accounts
-    const matched = DUMMY_ACCOUNTS.find(
-      (a) => a.username.toLowerCase() === cleanUser || a.label.toLowerCase().includes(cleanUser)
-    );
+      if (!res.success || !res.data?.token || !res.data?.user) {
+        return {
+          success: false,
+          error: res.error?.message || res.message || "Gagal masuk. Periksa username dan password.",
+        };
+      }
 
-    let activeUser: User;
-    if (matched) {
-      activeUser = { ...matched.user };
-    } else if (cleanUser.includes("budi") || cleanUser === "buddy01" || cleanUser === "1") {
-      activeUser = { ...defaultBuddy01 };
-    } else if (cleanUser.includes("dewi") || cleanUser === "buddy03" || cleanUser === "3") {
-      activeUser = { ...defaultBuddy03 };
-    } else if (cleanUser.includes("farhan") || cleanUser === "buddy07" || cleanUser === "7") {
-      activeUser = { ...defaultBuddy07 };
-    } else if (cleanUser.includes("buddy")) {
-      activeUser = {
-        id: `usr-${cleanUser}`,
-        username: cleanUser,
-        fullName: `Buddy (${cleanUser})`,
-        role: "BUDDY",
-        teamId: "group-01",
-        teamName: "Genius 01",
-      };
-    } else {
-      activeUser = {
-        id: "usr-admin",
-        username: cleanUser || "admin",
-        fullName: cleanUser === "admin" ? "Super Admin GENIUS 2026" : `Admin (${cleanUser})`,
-        role: "ADMIN",
-      };
-    }
+      // Verify that user is Panitia (ADMIN or BUDDY)
+      if (res.data.user.role !== "ADMIN" && res.data.user.role !== "BUDDY") {
+        return {
+          success: false,
+          error: "Akses ditolak: Akun Anda terdaftar sebagai Peserta, bukan Panitia/Buddy.",
+        };
+      }
 
-    token.value = "mock-static-token";
-    user.value = activeUser;
-    if (typeof window !== "undefined") {
-      localStorage.setItem("genius_admin_token", "mock-static-token");
-      localStorage.setItem("genius_admin_user", JSON.stringify(activeUser));
-    }
+      token.value = res.data.token;
+      user.value = res.data.user;
 
-    loading.value = false;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("genius_admin_token", res.data.token);
+        localStorage.setItem("genius_admin_user", JSON.stringify(res.data.user));
+      }
 
-    if (activeUser.role === "BUDDY") {
-      navigateTo("/buddy");
-    } else {
-      navigateTo("/");
-    }
+      if (res.data.user.role === "BUDDY") {
+        navigateTo("/buddy");
+      } else {
+        navigateTo("/");
+      }
 
-    return { success: true };
-  }
-
-  function loginAsPreset(presetUser: User) {
-    token.value = "mock-static-token";
-    user.value = { ...presetUser };
-    if (typeof window !== "undefined") {
-      localStorage.setItem("genius_admin_token", "mock-static-token");
-      localStorage.setItem("genius_admin_user", JSON.stringify(presetUser));
-    }
-    if (presetUser.role === "BUDDY") {
-      navigateTo("/buddy");
-    } else {
-      navigateTo("/");
+      return { success: true };
+    } catch (err: any) {
+      const errMsg =
+        err?.data?.error?.message ||
+        err?.data?.message ||
+        err?.message ||
+        "Gagal terhubung ke server backend GENIUS.";
+      return { success: false, error: errMsg };
+    } finally {
+      loading.value = false;
     }
   }
 
   function switchRole(targetRole: "ADMIN" | "BUDDY") {
     if (targetRole === "BUDDY") {
-      user.value = { ...defaultBuddy };
-    } else {
-      user.value = { ...defaultAdmin };
-    }
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem("genius_admin_user", JSON.stringify(user.value));
-    }
-
-    if (targetRole === "BUDDY") {
       navigateTo("/buddy");
     } else {
       navigateTo("/");
     }
   }
 
-  function logout() {
-    token.value = null;
-    user.value = null;
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("genius_admin_token");
-      localStorage.removeItem("genius_admin_user");
+  async function logout() {
+    try {
+      const config = useRuntimeConfig();
+      const baseUrl = config.public?.apiBase || "http://localhost:3001/api";
+      if (token.value) {
+        await $fetch(`${baseUrl}/auth/logout`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token.value}` },
+        }).catch(() => {});
+      }
+    } finally {
+      token.value = null;
+      user.value = null;
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("genius_admin_token");
+        localStorage.removeItem("genius_admin_user");
+      }
+      navigateTo("/login");
     }
-    navigateTo("/login");
+  }
+
+  async function confirmLogout() {
+    const { show } = useConfirm();
+    const confirmed = await show({
+      title: "Keluar dari Portal Admin?",
+      description: "Sesi aktif Anda akan diakhiri. Pastikan semua perubahan data telah tersimpan sebelum keluar.",
+      confirmText: "Ya, Keluar",
+      cancelText: "Batal",
+      variant: "danger",
+      icon: "logout",
+    });
+
+    if (confirmed) {
+      const toast = useToast();
+      toast.info("Sampai Jumpa!", "Anda telah keluar dari sesi admin.");
+      await logout();
+    }
   }
 
   async function verify(): Promise<boolean> {
-    return true;
+    if (!token.value) return false;
+    try {
+      const config = useRuntimeConfig();
+      const baseUrl = config.public?.apiBase || "http://localhost:3001/api";
+      const res = await $fetch<{ success: boolean; data: User }>(`${baseUrl}/auth/me`, {
+        headers: { Authorization: `Bearer ${token.value}` },
+      });
+
+      if (res.success && res.data) {
+        user.value = res.data;
+        if (typeof window !== "undefined") {
+          localStorage.setItem("genius_admin_user", JSON.stringify(res.data));
+        }
+        return true;
+      }
+      return false;
+    } catch {
+      await logout();
+      return false;
+    }
   }
 
   return {
@@ -256,10 +205,9 @@ export function useAuth() {
     isBuddy,
     userInitials,
     login,
-    loginAsPreset,
     switchRole,
     logout,
+    confirmLogout,
     verify,
-    DUMMY_ACCOUNTS,
   };
 }

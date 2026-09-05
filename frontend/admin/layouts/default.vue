@@ -10,6 +10,7 @@
     </main>
     <BuddyBottomNav />
     <ToastContainer />
+    <ConfirmationModal />
   </div>
 
   <!-- Super Admin Control Center Layout -->
@@ -40,6 +41,9 @@
 
     <!-- Global Toast Notification Container -->
     <ToastContainer />
+
+    <!-- Global Confirmation Modal (Programmatic & Accessible) -->
+    <ConfirmationModal />
   </div>
 </template>
 
@@ -52,6 +56,7 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 import BuddyHeader from "@/components/buddy/BuddyHeader.vue";
 import BuddyBottomNav from "@/components/buddy/BuddyBottomNav.vue";
 import { ToastContainer } from "@/components/ui/toast";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { useAuth } from "@/composables/useAuth";
 
 const route = useRoute();

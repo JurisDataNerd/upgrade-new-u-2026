@@ -14,7 +14,8 @@ export type GameType =
   | 'memory_match'
   | 'kuis_cepat'
   | 'benar_salah'
-  | 'kuis';
+  | 'kuis'
+  | 'flappy_bird';
 
 export type BoothType = GameType;
 
@@ -111,6 +112,39 @@ export interface BenarSalahContent {
   statements: BenarSalahStatement[];
 }
 
+// 7. Flappy Bird (Arcade Endless Flyer)
+export interface FlappyBirdObstacle {
+  /** Label teks yang muncul di atas/bawah pipa, misal nama nilai UNU */
+  label?: string;
+}
+
+export interface FlappyBirdConfig {
+  /** Kecepatan awal pipa (pixel/detik), default 200 */
+  pipeSpeed?: number;
+  /** Celah antara pipa atas dan bawah (pixel), default 140 */
+  gapSize?: number;
+  /** Interval spawn pipa (ms), default 1800 */
+  pipeInterval?: number;
+  /** Gravity (pixel/detik²), default 800 */
+  gravity?: number;
+  /** Kekuatan loncat (negatif = ke atas), default -360 */
+  jumpForce?: number;
+  /** Durasi maksimal game (detik), 0 = unlimited, default 60 */
+  durationSeconds?: number;
+  /** XP per pipa yang dilewati, default 5 */
+  xpPerPipe?: number;
+  /** Skor maksimum yang bisa diperoleh, default 100 */
+  maxScore?: number;
+  /** Label tema pipa (untuk gamifikasi), opsional */
+  pipeLabels?: string[];
+}
+
+export interface FlappyBirdContent {
+  config?: FlappyBirdConfig;
+  /** Pesan motivasi yang muncul saat game over */
+  gameOverMessages?: string[];
+}
+
 export interface Booth {
   id: string;
   floorNumber: number;
@@ -135,6 +169,7 @@ export interface Booth {
   memoryMatchContent?: MemoryMatchContent;
   kuisCepatContent?: KuisCepatContent;
   benarSalahContent?: BenarSalahContent;
+  flappyBirdContent?: FlappyBirdContent;
 }
 
 export interface FloorStoryIntro {

@@ -421,6 +421,9 @@ import {
   Star,
   X,
 } from "lucide-vue-next";
+import { useApi } from "@/composables/useApi";
+
+const api = useApi();
 
 const selectedDay = ref<1 | 2 | 3>(1);
 const searchQuery = ref("");
@@ -454,160 +457,58 @@ interface ParticipantAttendanceRow {
   };
 }
 
-// Data Mahasiswa Demo Terstruktur
-const participantsList = ref<ParticipantAttendanceRow[]>([
-  {
-    id: "p1",
-    fullName: "Ahmad Dahlan",
-    username: "2611101",
-    prodi: "Informatika",
-    avatarUrl: "/character-cowok-avatar.png",
-    teamName: "Genius 01",
-    buddyName: "Budi Santoso",
-    attendance: {
-      checkInAt: "2026-09-22T07:18:00Z",
-      status: "ON_TIME",
-      checkOutAt: "2026-09-22T16:05:00Z",
-      xpAwarded: 175,
-      reflection: {
-        ratingFasilitas: 5,
-        ratingMateri: 5,
-        ratingBuddy: 5,
-        essayInsight: "Sangat kagum dengan fasilitas Lab AI Lantai 3 dan keramahan seluruh panitia.",
-      },
-    },
-  },
-  {
-    id: "p2",
-    fullName: "Fatimah Azzahra",
-    username: "2611102",
-    prodi: "Farmasi",
-    avatarUrl: "/character-cewek-avatar.png",
-    teamName: "Genius 01",
-    buddyName: "Budi Santoso",
-    attendance: {
-      checkInAt: "2026-09-22T07:25:00Z",
-      status: "ON_TIME",
-      checkOutAt: "2026-09-22T16:10:00Z",
-      xpAwarded: 175,
-      reflection: {
-        ratingFasilitas: 5,
-        ratingMateri: 4,
-        ratingBuddy: 5,
-        essayInsight: "Materi Aswaja sangat mencerahkan dan membakar semangat belajar di UNU.",
-      },
-    },
-  },
-  {
-    id: "p3",
-    fullName: "Rian Pratama",
-    username: "2611103",
-    prodi: "Teknik Elektro",
-    avatarUrl: "/character-cowok-avatar.png",
-    teamName: "Genius 01",
-    buddyName: "Budi Santoso",
-    attendance: {
-      checkInAt: "2026-09-22T07:38:00Z",
-      status: "LATE",
-      checkOutAt: null,
-      xpAwarded: 100,
-      reflection: null,
-    },
-  },
-  {
-    id: "p4",
-    fullName: "Siti Nurhaliza",
-    username: "2611104",
-    prodi: "Manajemen",
-    avatarUrl: "/character-cewek-avatar.png",
-    teamName: "Genius 02",
-    buddyName: "Siti Rahmawati",
-    attendance: {
-      checkInAt: "2026-09-22T07:12:00Z",
-      status: "ON_TIME",
-      checkOutAt: "2026-09-22T16:02:00Z",
-      xpAwarded: 175,
-      reflection: {
-        ratingFasilitas: 5,
-        ratingMateri: 5,
-        ratingBuddy: 5,
-        essayInsight: "Buddy mendampingi dengan sangat sabar saat kami menjelajahi selasar kampus.",
-      },
-    },
-  },
-  {
-    id: "p5",
-    fullName: "Kevin Wijaya",
-    username: "2611105",
-    prodi: "PGSD",
-    avatarUrl: "/character-cowok-avatar.png",
-    teamName: "Genius 02",
-    buddyName: "Siti Rahmawati",
-    attendance: {
-      checkInAt: null,
-      status: "ABSENT",
-      checkOutAt: null,
-      xpAwarded: 0,
-      reflection: null,
-    },
-  },
-  {
-    id: "p6",
-    fullName: "Zulfa Maulida",
-    username: "2611106",
-    prodi: "Akuntansi",
-    avatarUrl: "/character-cewek-avatar.png",
-    teamName: "Genius 03",
-    buddyName: "Ahmad Fauzi",
-    attendance: {
-      checkInAt: "2026-09-22T07:22:00Z",
-      status: "ON_TIME",
-      checkOutAt: "2026-09-22T16:15:00Z",
-      xpAwarded: 175,
-      reflection: {
-        ratingFasilitas: 4,
-        ratingMateri: 5,
-        ratingBuddy: 5,
-        essayInsight: "Sangat senang bisa mengenal teman-teman baru dari berbagai provinsi.",
-      },
-    },
-  },
-]);
+const participantsList = ref<ParticipantAttendanceRow[]>([]);
 
 const teamOptions = computed(() => {
   const set = new Set(participantsList.value.map((p) => p.teamName));
   return Array.from(set);
 });
 
-// Sinkronisasi dengan localStorage jika mahasiswa baru check-in di browser yang sama
-const loadData = () => {
+// Load real attendance data from Backend REST API
+const loadData = async () => {
   loading.value = true;
-  if (typeof window !== "undefined") {
-    try {
-      const userRaw = localStorage.getItem("genius_unu_user_storage_v1");
-      if (userRaw) {
-        const parsed = JSON.parse(userRaw);
-        if (parsed.attendance && parsed.attendance[selectedDay.value]) {
-          const userAtt = parsed.attendance[selectedDay.value];
-          // Jika mahasiswa lokal melakukan check-in, sinkronkan ke baris pertama!
-          if (userAtt.checkInAt && participantsList.value.length > 0) {
-            participantsList.value[0].attendance = {
-              checkInAt: userAtt.checkInAt,
-              status: userAtt.checkInStatus || "ON_TIME",
-              checkOutAt: userAtt.checkOutAt,
-              xpAwarded: userAtt.xpAwarded || 100,
-              reflection: userAtt.reflection,
-            };
-          }
-        }
-      }
-    } catch {
-      // Ignore
+  try {
+    const [recapRes, usersRes]: any = await Promise.allSettled([
+      api.get("/api/attendance/recap", { day: String(selectedDay.value) }),
+      api.get("/api/users", { role: "PARTICIPANT", pageSize: "100" }),
+    ]);
+
+    const attendeeMap = new Map<string, any>();
+    if (recapRes.status === "fulfilled" && recapRes.value?.success && Array.isArray(recapRes.value.data?.attendees)) {
+      recapRes.value.data.attendees.forEach((a: any) => {
+        attendeeMap.set(a.participantId || a.username, a);
+      });
     }
-  }
-  setTimeout(() => {
+
+    const participants: ParticipantAttendanceRow[] = [];
+    if (usersRes.status === "fulfilled" && usersRes.value?.success && Array.isArray(usersRes.value.data)) {
+      usersRes.value.data.forEach((u: any) => {
+        const att = attendeeMap.get(u.id) || attendeeMap.get(u.username);
+        participants.push({
+          id: u.id,
+          fullName: u.fullName,
+          username: u.username,
+          prodi: u.prodi || "UNU Yogyakarta",
+          avatarUrl: u.avatarUrl || (u.gender === "FEMALE" ? "/character-cewek-avatar.png" : "/character-cowok-avatar.png"),
+          teamName: u.teamName || "Belum Ada Regu",
+          buddyName: u.buddyName || "Game Master",
+          attendance: {
+            checkInAt: att?.checkInAt || null,
+            status: att?.checkInStatus || "ABSENT",
+            checkOutAt: att?.checkOutAt || null,
+            xpAwarded: att?.xpAwarded || 0,
+            reflection: att?.reflection || null,
+          },
+        });
+      });
+    }
+
+    participantsList.value = participants;
+  } catch (err) {
+    console.error("Gagal memuat data presensi dari server:", err);
+  } finally {
     loading.value = false;
-  }, 400);
+  }
 };
 
 const filteredList = computed(() => {
@@ -645,13 +546,20 @@ const openManualCheckInModal = (row: ParticipantAttendanceRow) => {
   manualCheckInTarget.value = row;
 };
 
-const confirmManualCheckIn = () => {
+const confirmManualCheckIn = async () => {
   if (!manualCheckInTarget.value) return;
-  const now = new Date();
-  manualCheckInTarget.value.attendance.checkInAt = now.toISOString();
-  manualCheckInTarget.value.attendance.status = "ON_TIME";
-  manualCheckInTarget.value.attendance.xpAwarded = 100;
-  manualCheckInTarget.value = null;
+  try {
+    await api.post("/api/attendance/check-in", {
+      participantId: manualCheckInTarget.value.id,
+      day: selectedDay.value,
+      qrToken: `QR-PRESENSI-H${selectedDay.value}-MANUAL-ADMIN`,
+    });
+    alert(`Presensi masuk ${manualCheckInTarget.value.fullName} berhasil dikonfirmasi! (+100 XP)`);
+    manualCheckInTarget.value = null;
+    await loadData();
+  } catch (err: any) {
+    alert("Gagal check-in manual: " + (err?.data?.error?.message || err?.message));
+  }
 };
 
 const formatTime = (isoString?: string | null) => {

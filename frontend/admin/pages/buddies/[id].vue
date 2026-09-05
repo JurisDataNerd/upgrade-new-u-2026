@@ -724,7 +724,6 @@ import {
   CharacterTier,
   getEvolutionForClassAndTier,
 } from "@genius/types";
-import { mockDb } from "@/lib/mockDb";
 
 const route = useRoute();
 const api = useApi();
@@ -775,7 +774,7 @@ const awardForm = ref({
   upgradeTier: undefined as number | undefined,
 });
 
-// Load Buddy Data
+// Load Buddy Data from Backend REST API
 async function fetchBuddyDetail() {
   if (!buddyId.value) return;
   loading.value = true;
@@ -784,25 +783,15 @@ async function fetchBuddyDetail() {
     const data = res?.data !== undefined ? res.data : res;
     if (data && (data.id || data.username)) {
       buddy.value = data;
-      loading.value = false;
-      return;
+    } else {
+      buddy.value = null;
     }
   } catch (err: any) {
-    console.warn("API buddy fetch failed, falling back to mockDb:", err?.message || err);
+    console.error("Gagal memuat data buddy dari server:", err?.message || err);
+    buddy.value = null;
+  } finally {
+    loading.value = false;
   }
-
-  // Fallback to mockDb
-  const mock = mockDb.getBuddies().find(
-    (b) => b.id === buddyId.value || b.username === buddyId.value
-  );
-  if (mock) {
-    buddy.value = mock;
-  } else {
-    // Fallback to first buddy
-    const fallbackBuddy = mockDb.getBuddies()[0];
-    buddy.value = fallbackBuddy || null;
-  }
-  loading.value = false;
 }
 
 // Load Teams List for assignment
@@ -815,9 +804,9 @@ async function fetchTeams() {
       return;
     }
   } catch (err) {
-    console.warn("Teams fetch failed, falling back to mockDb:", err);
+    console.error("Gagal memuat daftar tim dari server:", err);
+    teamsList.value = [];
   }
-  teamsList.value = mockDb.getTeams();
 }
 
 onMounted(async () => {

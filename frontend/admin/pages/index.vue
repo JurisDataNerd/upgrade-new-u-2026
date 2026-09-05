@@ -762,32 +762,76 @@ async function fetchTeams() {
 async function fetchStats() {
   loading.value = true;
   try {
-    const res = await api.get<{ success: boolean; data: any }>("/api/leaderboard");
-    if (res.success && res.data) {
-      stats.value = res.data;
+    const [statsRes, lbRes, floorsRes]: any = await Promise.allSettled([
+      api.get("/api/monitoring/stats"),
+      api.get("/api/leaderboard?limit=5"),
+      api.get("/api/floors"),
+    ]);
+
+    if (statsRes.status === "fulfilled" && statsRes.value?.success && statsRes.value.data) {
+      stats.value = statsRes.value.data;
+      if (Array.isArray(statsRes.value.data.recentActivity) && statsRes.value.data.recentActivity.length > 0) {
+        activities.value = statsRes.value.data.recentActivity.map((a: any) => ({
+          id: a.id,
+          teamName: a.teamName || "Regu",
+          participantName: a.participantName || "Peserta",
+          sourceType: a.sourceType || "GAME",
+          reason: a.reason || "Poin aktivitas",
+          time: new Date(a.createdAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+          amount: a.amount,
+        }));
+      }
+    }
+
+    if (lbRes.status === "fulfilled" && lbRes.value?.success && lbRes.value.data) {
+      if (Array.isArray(lbRes.value.data.topTeams)) {
+        topTeams.value = lbRes.value.data.topTeams.map((t: any) => ({
+          id: t.teamId,
+          name: t.teamName,
+          buddy: t.buddyName || "Game Master",
+          currentFloor: `Lantai ${t.currentFloor || 1}`,
+          score: t.totalScore || 0,
+        }));
+      }
+    }
+
+    if (floorsRes.status === "fulfilled" && floorsRes.value?.success && Array.isArray(floorsRes.value.data)) {
+      floorOccupancy.value = floorsRes.value.data.map((fl: any) => ({
+        level: fl.number,
+        name: fl.name,
+        highlight: fl.description || `Lantai ${fl.number}`,
+        teamsCount: 0,
+        status: "normal",
+      }));
     }
   } catch (err) {
-    console.error("Failed to fetch stats:", err);
+    console.error("Gagal memuat statistik dashboard:", err);
   } finally {
     loading.value = false;
   }
 }
 
-function handleFreezeToggle() {
+async function handleFreezeToggle() {
   isFrozen.value = !isFrozen.value;
-  alert(isFrozen.value ? "PERINGATAN: Sesi gamifikasi di-freeze!" : "Sesi gamifikasi dilanjutkan!");
+  try {
+    await api.post("/api/monitoring/emergency-freeze");
+    alert("PERINGATAN: Sesi darurat telah diaktifkan di server backend!");
+  } catch (err: any) {
+    console.error("Gagal trigger emergency freeze:", err);
+  }
 }
 
 async function submitScoreCorrection() {
   if (!scoreForm.value.teamId) return;
   savingScore.value = true;
   try {
-    await api.post("/api/leaderboard/adjust", {
+    await api.post("/api/scores", {
       teamId: scoreForm.value.teamId,
       amount: scoreForm.value.amount,
       reason: scoreForm.value.reason,
+      sourceType: "CORRECTION",
     });
-    alert("Koreksi skor berhasil dikirim!");
+    alert("Koreksi skor berhasil dicatat ke dalam ledger!");
     showScoreModal.value = false;
     await fetchStats();
   } catch (err: any) {
@@ -798,14 +842,19 @@ async function submitScoreCorrection() {
 }
 
 async function submitBroadcast() {
+  if (!broadcastForm.value.message.trim()) return;
   broadcasting.value = true;
   try {
-    await new Promise((r) => setTimeout(r, 600));
-    alert(`Broadcast berhasil disiarkan ke ${broadcastForm.value.target}!`);
+    await api.post("/api/monitoring/broadcast", {
+      message: broadcastForm.value.message.trim(),
+      severity: broadcastForm.value.type,
+      title: "SIARAN PUSAT GAME MASTER",
+    });
+    alert(`Broadcast berhasil disiarkan secara realtime ke seluruh perangkat!`);
     showBroadcastModal.value = false;
     broadcastForm.value.message = "";
   } catch (err: any) {
-    alert("Gagal broadcast: " + err.message);
+    alert("Gagal broadcast: " + (err.data?.error?.message || err.message));
   } finally {
     broadcasting.value = false;
   }
