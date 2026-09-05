@@ -5,51 +5,74 @@ interface RateLimitRecord {
   resetAt: number;
 }
 
-const ipBuckets = new Map<string, RateLimitRecord>();
+const buckets = new Map<string, RateLimitRecord>();
 
 // Cleanup stale buckets every 5 minutes
 setInterval(() => {
   const now = Date.now();
-  for (const [key, record] of ipBuckets.entries()) {
+  for (const [key, record] of buckets.entries()) {
     if (now > record.resetAt) {
-      ipBuckets.delete(key);
+      buckets.delete(key);
     }
   }
 }, 300000);
 
 export const rateLimiter = new Elysia({ name: "rate-limiter" }).onBeforeHandle(
   ({ request, set }) => {
-    const url = new URL(request.url);
-    const path = url.pathname;
-
-    // Skip health checks
-    if (path === "/" || path === "/api/health") {
+    // If rate limiting is explicitly disabled
+    if (process.env.RATE_LIMIT_DISABLED === "true") {
       return;
     }
 
-    // Determine client identifier (IP address from headers)
-    const clientIp =
-      request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown-ip";
+    const url = new URL(request.url);
+    const path = url.pathname;
+
+    // Skip health checks, swagger documentation, and static files
+    if (
+      path === "/" ||
+      path === "/api/health" ||
+      path.startsWith("/swagger") ||
+      path.startsWith("/reference")
+    ) {
+      return;
+    }
+
+    const isCampusNatMode = process.env.CAMPUS_NAT_MODE === "true";
+
+    // 1. Identify client: prioritize Bearer token (per-student bucket) over IP (NAT shared bucket)
+    const authHeader = request.headers.get("authorization");
+    let clientIdentifier: string;
+
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      // Use token suffix/hash for distinct user-based quota even on shared NAT IP
+      const token = authHeader.substring(7).trim();
+      clientIdentifier = `user:${token.slice(-16)}`;
+    } else {
+      // Fallback to IP address
+      const clientIp =
+        request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+        request.headers.get("x-real-ip") ||
+        "unknown-ip";
+      clientIdentifier = `ip:${clientIp}`;
+    }
 
     const now = Date.now();
     const windowMs = 60000; // 1 minute window
 
-    // Specific rate limits per path type
-    let maxRequests = 120; // 120 req/min general default
+    // Specific rate limits per path type (NAT-aware scaling)
+    let maxRequests = isCampusNatMode ? 3000 : 180; // General API calls per minute
     if (path.startsWith("/api/auth/login")) {
-      maxRequests = 20; // 20 login attempts/min
-    } else if (path.includes("/scores") || path.includes("/game-sessions/complete")) {
-      maxRequests = 40; // 40 score submissions/min
+      maxRequests = isCampusNatMode ? 300 : 30; // Login attempts per minute
+    } else if (path.includes("/scores") || path.includes("/game-sessions/complete") || path.includes("/ormawa/scan")) {
+      maxRequests = isCampusNatMode ? 600 : 60; // Score & scan submissions per minute
     }
 
-    const bucketKey = `${clientIp}:${path.startsWith("/api/auth") ? "auth" : "api"}`;
-    let record = ipBuckets.get(bucketKey);
+    const bucketKey = `${clientIdentifier}:${path.startsWith("/api/auth") ? "auth" : "api"}`;
+    let record = buckets.get(bucketKey);
 
     if (!record || now > record.resetAt) {
       record = { count: 1, resetAt: now + windowMs };
-      ipBuckets.set(bucketKey, record);
+      buckets.set(bucketKey, record);
       return;
     }
 
@@ -69,3 +92,4 @@ export const rateLimiter = new Elysia({ name: "rate-limiter" }).onBeforeHandle(
     }
   }
 );
+

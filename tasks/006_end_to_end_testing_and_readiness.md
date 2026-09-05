@@ -50,19 +50,20 @@
 ## 🛡️ Checklist Kesiapan Operasional Hari H (Battle-Tested Readiness)
 
 ### A. Jaringan & Aksesibilitas Server Kampus
-- [ ] Backend terkonfigurasi bind ke `HOST=0.0.0.0` (dapat diakses oleh HP mahasiswa via IP WiFi kampus, misal `http://192.168.1.100:3000`).
-- [ ] Rate limiter backend tidak memblokir IP bersama jika router kampus menggunakan NAT tunggal.
+- [x] Backend terkonfigurasi bind ke `HOST=0.0.0.0` (dapat diakses oleh HP mahasiswa via IP WiFi kampus, misal `http://192.168.1.100:3000`).
+- [x] Rate limiter backend tidak memblokir IP bersama jika router kampus menggunakan NAT tunggal (mendukung `Authorization` token bucket & `CAMPUS_NAT_MODE`).
 - [ ] Service Worker / PWA cache teruji bekerja dengan baik saat koneksi internet kampus fluktuatif.
 
 ### B. Prosedur Pencadangan Database (Backup & Recovery)
-- [ ] Sediakan perintah satu baris untuk backup instan ke file SQL:
+- [x] Sediakan skrip otomatisasi backup instan ke folder `backups/`:
   ```bash
-  docker exec -t genius_postgres_dev pg_dump -U genius genius_2026 > backup_h1.sql
+  scripts\backup_db.bat
   ```
-- [ ] Sediakan skrip restore cadangan jika terjadi kegagalan hardware panitia:
+- [x] Sediakan skrip otomatisasi restore cadangan jika terjadi kegagalan hardware panitia:
   ```bash
-  docker exec -i genius_postgres_dev psql -U genius genius_2026 < backup_h1.sql
+  scripts\restore_db.bat [file_cadangan.sql]
   ```
+- [x] Skrip simulasi otomatis alur 3 hari penuh (`backend/test-3day-simulation.ts`) lulus 100%.
 
 ### C. SOP Panitia & Tim Helpdesk IT
 - [ ] Panitia memiliki akun superadmin cadangan.

@@ -70,7 +70,12 @@ export const ormawaRoutes = new Elysia({
     "/scan",
     async ({ body, user, set }) => {
       const participantId = body.participantId || user?.userId;
-      const { qrCode } = body;
+      const qrCode = (body.qrCode || (body as any).qrToken || "").trim();
+
+      if (!qrCode) {
+        set.status = 400;
+        return { success: false, error: { code: "MISSING_QR", message: "QR Code stan UKM wajib disertakan" } };
+      }
 
       if (!participantId) {
         set.status = 400;
@@ -203,7 +208,8 @@ export const ormawaRoutes = new Elysia({
       },
       body: t.Object({
         participantId: t.Optional(t.String()),
-        qrCode: t.String({ minLength: 3 }),
+        qrCode: t.Optional(t.String()),
+        qrToken: t.Optional(t.String()),
       }),
     }
   )

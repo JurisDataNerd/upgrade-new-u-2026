@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { db } from "../db";
 import { scoreTransactions, users, teams, teamMembers } from "../db/schema";
-import { eq, sql, desc, and } from "drizzle-orm";
+import { eq, sql, desc, and, lte } from "drizzle-orm";
 import { authMiddleware, requireUser } from "../middleware/auth";
 import { broadcastLeaderboardUpdate } from "../realtime";
 import { logAudit } from "../lib/audit";
@@ -17,13 +17,18 @@ export const leaderboardRoutes = new Elysia({
   .use(requireUser)
 
   // GET /api/leaderboard — Combined team & participant leaderboard + recent ledger
-  .get("/", async ({ query }) => {
+  .get("/", async ({ query, user }) => {
     const stageId = query.stageId || "";
     const limit = Number(query.limit) || 20;
 
-    const teamJoinCondition = stageId
-      ? and(eq(teams.id, scoreTransactions.teamId), eq(scoreTransactions.stageId, stageId))
-      : eq(teams.id, scoreTransactions.teamId);
+    const settings = getSystemSettings();
+    const isFrozenForUser = settings.isLeaderboardFrozen && settings.frozenAt && user?.role !== "ADMIN";
+    const freezeCutoff = isFrozenForUser && settings.frozenAt ? new Date(settings.frozenAt) : null;
+
+    const teamConditions = [eq(teams.id, scoreTransactions.teamId)];
+    if (stageId) teamConditions.push(eq(scoreTransactions.stageId, stageId));
+    if (freezeCutoff) teamConditions.push(lte(scoreTransactions.createdAt, freezeCutoff));
+    const teamJoinCondition = and(...teamConditions);
 
     // 1. Team Leaderboard
     const topTeams = await db
@@ -63,6 +68,9 @@ export const leaderboardRoutes = new Elysia({
     if (stageId) {
       participantQuery = participantQuery.where(eq(scoreTransactions.stageId, stageId));
     }
+    if (freezeCutoff) {
+      participantQuery = participantQuery.where(lte(scoreTransactions.createdAt, freezeCutoff));
+    }
 
     const topParticipants = await participantQuery
       .groupBy(
@@ -80,7 +88,7 @@ export const leaderboardRoutes = new Elysia({
       .limit(limit);
 
     // 3. Recent Transactions
-    const recentTransactions = await db
+    let recentTxQuery = db
       .select({
         id: scoreTransactions.id,
         teamId: scoreTransactions.teamId,
@@ -95,6 +103,13 @@ export const leaderboardRoutes = new Elysia({
       .from(scoreTransactions)
       .leftJoin(teams, eq(scoreTransactions.teamId, teams.id))
       .leftJoin(users, eq(scoreTransactions.participantId, users.id))
+      .$dynamic();
+
+    if (freezeCutoff) {
+      recentTxQuery = recentTxQuery.where(lte(scoreTransactions.createdAt, freezeCutoff));
+    }
+
+    const recentTransactions = await recentTxQuery
       .orderBy(desc(scoreTransactions.createdAt))
       .limit(15);
 
@@ -141,6 +156,10 @@ export const leaderboardRoutes = new Elysia({
     const stageId = query.stageId || "";
     const limit = Number(query.limit) || 10;
 
+    const settings = getSystemSettings();
+    const isFrozenForUser = settings.isLeaderboardFrozen && settings.frozenAt && user?.role !== "ADMIN";
+    const freezeCutoff = isFrozenForUser && settings.frozenAt ? new Date(settings.frozenAt) : null;
+
     let participantQuery = db
       .select({
         participantId: scoreTransactions.participantId,
@@ -162,6 +181,9 @@ export const leaderboardRoutes = new Elysia({
 
     if (stageId) {
       participantQuery = participantQuery.where(eq(scoreTransactions.stageId, stageId));
+    }
+    if (freezeCutoff) {
+      participantQuery = participantQuery.where(lte(scoreTransactions.createdAt, freezeCutoff));
     }
 
     const topParticipants = await participantQuery
@@ -192,6 +214,9 @@ export const leaderboardRoutes = new Elysia({
 
       if (stageId) {
         myRankQuery = myRankQuery.where(eq(scoreTransactions.stageId, stageId));
+      }
+      if (freezeCutoff) {
+        myRankQuery = myRankQuery.where(lte(scoreTransactions.createdAt, freezeCutoff));
       }
 
       const allRanked = await myRankQuery
@@ -226,6 +251,11 @@ export const leaderboardRoutes = new Elysia({
         })),
         myPosition,
       },
+      meta: {
+        isFrozen: settings.isLeaderboardFrozen,
+        frozenAt: settings.frozenAt,
+        freezeMessage: settings.freezeMessage,
+      },
     };
   })
 
@@ -234,9 +264,14 @@ export const leaderboardRoutes = new Elysia({
     const stageId = query.stageId || "";
     const limit = Number(query.limit) || 10;
 
-    const teamJoinCondition = stageId
-      ? and(eq(teams.id, scoreTransactions.teamId), eq(scoreTransactions.stageId, stageId))
-      : eq(teams.id, scoreTransactions.teamId);
+    const settings = getSystemSettings();
+    const isFrozenForUser = settings.isLeaderboardFrozen && settings.frozenAt && user?.role !== "ADMIN";
+    const freezeCutoff = isFrozenForUser && settings.frozenAt ? new Date(settings.frozenAt) : null;
+
+    const teamConditions = [eq(teams.id, scoreTransactions.teamId)];
+    if (stageId) teamConditions.push(eq(scoreTransactions.stageId, stageId));
+    if (freezeCutoff) teamConditions.push(lte(scoreTransactions.createdAt, freezeCutoff));
+    const teamJoinCondition = and(...teamConditions);
 
     // Team rankings query
     const topTeams = await db
@@ -296,6 +331,11 @@ export const leaderboardRoutes = new Elysia({
           transactionCount: Number(t.transactionCount),
         })),
         myTeamPosition,
+      },
+      meta: {
+        isFrozen: settings.isLeaderboardFrozen,
+        frozenAt: settings.frozenAt,
+        freezeMessage: settings.freezeMessage,
       },
     };
   })
