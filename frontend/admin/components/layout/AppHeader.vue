@@ -1,6 +1,6 @@
 <template>
   <header
-    class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b-2 border-[#4a3624] bg-[#1a140f]/95 px-4 md:px-6 backdrop-blur-md shadow-md gap-3"
+    class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b-2 border-[#5a3a18] bg-[#24170e]/95 px-4 md:px-6 backdrop-blur-md shadow-md gap-3"
   >
     <!-- Left: Mobile Trigger + Clean Page Title & Icon -->
     <div class="flex items-center gap-3 min-w-0">

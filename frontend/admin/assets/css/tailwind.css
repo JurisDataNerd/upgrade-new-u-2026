@@ -5,23 +5,23 @@
 @layer base {
   :root {
     /* Pixel RPG Dark Theme Palette (UNU Yogyakarta GENIUS 2026) */
-    --background: 28 35% 7%; /* #16110d Deep Warm Charcoal / Dark Dusk */
+    --background: 28 45% 12%; /* #2d1b0e Stardew Valley Warm Oak / Same as localhost:3000 */
     --foreground: 45 40% 95%; /* #f8f6f0 Cream White */
 
-    --card: 28 30% 10%; /* #211913 Game Frame Dark */
+    --card: 28 35% 18%; /* #3d2b1e Game Frame Warm Surface */
     --card-foreground: 45 40% 95%;
 
-    --popover: 28 30% 10%;
+    --popover: 28 35% 18%;
     --popover-foreground: 45 40% 95%;
 
     --primary: 43 96% 56%; /* #f59e0b Gold / Amber Highlight */
     --primary-foreground: 28 50% 10%;
 
-    --secondary: 28 25% 16%; /* #33261d Deep Wood Frame */
+    --secondary: 28 30% 24%; /* #4d3b2e Warm Wood Frame */
     --secondary-foreground: 45 40% 95%;
 
-    --muted: 28 20% 14%;
-    --muted-foreground: 35 15% 65%;
+    --muted: 28 25% 18%;
+    --muted-foreground: 35 25% 70%;
 
     --accent: 142 71% 45%; /* #22c55e Retro RPG Green */
     --accent-foreground: 45 40% 95%;
@@ -29,8 +29,8 @@
     --destructive: 0 84% 60%; /* #ef4444 */
     --destructive-foreground: 45 40% 95%;
 
-    --border: 28 25% 20%; /* #423223 */
-    --input: 28 25% 18%;
+    --border: 28 30% 25%; /* #523924 Warm Oak Inset Border */
+    --input: 28 30% 20%;
     --ring: 43 96% 56%;
 
     --radius: 0.5rem;
@@ -44,13 +44,13 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #14100c;
-  border-left: 2px solid #2d2218;
+  background: #1e130a;
+  border-left: 2px solid #3d2b1e;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #523e2b;
-  border: 2px solid #14100c;
+  background: #6a4c30;
+  border: 2px solid #1e130a;
   border-radius: 0px;
 }
 
@@ -61,16 +61,16 @@
 /* Typography & Base */
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: hsl(var(--background));
+  background-color: #2d1b0e;
   color: hsl(var(--foreground));
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(at 10% 10%, rgba(245, 158, 11, 0.08) 0px, transparent 45%),
-    radial-gradient(at 90% 90%, rgba(34, 197, 94, 0.06) 0px, transparent 45%),
-    radial-gradient(at 50% 30%, rgba(217, 119, 6, 0.05) 0px, transparent 55%),
-    linear-gradient(to bottom, #16110d 0%, #0d0a07 100%);
+    radial-gradient(at 10% 10%, rgba(245, 158, 11, 0.12) 0px, transparent 45%),
+    radial-gradient(at 90% 90%, rgba(34, 197, 94, 0.08) 0px, transparent 45%),
+    radial-gradient(at 50% 30%, rgba(217, 119, 6, 0.08) 0px, transparent 55%),
+    linear-gradient(to bottom, #2d1b0e 0%, #1e1208 100%);
   background-attachment: fixed;
 }
 

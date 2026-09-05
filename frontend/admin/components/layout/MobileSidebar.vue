@@ -56,11 +56,13 @@
       <div class="shrink-0 border-t-2 border-[#4a3624] bg-[#15100c] p-3">
         <div class="flex items-center justify-between gap-2 rounded border border-[#4a3624] bg-[#221812] p-2">
           <div class="flex items-center gap-2.5 min-w-0">
-            <Avatar class="h-8 w-8 border-2 border-[#f59e0b] bg-[#271d15]">
-              <AvatarFallback class="bg-[#271d15] font-mono text-xs font-bold text-[#f59e0b]">
-                {{ userInitials }}
-              </AvatarFallback>
-            </Avatar>
+            <div class="h-8 w-8 rounded border-2 border-[#f59e0b] bg-[#271d15] overflow-hidden shrink-0 flex items-center justify-center p-1">
+              <img
+                :src="user?.role === 'ADMIN' ? '/unu.png' : (user?.username === 'buddy03' ? '/character-cewek-avatar.png' : '/character-cowok-avatar.png')"
+                alt="Admin Avatar"
+                class="h-full w-full object-contain"
+              />
+            </div>
             <div class="flex flex-col min-w-0 leading-tight">
               <span class="truncate text-xs font-bold text-foreground">
                 {{ user?.fullName || "Administrator" }}
@@ -97,6 +99,7 @@ import {
   UserCog,
   GraduationCap,
   UserCheck,
+  CalendarCheck,
   Gamepad2,
   HelpCircle,
   Sparkles,
@@ -137,6 +140,8 @@ const navGroups = [
   {
     label: "Organisasi Tim",
     items: [
+      { to: "/attendance", label: "Presensi Harian", icon: CalendarCheck },
+      { to: "/buddy", label: "Portal Buddy (Lapangan)", icon: UserCheck },
       { to: "/participants", label: "Peserta RPG", icon: GraduationCap },
       { to: "/buddies", label: "Buddy (GM)", icon: UserCheck },
       { to: "/teams", label: "Tim Petualang", icon: Users },

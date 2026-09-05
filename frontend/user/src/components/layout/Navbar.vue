@@ -10,6 +10,8 @@ import {
   PhTrophy,
   PhHouse,
   PhGameController,
+  PhCalendarCheck,
+  PhStorefront,
   PhList,
   PhX,
 } from '@phosphor-icons/vue';
@@ -28,7 +30,9 @@ const currentLevel = computed(() => gameStore.getCurrentLevel());
 
 const navLinks = [
   { href: '/', label: 'Beranda', icon: PhHouse },
+  { href: '/presensi', label: 'Presensi', icon: PhCalendarCheck },
   { href: '/play', label: 'Main', icon: PhGameController },
+  { href: '/ormawa', label: 'Ormawa', icon: PhStorefront },
   { href: '/peta', label: 'Peta', icon: PhBuildings },
   { href: '/leaderboard', label: 'Peringkat', icon: PhTrophy },
   { href: '/paspor', label: 'Paspor', icon: PhIdentificationBadge },

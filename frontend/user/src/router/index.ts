@@ -9,6 +9,8 @@ import BoothDetailView from '@/views/BoothDetailView.vue';
 import PasporView from '@/views/PasporView.vue';
 import LeaderboardView from '@/views/LeaderboardView.vue';
 import BantuanView from '@/views/BantuanView.vue';
+import AttendanceView from '@/views/AttendanceView.vue';
+import OrmawaExpoView from '@/views/OrmawaExpoView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -55,6 +57,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/leaderboard',
     name: 'leaderboard',
     component: LeaderboardView,
+  },
+  {
+    path: '/presensi',
+    name: 'presensi',
+    component: AttendanceView,
+  },
+  {
+    path: '/ormawa',
+    name: 'ormawa',
+    component: OrmawaExpoView,
   },
   {
     path: '/bantuan',

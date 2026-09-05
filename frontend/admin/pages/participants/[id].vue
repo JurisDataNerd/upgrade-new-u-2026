@@ -72,14 +72,18 @@
         <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <!-- User Identity Left Section -->
           <div class="flex items-start sm:items-center gap-3.5">
-            <!-- Overall Rating Circle -->
-            <div class="relative group">
-              <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-xl bg-gradient-to-br from-[#ca8a04]/30 to-[#1e1712] border-2 border-[#f59e0b] flex flex-col items-center justify-center font-pixel shadow-[0_0_20px_rgba(245,158,11,0.35)] shrink-0">
-                <span class="text-base sm:text-xl font-bold text-[#facc15] leading-none">{{ overallRating }}</span>
-                <span class="text-[8px] text-amber-300/80 font-bold uppercase mt-0.5 tracking-wider">OVR</span>
+            <!-- Participant Avatar & OVR Badge -->
+            <div class="relative group shrink-0">
+              <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-xl border-2 border-[#f59e0b] overflow-hidden bg-[#1e1712] shadow-[0_0_20px_rgba(245,158,11,0.35)] flex items-center justify-center">
+                <img
+                  :src="characterAvatarUrl"
+                  :alt="participant.fullName || 'Peserta'"
+                  class="h-full w-full object-cover"
+                  style="image-rendering: pixelated;"
+                />
               </div>
-              <div class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-black flex items-center justify-center" title="Status: Aktif">
-                <div class="h-1.5 w-1.5 rounded-full bg-white animate-ping" />
+              <div class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded bg-gradient-to-r from-[#ca8a04] to-[#f59e0b] border border-black font-pixel text-[9px] font-bold text-black shadow-md" title="Overall Rating">
+                {{ overallRating }} OVR
               </div>
             </div>
 
@@ -290,59 +294,30 @@
             </div>
           </div>
 
-          <!-- DYNAMIC RPG HERO FIGURE (SVG VECTOR AVATAR) -->
-          <div class="relative my-4 flex items-center justify-center z-10 select-none">
+          <!-- DYNAMIC RPG HERO FIGURE (OFFICIAL UNU PIXEL CHARACTER) -->
+          <div class="relative my-4 flex items-center justify-center z-10 select-none min-h-[260px]">
             <!-- Glowing Aura Rings Behind Character -->
             <div
-              class="absolute h-56 w-56 rounded-full border border-dashed opacity-40 animate-[spin_20s_linear_infinite]"
-              :style="{ borderColor: characterClassData.color }"
+              class="absolute h-60 w-60 rounded-full border border-dashed opacity-40 animate-[spin_20s_linear_infinite]"
+              :style="{ borderColor: characterClassData.color || '#f59e0b' }"
             />
             <div
-              class="absolute h-44 w-44 rounded-full border opacity-30 animate-[spin_12s_linear_infinite_reverse]"
-              :style="{ borderColor: characterClassData.color }"
+              class="absolute h-48 w-48 rounded-full border opacity-30 animate-[spin_12s_linear_infinite_reverse]"
+              :style="{ borderColor: characterClassData.color || '#f59e0b' }"
             />
 
-            <!-- Hero Vector Graphics -->
+            <!-- Hero Character Sprite -->
             <div class="relative flex flex-col items-center group transition-transform hover:scale-105 duration-300">
-              <svg width="180" height="240" viewBox="0 0 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_0_16px_rgba(245,158,11,0.3)]">
-                <!-- Outer Cyber Glow -->
-                <circle cx="90" cy="120" r="70" :fill="characterClassData.color" fill-opacity="0.08" />
-
-                <!-- Head / Helmet -->
-                <path d="M70 45 C70 25, 110 25, 110 45 L110 65 C110 75, 70 75, 70 65 Z" fill="#1e2433" :stroke="characterClassData.color" stroke-width="2.5" />
-                
-                <!-- Glowing Visor -->
-                <rect x="74" y="42" width="32" height="10" rx="3" fill="#38bdf8" class="animate-pulse" />
-
-                <!-- Torso / Tactical Rig -->
-                <path d="M62 70 L118 70 L112 135 L68 135 Z" fill="#181d28" :stroke="characterClassData.color" stroke-width="2.5" />
-                <!-- Armor Plates -->
-                <line x1="72" y1="85" x2="108" y2="85" stroke="#f59e0b" stroke-width="2" />
-                <line x1="75" y1="100" x2="105" y2="100" stroke="#f59e0b" stroke-width="2" />
-                <line x1="78" y1="115" x2="102" y2="115" stroke="#f59e0b" stroke-width="2" />
-
-                <!-- Left Arm & Weapon Attachment -->
-                <path d="M62 72 L45 110 L52 114 L68 80 Z" fill="#1e2433" :stroke="characterClassData.color" stroke-width="2" />
-                <!-- Right Arm Holding Class Artifact -->
-                <path d="M118 72 L135 110 L128 114 L112 80 Z" fill="#1e2433" :stroke="characterClassData.color" stroke-width="2" />
-
-                <!-- Class Weapon Graphic (Diagonal Tactical Blade / Core) -->
-                <line x1="40" y1="130" x2="140" y2="90" stroke="#f59e0b" stroke-width="7" stroke-linecap="round" class="drop-shadow-[0_0_8px_#f59e0b]" />
-                <line x1="42" y1="129" x2="138" y2="91" stroke="#fff" stroke-width="2" stroke-linecap="round" />
-
-                <!-- Left Leg -->
-                <path d="M72 135 L68 205 L82 205 L84 135 Z" fill="#151922" :stroke="characterClassData.color" stroke-width="2" />
-                <!-- Right Leg -->
-                <path d="M96 135 L98 205 L112 205 L108 135 Z" fill="#151922" :stroke="characterClassData.color" stroke-width="2" />
-
-                <!-- Boots -->
-                <rect x="64" y="200" width="20" height="10" rx="2" fill="#1e2433" stroke="#f59e0b" stroke-width="1.5" />
-                <rect x="96" y="200" width="20" height="10" rx="2" fill="#1e2433" stroke="#f59e0b" stroke-width="1.5" />
-              </svg>
+              <img
+                :src="characterSpriteUrl"
+                :alt="participant.fullName || 'Karakter UNU'"
+                class="h-60 w-auto object-contain drop-shadow-[0_0_24px_rgba(245,158,11,0.45)]"
+                style="image-rendering: pixelated;"
+              />
             </div>
 
             <!-- Pedestal Ring Base -->
-            <div class="absolute -bottom-4 w-44 h-7 rounded-[100%] bg-gradient-to-r from-transparent via-[#f59e0b]/40 to-transparent border-t border-[#f59e0b] blur-[1px]" />
+            <div class="absolute -bottom-4 w-48 h-7 rounded-[100%] bg-gradient-to-r from-transparent via-[#f59e0b]/50 to-transparent border-t border-[#f59e0b] blur-[1px]" />
           </div>
 
           <!-- Bottom Operative Model Banner -->
@@ -649,6 +624,7 @@ import {
   getTitleRarityDetails,
   findTitleDefinition,
 } from "@genius/types";
+import { mockDb } from "@/lib/mockDb";
 
 const route = useRoute();
 const api = useApi();
@@ -658,6 +634,19 @@ const participantId = computed(() => String(route.params.id || ""));
 const loading = ref(true);
 const saving = ref(false);
 const participant = ref<any>(null);
+
+const characterSpriteUrl = computed(() => {
+  if (participant.value?.gender === "FEMALE") {
+    return "/character-cewek.png";
+  }
+  return "/character-cowok.png";
+});
+
+const characterAvatarUrl = computed(() => {
+  if (participant.value?.avatarUrl) return participant.value.avatarUrl;
+  if (participant.value?.gender === "FEMALE") return "/character-cewek-avatar.png";
+  return "/character-cowok-avatar.png";
+});
 
 const activeCategory = ref("appearance");
 const selectedSlotIndex = ref(3); // default to Legs / Weapon
@@ -669,7 +658,7 @@ const awardForm = ref({
   upgradeTier: undefined as number | undefined,
 });
 
-// Load Participant Data from Backend API
+// Load Participant Data from Backend API or Mock DB
 async function fetchParticipantDetail() {
   if (!participantId.value) return;
   loading.value = true;
@@ -678,15 +667,28 @@ async function fetchParticipantDetail() {
     const data = res?.data !== undefined ? res.data : res;
     if (data && (data.id || data.username)) {
       participant.value = data;
-    } else {
-      participant.value = null;
+      loading.value = false;
+      return;
     }
   } catch (err: any) {
-    console.error("Failed to fetch participant detail:", err);
-    participant.value = null;
-  } finally {
-    loading.value = false;
+    console.warn("API participant fetch failed, falling back to mockDb:", err?.message || err);
   }
+
+  // Fallback to mockDb
+  const mock = mockDb.getUsers().find(
+    (u) =>
+      u.id === participantId.value ||
+      u.username === participantId.value ||
+      u.nim === participantId.value
+  );
+  if (mock) {
+    participant.value = mock;
+  } else {
+    // If specific ID is not matched, fallback to first mock participant
+    const fallbackParticipant = mockDb.getUsers().find((u) => u.role === "PARTICIPANT");
+    participant.value = fallbackParticipant || null;
+  }
+  loading.value = false;
 }
 
 onMounted(() => {

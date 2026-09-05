@@ -208,30 +208,31 @@ export function createInitialMockData() {
       email: "admin@unu-jogja.ac.id",
       role: "ADMIN",
       status: "ACTIVE",
+      avatarUrl: "/unu.png",
       createdAt: "2026-09-01T00:00:00Z",
     },
     // Buddies (GM)
-    { id: "usr-b1", username: "buddy.fikri", fullName: "Muhammad Fikri, S.Kom", email: "fikri@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", assignedTeamId: "team-1", assignedTeamName: "Kelompok 01 - KH. Hasyim Asy'ari", createdAt: "2026-09-01T00:00:00Z" },
-    { id: "usr-b2", username: "buddy.rina", fullName: "Rina Permata Sari, M.Sc", email: "rina@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", assignedTeamId: "team-2", assignedTeamName: "Kelompok 02 - KH. Wahab Chasbullah", createdAt: "2026-09-01T00:00:00Z" },
-    { id: "usr-b3", username: "buddy.hendra", fullName: "Hendra Wijaya, M.T", email: "hendra@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", assignedTeamId: "team-3", assignedTeamName: "Kelompok 03 - KH. Bisri Syansuri", createdAt: "2026-09-01T00:00:00Z" },
-    { id: "usr-b4", username: "buddy.putri", fullName: "Putri Handayani, S.E", email: "putri@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", assignedTeamId: "team-4", assignedTeamName: "Kelompok 04 - Gus Dur", createdAt: "2026-09-01T00:00:00Z" },
+    { id: "usr-b1", username: "buddy.fikri", fullName: "Muhammad Fikri, S.Kom", email: "fikri@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", assignedTeamId: "team-1", assignedTeamName: "Genius 01", createdAt: "2026-09-01T00:00:00Z" },
+    { id: "usr-b2", username: "buddy.rina", fullName: "Rina Permata Sari, M.Sc", email: "rina@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", assignedTeamId: "team-2", assignedTeamName: "Genius 02", createdAt: "2026-09-01T00:00:00Z" },
+    { id: "usr-b3", username: "buddy.hendra", fullName: "Hendra Wijaya, M.T", email: "hendra@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", assignedTeamId: "team-3", assignedTeamName: "Genius 03", createdAt: "2026-09-01T00:00:00Z" },
+    { id: "usr-b4", username: "buddy.putri", fullName: "Putri Handayani, S.E", email: "putri@unu-jogja.ac.id", role: "BUDDY", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", assignedTeamId: "team-4", assignedTeamName: "Genius 04", createdAt: "2026-09-01T00:00:00Z" },
     // Participants
-    { id: "usr-p1", username: "260100101", fullName: "Ahmad Fauzi Ridwan", email: "fauzi.26@mhs.unu-jogja.ac.id", nim: "260100101", prodi: "Informatika", faculty: "Fakultas Teknologi Informasi", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", characterClass: "CYBER_KNIGHT", characterTier: 2, characterTitle: "Cyber Adept", totalScore: 980, teamId: "team-1", teamName: "Kelompok 01 - KH. Hasyim Asy'ari", teamCode: "HASYIM-01", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p2", username: "260100102", fullName: "Siti Nur Azizah", email: "azizah.26@mhs.unu-jogja.ac.id", nim: "260100102", prodi: "Bioteknologi", faculty: "Fakultas Ilmu Terapan", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", characterClass: "DATA_ALCHEMIST", characterTier: 2, characterTitle: "Bio Alchemist", totalScore: 920, teamId: "team-2", teamName: "Kelompok 02 - KH. Wahab Chasbullah", teamCode: "WAHAB-02", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p3", username: "260100103", fullName: "Dewi Ayu Larasati", email: "dewi.26@mhs.unu-jogja.ac.id", nim: "260100103", prodi: "Teknik Elektro", faculty: "Fakultas Teknologi Informasi", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", characterClass: "QUANTUM_MAGE", characterTier: 3, characterTitle: "Arcane Master", totalScore: 1120, teamId: "team-3", teamName: "Kelompok 03 - KH. Bisri Syansuri", teamCode: "BISRI-03", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p4", username: "260100104", fullName: "M. Rizqi Pratama", email: "rizqi.26@mhs.unu-jogja.ac.id", nim: "260100104", prodi: "Manajemen", faculty: "Fakultas Ekonomi Bisnis", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", characterClass: "SHADOW_SCOUT", characterTier: 1, characterTitle: "Apprentice Scout", totalScore: 780, teamId: "team-4", teamName: "Kelompok 04 - Gus Dur", teamCode: "GUSDUR-04", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p5", username: "260100105", fullName: "Annisa Maharani", email: "annisa.26@mhs.unu-jogja.ac.id", nim: "260100105", prodi: "Akuntansi", faculty: "Fakultas Ekonomi Bisnis", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", characterClass: "DATA_ALCHEMIST", characterTier: 2, characterTitle: "Data Artisan", totalScore: 840, teamId: "team-1", teamName: "Kelompok 01 - KH. Hasyim Asy'ari", teamCode: "HASYIM-01", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p6", username: "260100106", fullName: "Budi Santoso", email: "budi.26@mhs.unu-jogja.ac.id", nim: "260100106", prodi: "Studi Islam Antarbangsa", faculty: "Fakultas Dirasat Islamiyah", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", characterClass: "CYBER_KNIGHT", characterTier: 1, characterTitle: "Guardian Cadet", totalScore: 710, teamId: "team-2", teamName: "Kelompok 02 - KH. Wahab Chasbullah", teamCode: "WAHAB-02", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p7", username: "260100107", fullName: "Fajar Hidayatullah", email: "fajar.26@mhs.unu-jogja.ac.id", nim: "260100107", prodi: "Teknik Industri", faculty: "Fakultas Teknologi Informasi", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", characterClass: "SHADOW_SCOUT", characterTier: 2, characterTitle: "Ranger Pathfinder", totalScore: 890, teamId: "team-3", teamName: "Kelompok 03 - KH. Bisri Syansuri", teamCode: "BISRI-03", createdAt: "2026-09-01T06:00:00Z" },
-    { id: "usr-p8", username: "260100108", fullName: "Zahra Salsabila", email: "zahra.26@mhs.unu-jogja.ac.id", nim: "260100108", prodi: "Agribisnis", faculty: "Fakultas Ilmu Terapan", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", characterClass: "QUANTUM_MAGE", characterTier: 1, characterTitle: "Novice Elementalist", totalScore: 760, teamId: "team-4", teamName: "Kelompok 04 - Gus Dur", teamCode: "GUSDUR-04", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p1", username: "260100101", fullName: "Ahmad Fauzi Ridwan", email: "fauzi.26@mhs.unu-jogja.ac.id", nim: "260100101", prodi: "Informatika", faculty: "Fakultas Teknologi Informasi", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "CYBER_KNIGHT", characterTier: 2, characterTitle: "Cyber Adept", totalScore: 980, teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p2", username: "260100102", fullName: "Siti Nur Azizah", email: "azizah.26@mhs.unu-jogja.ac.id", nim: "260100102", prodi: "Bioteknologi", faculty: "Fakultas Ilmu Terapan", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "DATA_ALCHEMIST", characterTier: 2, characterTitle: "Bio Alchemist", totalScore: 920, teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p3", username: "260100103", fullName: "Dewi Ayu Larasati", email: "dewi.26@mhs.unu-jogja.ac.id", nim: "260100103", prodi: "Teknik Elektro", faculty: "Fakultas Teknologi Informasi", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "QUANTUM_MAGE", characterTier: 3, characterTitle: "Arcane Master", totalScore: 1120, teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p4", username: "260100104", fullName: "M. Rizqi Pratama", email: "rizqi.26@mhs.unu-jogja.ac.id", nim: "260100104", prodi: "Manajemen", faculty: "Fakultas Ekonomi Bisnis", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "SHADOW_SCOUT", characterTier: 1, characterTitle: "Apprentice Scout", totalScore: 780, teamId: "team-4", teamName: "Genius 04", teamCode: "GENIUS-04", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p5", username: "260100105", fullName: "Annisa Maharani", email: "annisa.26@mhs.unu-jogja.ac.id", nim: "260100105", prodi: "Akuntansi", faculty: "Fakultas Ekonomi Bisnis", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "DATA_ALCHEMIST", characterTier: 2, characterTitle: "Data Artisan", totalScore: 840, teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p6", username: "260100106", fullName: "Budi Santoso", email: "budi.26@mhs.unu-jogja.ac.id", nim: "260100106", prodi: "Studi Islam Antarbangsa", faculty: "Fakultas Dirasat Islamiyah", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "CYBER_KNIGHT", characterTier: 1, characterTitle: "Guardian Cadet", totalScore: 710, teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p7", username: "260100107", fullName: "Fajar Hidayatullah", email: "fajar.26@mhs.unu-jogja.ac.id", nim: "260100107", prodi: "Teknik Industri", faculty: "Fakultas Teknologi Informasi", gender: "MALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cowok-avatar.png", characterClass: "SHADOW_SCOUT", characterTier: 2, characterTitle: "Ranger Pathfinder", totalScore: 890, teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", createdAt: "2026-09-01T06:00:00Z" },
+    { id: "usr-p8", username: "260100108", fullName: "Zahra Salsabila", email: "zahra.26@mhs.unu-jogja.ac.id", nim: "260100108", prodi: "Agribisnis", faculty: "Fakultas Ilmu Terapan", gender: "FEMALE", role: "PARTICIPANT", status: "ACTIVE", avatarUrl: "/character-cewek-avatar.png", characterClass: "QUANTUM_MAGE", characterTier: 1, characterTitle: "Novice Elementalist", totalScore: 760, teamId: "team-4", teamName: "Genius 04", teamCode: "GENIUS-04", createdAt: "2026-09-01T06:00:00Z" },
   ];
 
   const teams: MockTeam[] = [
     {
       id: "team-1",
       teamId: "team-1",
-      code: "HASYIM-01",
-      name: "Kelompok 01 - KH. Hasyim Asy'ari",
+      code: "GENIUS-01",
+      name: "Genius 01",
       leaderName: "Ahmad Fauzi Ridwan",
       leaderId: "usr-p1",
       buddyName: "Muhammad Fikri, S.Kom",
@@ -250,8 +251,8 @@ export function createInitialMockData() {
     {
       id: "team-2",
       teamId: "team-2",
-      code: "WAHAB-02",
-      name: "Kelompok 02 - KH. Wahab Chasbullah",
+      code: "GENIUS-02",
+      name: "Genius 02",
       leaderName: "Siti Nur Azizah",
       leaderId: "usr-p2",
       buddyName: "Rina Permata Sari, M.Sc",
@@ -270,8 +271,8 @@ export function createInitialMockData() {
     {
       id: "team-3",
       teamId: "team-3",
-      code: "BISRI-03",
-      name: "Kelompok 03 - KH. Bisri Syansuri",
+      code: "GENIUS-03",
+      name: "Genius 03",
       leaderName: "Dewi Ayu Larasati",
       leaderId: "usr-p3",
       buddyName: "Hendra Wijaya, M.T",
@@ -290,8 +291,8 @@ export function createInitialMockData() {
     {
       id: "team-4",
       teamId: "team-4",
-      code: "GUSDUR-04",
-      name: "Kelompok 04 - Gus Dur (KH. Abdurrahman Wahid)",
+      code: "GENIUS-04",
+      name: "Genius 04",
       leaderName: "M. Rizqi Pratama",
       leaderId: "usr-p4",
       buddyName: "Putri Handayani, S.E",
@@ -379,21 +380,21 @@ export function createInitialMockData() {
   ];
 
   const gameSessions: MockGameSession[] = [
-    { id: "ses-1", gameId: "game-2", gameTitle: "Cyber Protocol Matrix Breaker", teamId: "team-1", teamName: "Kelompok 01 - KH. Hasyim Asy'ari", teamCode: "HASYIM-01", floorNumber: 3, locationName: "Lab Komputer Cyber", status: "ACTIVE", score: 280, startedAt: "2026-09-02T08:15:00Z", elapsedSeconds: 142, buddyName: "Muhammad Fikri, S.Kom" },
-    { id: "ses-2", gameId: "game-1", gameTitle: "Aswaja Speed Quiz Arena", teamId: "team-2", teamName: "Kelompok 02 - KH. Wahab Chasbullah", teamCode: "WAHAB-02", floorNumber: 1, locationName: "Lobby Utama", status: "ACTIVE", score: 190, startedAt: "2026-09-02T08:18:00Z", elapsedSeconds: 84, buddyName: "Rina Permata Sari, M.Sc" },
-    { id: "ses-3", gameId: "game-3", gameTitle: "Memory Tile 9 Lantai UNU", teamId: "team-3", teamName: "Kelompok 03 - KH. Bisri Syansuri", teamCode: "BISRI-03", floorNumber: 2, locationName: "Perpustakaan Terpadu", status: "READY", score: 0, elapsedSeconds: 0, buddyName: "Hendra Wijaya, M.T" },
+    { id: "ses-1", gameId: "game-2", gameTitle: "Cyber Protocol Matrix Breaker", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", floorNumber: 3, locationName: "Lab Komputer Cyber", status: "ACTIVE", score: 280, startedAt: "2026-09-02T08:15:00Z", elapsedSeconds: 142, buddyName: "Muhammad Fikri, S.Kom" },
+    { id: "ses-2", gameId: "game-1", gameTitle: "Aswaja Speed Quiz Arena", teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", floorNumber: 1, locationName: "Lobby Utama", status: "ACTIVE", score: 190, startedAt: "2026-09-02T08:18:00Z", elapsedSeconds: 84, buddyName: "Rina Permata Sari, M.Sc" },
+    { id: "ses-3", gameId: "game-3", gameTitle: "Memory Tile 9 Lantai UNU", teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", floorNumber: 2, locationName: "Perpustakaan Terpadu", status: "READY", score: 0, elapsedSeconds: 0, buddyName: "Hendra Wijaya, M.T" },
   ];
 
   const ledger: MockLedgerEntry[] = [
-    { id: "led-1", teamId: "team-1", teamName: "Kelompok 01 - KH. Hasyim Asy'ari", teamCode: "HASYIM-01", amount: 200, type: "MISSION_REWARD", reason: "Selesai Misi L1: Jejak Sejarah NU", operator: "Buddy Fikri", createdAt: "2026-09-02T08:05:00Z" },
-    { id: "led-2", teamId: "team-1", teamName: "Kelompok 01 - KH. Hasyim Asy'ari", teamCode: "HASYIM-01", amount: 300, type: "MISSION_REWARD", reason: "Selesai Misi L3: Cyber Codebreaker", operator: "Buddy Fikri", createdAt: "2026-09-02T08:25:00Z" },
-    { id: "led-3", teamId: "team-2", teamName: "Kelompok 02 - KH. Wahab Chasbullah", teamCode: "WAHAB-02", amount: 250, type: "MISSION_REWARD", reason: "Selesai Misi L2: Sumpah Integritas", operator: "Buddy Rina", createdAt: "2026-09-02T08:15:00Z" },
-    { id: "led-4", teamId: "team-3", teamName: "Kelompok 03 - KH. Bisri Syansuri", teamCode: "BISRI-03", amount: 50, type: "ADMIN_ADJUSTMENT", reason: "Bonus Yel-Yel Kreatif Terheboh Lantai 1", operator: "Super Admin", createdAt: "2026-09-02T08:30:00Z" },
+    { id: "led-1", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", amount: 200, type: "MISSION_REWARD", reason: "Selesai Misi L1: Jejak Sejarah NU", operator: "Fikri", createdAt: "2026-09-02T08:05:00Z" },
+    { id: "led-2", teamId: "team-1", teamName: "Genius 01", teamCode: "GENIUS-01", amount: 300, type: "MISSION_REWARD", reason: "Selesai Misi L3: Cyber Codebreaker", operator: "Fikri", createdAt: "2026-09-02T08:25:00Z" },
+    { id: "led-3", teamId: "team-2", teamName: "Genius 02", teamCode: "GENIUS-02", amount: 250, type: "MISSION_REWARD", reason: "Selesai Misi L2: Sumpah Integritas", operator: "Rina", createdAt: "2026-09-02T08:15:00Z" },
+    { id: "led-4", teamId: "team-3", teamName: "Genius 03", teamCode: "GENIUS-03", amount: 50, type: "ADMIN_ADJUSTMENT", reason: "Bonus Yel-Yel Kreatif Terheboh Lantai 1", operator: "Super Admin", createdAt: "2026-09-02T08:30:00Z" },
   ];
 
   const auditLogs: MockAuditLog[] = [
     { id: "log-1", action: "STAGE_ACTIVATED", targetType: "STAGE", targetId: "stg-1", targetName: "Stage 1: The Induction", operator: "Super Admin", details: "Mengaktifkan Stage 1 untuk seluruh 8 tim petualang.", ipAddress: "127.0.0.1", createdAt: "2026-09-02T07:30:00Z" },
-    { id: "log-2", action: "SCORE_ADJUSTED", targetType: "TEAM", targetId: "team-3", targetName: "Kelompok 03 - KH. Bisri Syansuri", operator: "Super Admin", details: "Menambahkan +50 poin bonus yel-yel kreatif.", ipAddress: "127.0.0.1", createdAt: "2026-09-02T08:30:00Z" },
+    { id: "log-2", action: "SCORE_ADJUSTED", targetType: "TEAM", targetId: "team-3", targetName: "Genius 03", operator: "Super Admin", details: "Menambahkan +50 poin bonus yel-yel kreatif.", ipAddress: "127.0.0.1", createdAt: "2026-09-02T08:30:00Z" },
     { id: "log-3", action: "LOCATION_STATUS_CHANGED", targetType: "LOCATION", targetId: "loc-5", targetName: "Lab Komputer Cyber", operator: "System Telemetry", details: "Status diubah menjadi OCCUPIED (2 tim sedang aktif).", ipAddress: "127.0.0.1", createdAt: "2026-09-02T08:15:00Z" },
   ];
 

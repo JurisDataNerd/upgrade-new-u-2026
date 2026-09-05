@@ -690,7 +690,7 @@ const floorOccupancy = ref([
 const activities = ref([
   {
     id: "act-1",
-    teamName: "Team Garuda 01",
+    teamName: "Genius 01",
     participantName: "Ahmad Dahlan",
     sourceType: "GAME",
     reason: "Menyelesaikan Speed Reflex (Score: 980)",
@@ -700,8 +700,8 @@ const activities = ref([
   },
   {
     id: "act-2",
-    teamName: "Team Rajawali 03",
-    participantName: "Buddy Budi",
+    teamName: "Genius 03",
+    participantName: "Budi Santoso",
     sourceType: "BONUS",
     reason: "Bonus kekompakan yel-yel tim",
     location: "Lantai 1 - Atrium",
@@ -710,7 +710,7 @@ const activities = ref([
   },
   {
     id: "act-3",
-    teamName: "Team Elang 05",
+    teamName: "Genius 05",
     participantName: "Siti Fatimah",
     sourceType: "QR",
     reason: "Verifikasi Checkpoint QR Lantai 3",
@@ -720,7 +720,7 @@ const activities = ref([
   },
   {
     id: "act-4",
-    teamName: "Team Merpati 08",
+    teamName: "Genius 08",
     participantName: "Bambang P",
     sourceType: "GAME",
     reason: "Menyelesaikan Memory Match",
@@ -731,11 +731,11 @@ const activities = ref([
 ]);
 
 const topTeams = ref([
-  { id: "t1", name: "Team Garuda 01", buddy: "Budi Santoso", currentFloor: "Lantai 5", score: 2450 },
-  { id: "t2", name: "Team Elang 05", buddy: "Fatimah Z", currentFloor: "Lantai 3", score: 2320 },
-  { id: "t3", name: "Team Rajawali 03", buddy: "Agus Salim", currentFloor: "Lantai 1", score: 2180 },
-  { id: "t4", name: "Team Merpati 08", buddy: "Dewi Sartika", currentFloor: "Lantai 6", score: 1950 },
-  { id: "t5", name: "Team Kresna 02", buddy: "Hasanudin", currentFloor: "Lantai 8", score: 1890 },
+  { id: "t1", name: "Genius 01", buddy: "Budi Santoso", currentFloor: "Lantai 5", score: 2450 },
+  { id: "t2", name: "Genius 05", buddy: "Fatimah Z", currentFloor: "Lantai 3", score: 2320 },
+  { id: "t3", name: "Genius 03", buddy: "Dewi Lestari", currentFloor: "Lantai 1", score: 2180 },
+  { id: "t4", name: "Genius 08", buddy: "Farhan Hakim", currentFloor: "Lantai 6", score: 1950 },
+  { id: "t5", name: "Genius 02", buddy: "Hasanudin", currentFloor: "Lantai 8", score: 1890 },
 ]);
 
 const filteredActivities = computed(() => {
