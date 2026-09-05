@@ -386,6 +386,7 @@
       :current-page="currentPage"
       :total-items="filteredBuddies.length"
       :page-size="pageSize"
+      :page-size-options="[50, 25, 10, 100]"
       @update:current-page="currentPage = $event"
       @update:page-size="pageSize = $event; currentPage = 1"
     />
@@ -638,9 +639,9 @@ const searchQuery = ref("");
 const assignmentFilter = ref("");
 const roleFilter = ref("");
 
-// Pagination state
+// Pagination state (default to 50 to display all 50 official buddies immediately)
 const currentPage = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(50);
 
 const showFormModal = ref(false);
 const isEditing = ref(false);
