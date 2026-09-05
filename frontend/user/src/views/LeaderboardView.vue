@@ -21,12 +21,26 @@ import {
 } from '@/data/mockData';
 import { soundEngine } from '@/lib/sound';
 import { LeaderboardUser, LeaderboardGroup } from '@/types/game';
+import { onMounted } from 'vue';
+import { api } from '@/lib/api';
 
 const gameStore = useGameStore();
 
 const activeTab = ref<'individu' | 'kelompok'>('individu');
 const searchQuery = ref<string>('');
 const expandedGroupId = ref<string | null>('group-03');
+const liveLeaderboard = ref<any>(null);
+
+onMounted(async () => {
+  try {
+    const res = await api.getLeaderboard(50);
+    if (res.success && res.data) {
+      liveLeaderboard.value = res.data;
+    }
+  } catch (err) {
+    console.warn('[LeaderboardView] live backend fetch fallback:', err);
+  }
+});
 
 const getAvatarImage = (avatarId: string) => {
   const opt = AVATAR_OPTIONS.find((a) => a.id === avatarId);
@@ -35,6 +49,24 @@ const getAvatarImage = (avatarId: string) => {
 
 // Compute live individual leaderboard including current user
 const individualList = computed<LeaderboardUser[]>(() => {
+  if (liveLeaderboard.value?.participantLeaderboard?.length > 0) {
+    return liveLeaderboard.value.participantLeaderboard.map((item: any, index: number) => ({
+      id: item.participantId,
+      rank: item.rank || index + 1,
+      name: item.participantName || item.username,
+      nim: item.username,
+      faculty: 'UNU Yogyakarta',
+      prodi: item.characterClass || 'Mahasiswa Baru',
+      avatar: item.gender === 'FEMALE' ? 'character_cewek' : 'character_cowok',
+      totalXp: item.totalScore || 0,
+      stampsCount: Math.min(item.transactionCount || 0, 18),
+      completedFloors: Math.min(Math.floor((item.transactionCount || 0) / 2), 9),
+      isCurrentUser: item.username === gameStore.participant.nim || item.participantId === gameStore.participant.id,
+      groupId: item.teamId || 'group-01',
+      groupName: item.teamName || 'Genius 01',
+    }));
+  }
+
   const currentUserEntry: LeaderboardUser = {
     id: 'current-user',
     rank: 0,
@@ -63,6 +95,19 @@ const individualList = computed<LeaderboardUser[]>(() => {
 
 // Compute live group leaderboard
 const groupList = computed<LeaderboardGroup[]>(() => {
+  if (liveLeaderboard.value?.teamLeaderboard?.length > 0) {
+    return liveLeaderboard.value.teamLeaderboard.map((t: any, index: number) => ({
+      id: t.teamId,
+      rank: t.rank || index + 1,
+      name: t.teamName,
+      code: t.teamCode,
+      totalXp: t.totalScore || 0,
+      avgXp: t.totalScore || 0,
+      totalStampsAvg: 0,
+      assignedFloor: 1,
+      members: [],
+    }));
+  }
   const groups = INITIAL_LEADERBOARD_GROUPS.map((group) => {
     const updatedMembers = group.members.map((member) => {
       if (member.isCurrentUser || member.nim === gameStore.participant.nim) {

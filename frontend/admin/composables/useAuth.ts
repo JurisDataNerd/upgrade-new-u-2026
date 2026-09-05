@@ -197,9 +197,9 @@ export function useAuth() {
 
   async function login(usernameInput: string, passwordInput?: string): Promise<{ success: boolean; error?: string }> {
     loading.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 150));
 
     const cleanUser = usernameInput.trim().toLowerCase();
+    const cleanPassword = passwordInput?.trim() || (cleanUser === "admin" || cleanUser.includes("super") ? "admin2026" : "buddy2026");
 
     let activeUser: User;
     if (cleanUser === "admin" || cleanUser.includes("super")) {
@@ -244,6 +244,44 @@ export function useAuth() {
       }
     }
 
+    // 1. Attempt live backend authentication
+    try {
+      const config = useRuntimeConfig();
+      const baseUrl = config.public?.apiBase || "http://localhost:3001/api";
+      const liveRes = await $fetch<{ success: boolean; data?: { token: string; user: any }; error?: any }>(
+        `${baseUrl}/auth/login`,
+        {
+          method: "POST",
+          body: {
+            username: activeUser.username || cleanUser,
+            password: cleanPassword,
+          },
+        }
+      );
+
+      if (liveRes?.success && liveRes.data?.token) {
+        token.value = liveRes.data.token;
+        user.value = {
+          ...activeUser,
+          ...liveRes.data.user,
+        };
+        if (typeof window !== "undefined") {
+          localStorage.setItem("genius_admin_token", liveRes.data.token);
+          localStorage.setItem("genius_admin_user", JSON.stringify(user.value));
+        }
+        loading.value = false;
+        if (user.value.role === "BUDDY") {
+          navigateTo("/buddy");
+        } else {
+          navigateTo("/");
+        }
+        return { success: true };
+      }
+    } catch (err: any) {
+      console.warn("[Auth] Live backend login error, using local session:", err?.message || err);
+    }
+
+    // 2. Fallback to local session if backend unreachable
     token.value = "mock-static-token";
     user.value = activeUser;
     if (typeof window !== "undefined") {
@@ -262,35 +300,15 @@ export function useAuth() {
     return { success: true };
   }
 
-  function loginAsPreset(presetUser: User) {
-    token.value = "mock-static-token";
-    user.value = { ...presetUser };
-    if (typeof window !== "undefined") {
-      localStorage.setItem("genius_admin_token", "mock-static-token");
-      localStorage.setItem("genius_admin_user", JSON.stringify(presetUser));
-    }
-    if (presetUser.role === "BUDDY") {
-      navigateTo("/buddy");
-    } else {
-      navigateTo("/");
-    }
+  async function loginAsPreset(presetUser: User) {
+    return login(presetUser.username, presetUser.role === "ADMIN" ? "admin2026" : "buddy2026");
   }
 
-  function switchRole(targetRole: "ADMIN" | "BUDDY") {
+  async function switchRole(targetRole: "ADMIN" | "BUDDY") {
     if (targetRole === "BUDDY") {
-      user.value = { ...defaultBuddy };
+      return login(defaultBuddy.username, "buddy2026");
     } else {
-      user.value = { ...defaultAdmin };
-    }
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem("genius_admin_user", JSON.stringify(user.value));
-    }
-
-    if (targetRole === "BUDDY") {
-      navigateTo("/buddy");
-    } else {
-      navigateTo("/");
+      return login("admin", "admin2026");
     }
   }
 
@@ -305,6 +323,34 @@ export function useAuth() {
   }
 
   async function verify(): Promise<boolean> {
+    const config = useRuntimeConfig();
+    const baseUrl = config.public?.apiBase || "http://localhost:3001/api";
+
+    // Auto-authenticate with live backend if current token is mock
+    if (token.value === "mock-static-token" || !token.value) {
+      try {
+        const usernameToAuth = user.value?.username || "admin";
+        const passwordToAuth = user.value?.role === "BUDDY" ? "buddy2026" : "admin2026";
+        const res = await $fetch<{ success: boolean; data?: { token: string; user: any } }>(
+          `${baseUrl}/auth/login`,
+          {
+            method: "POST",
+            body: { username: usernameToAuth, password: passwordToAuth },
+          }
+        );
+        if (res?.success && res.data?.token) {
+          token.value = res.data.token;
+          user.value = { ...user.value, ...res.data.user };
+          if (typeof window !== "undefined") {
+            localStorage.setItem("genius_admin_token", res.data.token);
+            localStorage.setItem("genius_admin_user", JSON.stringify(user.value));
+          }
+          return true;
+        }
+      } catch {
+        // Backend not reachable, stay in local mode
+      }
+    }
     return true;
   }
 

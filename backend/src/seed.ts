@@ -15,6 +15,7 @@ import {
 } from "./db/schema";
 import { hashPassword } from "./lib/password";
 import { eq, and } from "drizzle-orm";
+import { RAW_BUDDY_DATA } from "./data/officialBuddies";
 
 async function seed() {
   console.log("🌱 Starting GENIUS 2026 Database Seeding...");
@@ -616,43 +617,94 @@ async function seed() {
     console.log("  ✅ 9 Floor Routes & Quiz Missions attached to Stage 1");
   }
 
-  // 8. Seed Sample Team & Member Assignment
-  console.log("Creating Sample Team 'Genius 01'...");
-  const [existingTeam] = await db
-    .select()
-    .from(teams)
-    .where(eq(teams.code, "GENIUS-01"))
-    .limit(1);
+  // 8. Seed 50 Official Teams & Buddies Roster
+  console.log("Creating 50 Official Teams (Genius 01 - Genius 50) & Official Buddies...");
+  const buddyDefaultPassword = await hashPassword("buddy2026");
 
-  let sampleTeam = existingTeam;
-  if (!existingTeam) {
-    [sampleTeam] = await db
-      .insert(teams)
-      .values({
-        name: "Genius 01",
-        code: "GENIUS-01",
-        status: "ACTIVE",
-      })
-      .returning();
+  for (const b of RAW_BUDDY_DATA) {
+    const padNum = String(b.num).padStart(2, "0");
+    const username = `buddy${padNum}`;
+    const teamName = `Genius ${padNum}`;
+    const teamCode = `GENIUS-${padNum}`;
 
-    // Assign Buddy to Team
-    if (buddyUser) {
-      await db.insert(teamMembers).values({
-        teamId: sampleTeam.id,
-        userId: buddyUser.id,
-        buddyRole: "PRIMARY",
-      });
+    // Create or find Team
+    const [existingT] = await db
+      .select()
+      .from(teams)
+      .where(eq(teams.code, teamCode))
+      .limit(1);
+
+    let teamObj = existingT;
+    if (!existingT) {
+      [teamObj] = await db
+        .insert(teams)
+        .values({
+          name: teamName,
+          code: teamCode,
+          status: "ACTIVE",
+        })
+        .returning();
     }
 
-    // Assign Participants to Team
-    for (const p of sampleParticipants) {
-      await db.insert(teamMembers).values({
-        teamId: sampleTeam.id,
-        userId: p.id,
-      });
+    // Create or find Buddy User
+    const [existingB] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username))
+      .limit(1);
+
+    let buddyObj = existingB;
+    if (!existingB) {
+      [buddyObj] = await db
+        .insert(users)
+        .values({
+          username,
+          passwordHash: buddyDefaultPassword,
+          fullName: b.fullName,
+          role: "BUDDY",
+          status: "ACTIVE",
+          gender: b.gender,
+          avatarUrl: b.gender === "FEMALE" ? "/character-cewek-avatar.png" : "/character-cowok-avatar.png",
+        })
+        .returning();
     }
-    console.log("  ✅ Team 'Genius 01' with 1 Buddy and 5 Participants created");
+
+    // Link Buddy to Team
+    if (teamObj && buddyObj) {
+      const [existingLink] = await db
+        .select()
+        .from(teamMembers)
+        .where(and(eq(teamMembers.teamId, teamObj.id), eq(teamMembers.userId, buddyObj.id)))
+        .limit(1);
+
+      if (!existingLink) {
+        await db.insert(teamMembers).values({
+          teamId: teamObj.id,
+          userId: buddyObj.id,
+          buddyRole: "PRIMARY",
+        });
+      }
+    }
+
+    // Assign sample participants to Genius 01
+    if (b.num === 1 && teamObj) {
+      for (const p of sampleParticipants) {
+        const [pLink] = await db
+          .select()
+          .from(teamMembers)
+          .where(and(eq(teamMembers.teamId, teamObj.id), eq(teamMembers.userId, p.id)))
+          .limit(1);
+
+        if (!pLink) {
+          await db.insert(teamMembers).values({
+            teamId: teamObj.id,
+            userId: p.id,
+          });
+        }
+      }
+    }
   }
+  console.log("  ✅ 50 Official Teams and Buddies mapped and assigned!");
 
   // 9. Seed Sample Ormawa Booths (Expo Hari 3)
   console.log("🎪 Seeding Sample Ormawa Booths (Expo Hari 3)...");

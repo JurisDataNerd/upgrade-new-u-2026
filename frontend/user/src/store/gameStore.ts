@@ -5,6 +5,7 @@ import { soundEngine } from '../lib/sound';
 import { AttendanceStoreMap, DailyReflectionData, AttendanceStatus } from '../types/attendance';
 import { ORMAWA_STANDS } from '../data/ormawaData';
 import { OrmawaScanResult } from '../types/ormawa';
+import { api } from '../lib/api';
 
 const STORAGE_KEY = 'genius_unu_user_storage_v1';
 
@@ -213,6 +214,25 @@ export const useGameStore = defineStore('game', {
       };
       this.isLoggedIn = true;
       this.saveToStorage();
+
+      // Asynchronously sync to live PostgreSQL database
+      api.registerMaba({
+        nim: data.nim.trim(),
+        name: data.name.trim(),
+        faculty: data.faculty,
+        prodi: data.prodi,
+        avatar: data.avatar,
+      }).then((res) => {
+        if (res.success && res.data?.user) {
+          this.participant.id = res.data.user.id;
+          if (res.data.user.teamId) {
+            this.participant.teamId = res.data.user.teamId;
+          }
+          this.saveToStorage();
+        }
+      }).catch((err) => {
+        console.warn('[Store] Live registerMaba sync note:', err);
+      });
     },
 
     logoutMaba() {
@@ -220,6 +240,7 @@ export const useGameStore = defineStore('game', {
       this.participant.isRegistered = false;
       this.participant.name = '';
       this.participant.nim = '';
+      api.logout();
       this.saveToStorage();
     },
 
@@ -295,6 +316,15 @@ export const useGameStore = defineStore('game', {
 
       if (this.soundEnabled) soundEngine.playCorrect();
 
+      // Sync to live PostgreSQL backend
+      api.checkIn(day, qrToken, this.participant.id || undefined).then((res) => {
+        if (res.success && res.data) {
+          console.log('[Store] Live check-in synced to PostgreSQL:', res.data);
+        }
+      }).catch((err) => {
+        console.warn('[Store] Live check-in sync note:', err);
+      });
+
       return {
         success: true,
         message: `Presensi Masuk Hari ${day} Berhasil! (+${xpEarned} XP)`,
@@ -330,6 +360,22 @@ export const useGameStore = defineStore('game', {
       this.saveToStorage();
 
       if (this.soundEnabled) soundEngine.playCorrect();
+
+      // Sync to live PostgreSQL backend
+      api.submitReflection({
+        day,
+        ratingFasilitas: data.ratingFasilitas,
+        ratingMateri: data.ratingMateri,
+        ratingBuddy: data.ratingBuddy,
+        essayInsight: data.essayInsight,
+        participantId: this.participant.id || undefined,
+      }).then((res) => {
+        if (res.success && res.data) {
+          console.log('[Store] Live reflection synced to PostgreSQL:', res.data);
+        }
+      }).catch((err) => {
+        console.warn('[Store] Live reflection sync note:', err);
+      });
 
       return {
         success: true,
@@ -381,6 +427,7 @@ export const useGameStore = defineStore('game', {
 
       const xpEarned = 50;
       const now = new Date();
+
       this.attendance[day].checkOutAt = now.toISOString();
       this.attendance[day].checkOutQrToken = qrToken;
       this.attendance[day].xpAwarded = (this.attendance[day].xpAwarded || 0) + xpEarned;
@@ -388,11 +435,20 @@ export const useGameStore = defineStore('game', {
       this.participant.totalXp += xpEarned;
       this.saveToStorage();
 
-      if (this.soundEnabled) soundEngine.playStampSlam();
+      if (this.soundEnabled) soundEngine.playFanfare();
+
+      // Sync to live PostgreSQL backend
+      api.checkOut(day, qrToken, this.participant.id || undefined).then((res) => {
+        if (res.success && res.data) {
+          console.log('[Store] Live check-out synced to PostgreSQL:', res.data);
+        }
+      }).catch((err) => {
+        console.warn('[Store] Live check-out sync note:', err);
+      });
 
       return {
         success: true,
-        message: `Presensi Pulang Hari ${day} Berhasil Terkunci! Sampai jumpa besok! (+${xpEarned} XP)`,
+        message: `Presensi Pulang Hari ${day} Selesai! (+${xpEarned} XP)`,
         xpEarned,
       };
     },
@@ -525,6 +581,15 @@ export const useGameStore = defineStore('game', {
       const message = isCapped
         ? `Kunjungan ${stand.shortName} dicatat! (Batas XP Capping 10 Stan Tercapai, +0 XP)`
         : `Lencana "${stand.badgeTitle}" diraih dari ${stand.shortName}! (+${xpEarned} XP)`;
+
+      // Sync scan to live PostgreSQL backend
+      api.scanOrmawa(rawToken, this.participant.id || undefined).then((res) => {
+        if (res.success && res.data) {
+          console.log('[Store] Live Ormawa scan recorded in PostgreSQL:', res.data);
+        }
+      }).catch((err) => {
+        console.warn('[Store] Live Ormawa scan sync note:', err);
+      });
 
       return {
         success: true,

@@ -1,0 +1,61 @@
+export interface OfficialBuddySeed {
+  num: number;
+  fullName: string;
+  prodi: string;
+  faculty: string;
+  gender: "MALE" | "FEMALE";
+  slug: string;
+}
+
+export const RAW_BUDDY_DATA: OfficialBuddySeed[] = [
+  { num: 1, fullName: "Agnes Anggraini Risdiyanto", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "agnes" },
+  { num: 2, fullName: "Agnesya Putri Triyana", prodi: "Teknik Elektro", faculty: "Fakultas Teknologi Informasi", gender: "FEMALE", slug: "agnesya" },
+  { num: 3, fullName: "Ahmad Fadlil Munajad", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "MALE", slug: "fadlil" },
+  { num: 4, fullName: "Ahmad Ichsan Maulana", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "MALE", slug: "ichsan" },
+  { num: 5, fullName: "Aning Gusmi Rahayu", prodi: "Studi Islam Interdisipliner", faculty: "Fakultas Dirasat Islamiyah", gender: "FEMALE", slug: "aning" },
+  { num: 6, fullName: "Arselia Sakina", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "FEMALE", slug: "arselia" },
+  { num: 7, fullName: "Asadurrahman Mujtaba Alhamidy", prodi: "Pendidikan Bahasa Inggris", faculty: "Fakultas Ilmu Pendidikan", gender: "MALE", slug: "asadurrahman" },
+  { num: 8, fullName: "Dafa Alif Laguna", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "MALE", slug: "dafa" },
+  { num: 9, fullName: "Destiya Lintang Dwi Utami", prodi: "Farmasi", faculty: "Fakultas Ilmu Kesehatan", gender: "FEMALE", slug: "destiya" },
+  { num: 10, fullName: "Dzulfa Sindi Saputri", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "dzulfa" },
+  { num: 11, fullName: "Eka Setiawan", prodi: "Teknik Elektro", faculty: "Fakultas Teknologi Informasi", gender: "MALE", slug: "ekasetiawan" },
+  { num: 12, fullName: "Farazinia Aditiani Putri", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "FEMALE", slug: "farazinia" },
+  { num: 13, fullName: "Fathi Rizqy Ramadhan", prodi: "Informatika", faculty: "Fakultas Teknologi Informasi", gender: "MALE", slug: "fathi" },
+  { num: 14, fullName: "Fauza Ramadani", prodi: "Studi Islam Interdisipliner", faculty: "Fakultas Dirasat Islamiyah", gender: "FEMALE", slug: "fauza" },
+  { num: 15, fullName: "Fina Nur Jayanti", prodi: "Pendidikan Bahasa Inggris", faculty: "Fakultas Ilmu Pendidikan", gender: "FEMALE", slug: "fina" },
+  { num: 16, fullName: "Isna Shabrina Berliana", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "isna" },
+  { num: 17, fullName: "Istiqomah Kurniawati", prodi: "Teknik Elektro", faculty: "Fakultas Teknologi Informasi", gender: "FEMALE", slug: "istiqomah" },
+  { num: 18, fullName: "Jernikan Qalbi Zauqillah", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "jernikan" },
+  { num: 19, fullName: "Khansa Saifanah Khair", prodi: "Studi Islam Interdisipliner", faculty: "Fakultas Dirasat Islamiyah", gender: "FEMALE", slug: "khansa" },
+  { num: 20, fullName: "Khoirunnisa Aulia Rahmah", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "khoirunnisa" },
+  { num: 21, fullName: "Moh. Dimas Adi Putra", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "MALE", slug: "dimas" },
+  { num: 22, fullName: "Mohamad Budi Wibowo", prodi: "Informatika", faculty: "Fakultas Teknologi Informasi", gender: "MALE", slug: "budi" },
+  { num: 23, fullName: "Mohammad Hilman Umami", prodi: "Teknik Elektro", faculty: "Fakultas Teknologi Informasi", gender: "MALE", slug: "hilman" },
+  { num: 24, fullName: "Muhammad Ma'shum", prodi: "Studi Islam Interdisipliner", faculty: "Fakultas Dirasat Islamiyah", gender: "MALE", slug: "mashum" },
+  { num: 25, fullName: "Muhammad Naufal Rosyiq Ammar", prodi: "Teknologi Hasil Pertanian", faculty: "Fakultas Bioindustri", gender: "MALE", slug: "naufal" },
+  { num: 26, fullName: "Muhammad Pradana Sidiq Nurcahyo", prodi: "Studi Islam Interdisipliner", faculty: "Fakultas Dirasat Islamiyah", gender: "MALE", slug: "pradana" },
+  { num: 27, fullName: "Mutiara Nisa Cahya Kusuma", prodi: "Farmasi", faculty: "Fakultas Ilmu Kesehatan", gender: "FEMALE", slug: "mutiara" },
+  { num: 28, fullName: "Nazriel Rizky Fadilah", prodi: "Pendidikan Bahasa Inggris", faculty: "Fakultas Ilmu Pendidikan", gender: "MALE", slug: "nazriel" },
+  { num: 29, fullName: "Nur Raihana Zulfa", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "raihana" },
+  { num: 30, fullName: "Nurhidayah Irawan", prodi: "Pendidikan Guru Sekolah Dasar (PGSD)", faculty: "Fakultas Ilmu Pendidikan", gender: "FEMALE", slug: "nurhidayah" },
+  { num: 31, fullName: "Orryza Sativa Qurrota A'yun", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "orryza" },
+  { num: 32, fullName: "Pandu Alfa Pratama", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "MALE", slug: "pandu" },
+  { num: 33, fullName: "Ramanda", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "MALE", slug: "ramanda" },
+  { num: 34, fullName: "Refina Aprillia", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "FEMALE", slug: "refina" },
+  { num: 35, fullName: "Rizka Sonia Octavia", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "rizkasonia" },
+  { num: 36, fullName: "Rizki Nur Aini", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "rizkinur" },
+  { num: 37, fullName: "Sakina Tasya", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "FEMALE", slug: "sakinatasya" },
+  { num: 38, fullName: "Salis Nawalin Najah", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "salis" },
+  { num: 39, fullName: "Sevia Mila Sari", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "sevia" },
+  { num: 40, fullName: "Siti Via Syahrani Putri", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "FEMALE", slug: "sitivia" },
+  { num: 41, fullName: "Sovi Sarah", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "FEMALE", slug: "sovisarah" },
+  { num: 42, fullName: "Sukma Maulana Pangesti", prodi: "Studi Islam Interdisipliner", faculty: "Fakultas Dirasat Islamiyah", gender: "MALE", slug: "sukma" },
+  { num: 43, fullName: "Talitha Zerlina Aurellia", prodi: "Farmasi", faculty: "Fakultas Ilmu Kesehatan", gender: "FEMALE", slug: "talitha" },
+  { num: 44, fullName: "Usman Raya", prodi: "Manajemen", faculty: "Fakultas Ekonomi dan Bisnis", gender: "MALE", slug: "usman" },
+  { num: 45, fullName: "Yoga Rama Indardy", prodi: "Akuntansi", faculty: "Fakultas Ekonomi dan Bisnis", gender: "MALE", slug: "yoga" },
+  { num: 46, fullName: "Yulita Wahyu Utami", prodi: "Pendidikan Guru Sekolah Dasar (PGSD)", faculty: "Fakultas Ilmu Pendidikan", gender: "FEMALE", slug: "yulita" },
+  { num: 47, fullName: "Zahra Audrina Fadhilah", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "FEMALE", slug: "zahra" },
+  { num: 48, fullName: "Zahro Makhbubah", prodi: "Agribisnis", faculty: "Fakultas Bioindustri", gender: "FEMALE", slug: "zahro" },
+  { num: 49, fullName: "Zakiya Aisyah Dealatifa", prodi: "Teknik Elektro", faculty: "Fakultas Teknologi Informasi", gender: "FEMALE", slug: "zakiya" },
+  { num: 50, fullName: "Zulaika", prodi: "Farmasi", faculty: "Fakultas Ilmu Kesehatan", gender: "FEMALE", slug: "zulaika" },
+];
